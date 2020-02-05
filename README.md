@@ -17,6 +17,8 @@ GitBread allows for things like:
 - Automatically record the weather for the day you made your bread
 - Common bakers percentage calculations including support for preferments, poolish, hydration adjustments for milk and eggs, etc. 
 - Record process notes like your kneading method, if you rested the dough, number and length of rises, autolyse, etc.
+- Review your history of attempts and modifications for each recipe
 
-**something about how this will allow the user to do all their experimentation and record final recipes in the same place**
-  
+ Anyone, beginner or expert, who wants to bake consistent loaves of bread or experiment and refine favorite recipes 
+ will find the GitBread diary tool useful. Keep track of final recipes, the conditions that lead to the best version
+ of an oft-baked bread, or simply go wild with experimentation knowing that you can easily look back at what you did.
