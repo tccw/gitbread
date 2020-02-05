@@ -12,9 +12,11 @@ a version control system for tracking changes in source code during software dev
 GitBread allows for things like:
 - Recording recipes
 - *branch* recipes to test variations
-- *merge* changes back into your main recipe for when your updates make it better
+- *merge* changes back into your main recipe for when your changes improve the recipe
 - *fork* the recipe in order to create an entirely new recipe based on a previous recipe
 - Automatically record the weather for the day you made your bread
-- Common bakers percentage calculations including preferments, poolish, hydration adjustments for milk and egss, etc. 
-- Record process notes like your kneading method, if you rested the dough, number and length of rises, if you used the autolyse method, etc.
+- Common bakers percentage calculations including support for preferments, poolish, hydration adjustments for milk and eggs, etc. 
+- Record process notes like your kneading method, if you rested the dough, number and length of rises, autolyse, etc.
+
+**something about how this will allow the user to do all their experimentation and record final recipes in the same place**
   
