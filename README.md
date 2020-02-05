@@ -1,11 +1,20 @@
-# My Personal Project
+# GitBread
 
-## A subtitle
+## Version control for baking (bread)
 
-A *bulleted* list:
-- item 1
-- item 2
-- item 3
+GitBread is a baking and recipe diary. It allows bakers to create or copy bread recipes 
+to their recipe book, add notes, make modifications, and create new or improved recipes 
+by recording variations in ingredients, cook times, cooking vessels and more. 
 
-An example of text with **bold** and *italic* fonts.  Note that the IntelliJ markdown previewer doesn't seem to render 
-the bold and italic fonts correctly but they will appear correctly on GitHub.
+The GitBread concept of recipe version control is based on [git](https://git-scm.com/),
+a version control system for tracking changes in source code during software development.
+
+GitBread allows for things like:
+- Recording recipes
+- *branch* recipes to test variations
+- *merge* changes back into your main recipe for when your updates make it better
+- *fork* the recipe in order to create an entirely new recipe based on a previous recipe
+- Automatically record the weather for the day you made your bread
+- Common bakers percentage calculations including preferments, poolish, hydration adjustments for milk and egss, etc. 
+- Record process notes like your kneading method, if you rested the dough, number and length of rises, if you used the autolyse method, etc.
+  
