@@ -21,5 +21,20 @@ GitBread allows for things like:
 
  Anyone, beginner or expert, who wants to bake consistent loaves of bread or experiment and refine favorite recipes 
  will find the GitBread diary tool useful. Keep track of final recipes, the conditions that lead to the best version
- of an oft-baked bread, or simply go wild with experimentation knowing that you can easily look back at what you did.
+ of an oft-baked bread, or simply go wild with experimentation knowing that you can easily look back at where you
+ started and what you changed.
  
+
+###Phase 1 User Stories
+
+- As a user, I want to be able to add a recipe to my collection
+- As a user, I want to be able to view the titles of all my recipes
+- As a user, I want to to be able to view the master version of a recipe
+- As a user, I want to be able to view the testing version of a recipe
+- As a user, I want to be able to attempt a recipe
+- As a user, I want to be able to make notes about the results of my attempt, and view these results later
+- As a user, I want to be able to view the number of times I have attempted a recipe
+- As a user, I want to be able to test a variation of a recipe and replace the master if it is better, or leave
+it in my recipe history if it makes it worse.
+- As a user I want to be able scale a recipe up or down easily
+
