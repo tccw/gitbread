@@ -1,4 +1,4 @@
 package model;
 
-public class BreadAttempt implements RecipeAttempt{
+public class BreadAttempt extends Attempt{
 }

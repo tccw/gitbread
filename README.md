@@ -6,7 +6,7 @@ GitBread is a baking and recipe diary. It allows bakers to create or copy bread 
 to their recipe book, add notes, make modifications, and create new or improved recipes 
 by recording variations in ingredients, cook times, cooking vessels and more. 
 
-The GitBread concept of recipe version control is based on [git](https://git-scm.com/),
+The GitBread concept of recipe version control is loosely based on [git](https://git-scm.com/),
 a version control system for tracking changes in source code during software development.
 
 GitBread allows for things like:
@@ -22,3 +22,4 @@ GitBread allows for things like:
  Anyone, beginner or expert, who wants to bake consistent loaves of bread or experiment and refine favorite recipes 
  will find the GitBread diary tool useful. Keep track of final recipes, the conditions that lead to the best version
  of an oft-baked bread, or simply go wild with experimentation knowing that you can easily look back at what you did.
+ 

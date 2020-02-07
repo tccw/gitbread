@@ -5,11 +5,13 @@ import com.google.gson.*;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import tk.plogitech.darksky.forecast.*;
+import tk.plogitech.darksky.forecast.model.Forecast;
 import tk.plogitech.darksky.forecast.model.Latitude;
 import tk.plogitech.darksky.forecast.model.Longitude;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import com.google.maps.*;
 
@@ -35,13 +37,23 @@ public class Main {
                 .await();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         System.out.println(gson.toJson(results[0].geometry.location));
+        context.shutdown();
 
         DarkSkyClient client = new DarkSkyClient();
         String forecast = client.forecastJsonString(request);
+        JsonObject jsonForecast = JsonParser.parseString(forecast).getAsJsonObject();
+//        String jsonOutput = gson.toJson(forecast);
+//        System.out.println(jsonOut);
 
-        JsonObject jsonObject = JsonParser.parseString(forecast).getAsJsonObject();
-        System.out.println(jsonObject.keySet());
-        System.out.println(jsonObject.get("currently"));
+        System.out.println(jsonForecast);
+        JsonObject currently = jsonForecast.getAsJsonObject("daily");
+        System.out.println(currently);
+        System.out.println(jsonForecast.keySet());
+        System.out.println(currently.get("time"));
+        LocalDateTime localDate = LocalDateTime.now();
+        System.out.println(localDate);
+
+
 
     }
 

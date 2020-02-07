@@ -1,4 +1,4 @@
 package model;
 
-public interface Recipe {
+public abstract class Recipe {
 }
