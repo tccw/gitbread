@@ -12,7 +12,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
+import java.util.Locale;
+
 import com.google.maps.*;
 
 public class Main {
@@ -51,7 +55,10 @@ public class Main {
         System.out.println(jsonForecast.keySet());
         System.out.println(currently.get("time"));
         LocalDateTime localDate = LocalDateTime.now();
-        System.out.println(localDate);
+        System.out.println(localDate
+                .format(DateTimeFormatter
+                        .ofLocalizedDate(FormatStyle.FULL)
+                        .withLocale(Locale.CANADA)));
 
 
 
