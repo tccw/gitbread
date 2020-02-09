@@ -9,6 +9,7 @@ public abstract class Recipe {
     protected ArrayList<Attempt> attemptHistory;
     protected int cookTime; // in minutes
     protected int prepTime; // in minutes
+    protected int cookTemp; // in F
 
     // setters
     protected void setInstructions(String instructions) {
@@ -22,6 +23,8 @@ public abstract class Recipe {
     protected void setPrepTime(int prepTime) {
         this.prepTime = prepTime;
     }
+
+    protected void setCookTemp(int cookTemp) { this.cookTemp = cookTemp;}
 
     // getters
     protected ArrayList<Ingredient> getIngredientList() {
@@ -44,6 +47,9 @@ public abstract class Recipe {
         return this.prepTime;
     }
 
+    //setters
+
+
     //EFFECTS: Counts the number of elements in attemptHistory
     protected int countAttempts() {
         return 0; //stub
@@ -59,6 +65,11 @@ public abstract class Recipe {
     //EFFECTS: adds an attempt to the attempt history
     protected void addAttempt(Attempt attempt) {
         this.attemptHistory.add(attempt);
+    }
+
+    //EFFECTS: this
+    public String toString() {
+        return ""; // stub
     }
 
 
