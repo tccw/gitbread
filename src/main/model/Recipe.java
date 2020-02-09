@@ -24,7 +24,9 @@ public abstract class Recipe {
         this.prepTime = prepTime;
     }
 
-    protected void setCookTemp(int cookTemp) { this.cookTemp = cookTemp;}
+    protected void setCookTemp(int cookTemp) {
+        this.cookTemp = cookTemp;
+    }
 
     // getters
     protected ArrayList<Ingredient> getIngredientList() {
@@ -47,6 +49,10 @@ public abstract class Recipe {
         return this.prepTime;
     }
 
+    protected int getCookTemp() {
+        return this.cookTemp;
+    }
+
     //setters
 
 
@@ -61,10 +67,26 @@ public abstract class Recipe {
         //stub
     }
 
+    //EFFECTS: counts the number of elements in the ingredients ArrayList
+    protected void countIngredients() {
+        //stub
+    }
+
     //MODIFIES: this
     //EFFECTS: adds an attempt to the attempt history
     protected void addAttempt(Attempt attempt) {
         this.attemptHistory.add(attempt);
+    }
+
+    // Get ingredient weights
+    //EFFECTS: produce the weight of the selected ingredient in grams
+    public int getIngredientWeight(String ingredientName) {
+        for (Ingredient i : this.ingredientList) {
+            if (i.getType().equals(ingredientName.toLowerCase())) {
+                return i.getWeight();
+            }
+        }
+        return -1; //System.out.printf("The ingredient \"%s\" could not be found", ingredientName);
     }
 
     //EFFECTS: this

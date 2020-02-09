@@ -11,6 +11,7 @@ public class BreadRecipe extends Recipe {
                     + " 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered"
                     + " 5. Bake 30 minutes at 425F.";
     private static final double flourConst = 1;
+
     private double flourFraction;
     private double waterFraction;
     private double saltFraction;
@@ -31,7 +32,7 @@ public class BreadRecipe extends Recipe {
         this.sugarFraction = 0;
         this.fatFraction = 0;
         this.yeastFraction = 0.006;
-        this.yield = flourFraction + waterFraction + saltFraction + sugarFraction + yeastFraction;
+        this.yield = flourFraction + waterFraction + saltFraction + sugarFraction + fatFraction + yeastFraction;
         this.calcIngredientsFromFlourWeight(flourWeight);
         for (Ingredient i : ingredientList) {
             this.doughWeight += i.getWeight();
@@ -52,7 +53,7 @@ public class BreadRecipe extends Recipe {
         this.sugarFraction = 0;
         this.fatFraction = 0;
         this.yeastFraction = 0.006;
-        this.yield = flourFraction + waterFraction + saltFraction + sugarFraction + yeastFraction;
+        this.yield = flourFraction + waterFraction + saltFraction + sugarFraction + fatFraction + yeastFraction;
         this.doughWeight = doughWeight; // grams
         this.calcIngredientsFromDoughWeight(this.doughWeight);
         super.instructions = defaultInstructions;
@@ -130,28 +131,15 @@ public class BreadRecipe extends Recipe {
         this.cookingVessel = cookingVessel;
     }
 
-    // Get ingredient weights
-    //EFFECTS: produce the flour weight in grams for this recipe
-    public int getIngredientWeight(String ingredientName) {
-        for (Ingredient i : super.ingredientList) {
-            if (i.getType().equals(ingredientName.toLowerCase())) {
-                return i.getWeight();
-            } else {
-                System.out.printf("The ingredient \"%s\" could not be found", ingredientName);
-            }
-        }
-    }
-
-
     //REQUIRES: doughWeight > 0
     //MODIFIES: this
     //EFFECTS: calculate the ingredients list from the desired final wet dough weight
     private void calcIngredientsFromDoughWeight(int doughWeight) {
         int flourWeight = (int) (doughWeight / this.yield);
-        super.ingredientList.addAll(Arrays.asList(new Ingredient("flour", flourWeight),
+        this.ingredientList.addAll(Arrays.asList(new Ingredient("flour", flourWeight),
                 new Ingredient("water", (int) (flourWeight * this.waterFraction)),
-                new Ingredient("salt", (int) (flourWeight * this.saltFraction)),
-                new Ingredient("fat", (int) (flourWeight * this.fatFraction)),
+                new Ingredient("salt",  (int) (flourWeight * this.saltFraction)),
+                new Ingredient("fat",   (int) (flourWeight * this.fatFraction)),
                 new Ingredient("sugar", (int) (flourWeight * this.sugarFraction)),
                 new Ingredient("yeast", (int) (flourWeight * this.yeastFraction))));
     }
@@ -160,10 +148,10 @@ public class BreadRecipe extends Recipe {
     //MODIFIES: this
     //EFFECTS: calculate the ingredients list from given flour weight
     private void calcIngredientsFromFlourWeight(int flourWeight) {
-        super.ingredientList.addAll(Arrays.asList(new Ingredient("flour", flourWeight),
+        this.ingredientList.addAll(Arrays.asList(new Ingredient("flour", flourWeight),
                 new Ingredient("water", (int) (flourWeight * this.waterFraction)),
-                new Ingredient("salt", (int) (flourWeight * this.saltFraction)),
-                new Ingredient("fat", (int) (flourWeight * this.fatFraction)),
+                new Ingredient("salt",  (int) (flourWeight * this.saltFraction)),
+                new Ingredient("fat",   (int) (flourWeight * this.fatFraction)),
                 new Ingredient("sugar", (int) (flourWeight * this.sugarFraction)),
                 new Ingredient("yeast", (int) (flourWeight * this.yeastFraction))));
     }

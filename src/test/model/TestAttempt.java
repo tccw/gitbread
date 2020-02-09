@@ -25,15 +25,9 @@ class TestAttempt {
         instructions = "1. Mix all ingredients 2. Knead dough until smooth 3. Let rise in oiled bowl for 1 hour " +
                         " 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered " +
                         "5. Bake 30 minutes at 425F.";
-        hearthLoaf = new BreadRecipe(ingredientList, instructions, 135, 30, 425);
-        attempt = new Attempt(hearthLoaf);
-        attempt.setDateTime(timeNow);
-    }
-
-    @Test
-    public void TestAttemptConstructorWithoutParams() {
-        BreadRecipe frenchLoaf = new BreadRecipe();
-//        HelperCheckAttemptFields();
+//        hearthLoaf = new BreadRecipe(ingredientList, instructions, 135, 30, 425);
+//        attempt = new Attempt(hearthLoaf);
+//        attempt.setDateTime(timeNow);
     }
 
     @Test
