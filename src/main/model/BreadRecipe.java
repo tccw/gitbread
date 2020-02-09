@@ -1,9 +1,16 @@
 package model;
 
+import java.util.ArrayList;
+
 public class BreadRecipe extends Recipe {
 
     //EFFECTS: constructs an empty bread recipe
     public BreadRecipe() {
+        //stub
+    }
+
+    //EFFECTS: constructs a bread recipe with ingredients, instructions, preparation time, and cooking time
+    public BreadRecipe(ArrayList<Ingredient> ingredients, String steps, int prepTime, int cookTime, int cookTempF) {
         //stub
     }
 

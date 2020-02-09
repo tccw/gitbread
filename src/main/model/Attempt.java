@@ -35,6 +35,11 @@ public class Attempt {
 
     // setters
 
+    //EFFECTS: add notes to the result notes string
+    public void setResultNotes(String crumbNote, String crustNote, String flavorNote, String otherNotes) {
+        //stub
+    }
+
     public void setRecipeVersion() {
         //stub
     }
@@ -49,9 +54,5 @@ public class Attempt {
         //stub
     }
 
-    //EFFECTS: add notes to the result notes string
-    public void addResultNotes(String crumbDescription, String crustDescription, String flavorDescription) {
-        // stub
-    }
 
 }
