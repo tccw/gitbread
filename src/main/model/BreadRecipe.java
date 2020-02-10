@@ -37,7 +37,7 @@ public class BreadRecipe extends Recipe {
         for (Ingredient i : ingredientList) {
             this.doughWeight += i.getWeight();
         }
-        super.instructions = defaultInstructions;
+        super.instructions = "";
         super.attemptHistory = new ArrayList<Attempt>();
         super.cookTime = -1;  // -1 indicates no cookTime has been set
         super.prepTime = -1; // -1 indicates no prepTime has been set
@@ -136,7 +136,7 @@ public class BreadRecipe extends Recipe {
     //EFFECTS: calculate the ingredients list from the desired final wet dough weight
     private void calcIngredientsFromDoughWeight(int doughWeight) {
         int flourWeight = (int) (doughWeight / this.yield);
-        this.ingredientList.addAll(Arrays.asList(new Ingredient("flour", flourWeight),
+        super.ingredientList.addAll(Arrays.asList(new Ingredient("flour", flourWeight),
                 new Ingredient("water", (int) (flourWeight * this.waterFraction)),
                 new Ingredient("salt",  (int) (flourWeight * this.saltFraction)),
                 new Ingredient("fat",   (int) (flourWeight * this.fatFraction)),
@@ -148,12 +148,16 @@ public class BreadRecipe extends Recipe {
     //MODIFIES: this
     //EFFECTS: calculate the ingredients list from given flour weight
     private void calcIngredientsFromFlourWeight(int flourWeight) {
-        this.ingredientList.addAll(Arrays.asList(new Ingredient("flour", flourWeight),
+        super.ingredientList.addAll(Arrays.asList(new Ingredient("flour", flourWeight),
                 new Ingredient("water", (int) (flourWeight * this.waterFraction)),
                 new Ingredient("salt",  (int) (flourWeight * this.saltFraction)),
                 new Ingredient("fat",   (int) (flourWeight * this.fatFraction)),
                 new Ingredient("sugar", (int) (flourWeight * this.sugarFraction)),
                 new Ingredient("yeast", (int) (flourWeight * this.yeastFraction))));
+    }
+
+    public int getFlourWeight() {
+        return this.ingredientList.get(0)
     }
 
 }

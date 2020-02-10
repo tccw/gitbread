@@ -4,9 +4,9 @@ import java.util.ArrayList;
 
 public abstract class Recipe {
 
-    protected ArrayList<Ingredient> ingredientList;
+    protected ArrayList<Ingredient> ingredientList = new ArrayList<Ingredient>();
     protected String instructions;
-    protected ArrayList<Attempt> attemptHistory;
+    protected ArrayList<Attempt> attemptHistory = new ArrayList<Attempt>();
     protected int cookTime; // in minutes
     protected int prepTime; // in minutes
     protected int cookTemp; // in F
