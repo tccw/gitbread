@@ -33,6 +33,7 @@ public class BreadRecipe extends Recipe {
         this.fatFraction = 0;
         this.yeastFraction = 0.006;
         this.yield = flourFraction + waterFraction + saltFraction + sugarFraction + fatFraction + yeastFraction;
+        this.blankIngredientsTemplate();
         this.calcIngredientsFromFlourWeight(flourWeight);
         for (Ingredient i : ingredientList) {
             this.doughWeight += i.getWeight();
@@ -55,6 +56,7 @@ public class BreadRecipe extends Recipe {
         this.yeastFraction = 0.006;
         this.yield = flourFraction + waterFraction + saltFraction + sugarFraction + fatFraction + yeastFraction;
         this.doughWeight = doughWeight; // grams
+        this.blankIngredientsTemplate();
         this.calcIngredientsFromDoughWeight(this.doughWeight);
         super.instructions = defaultInstructions;
         super.attemptHistory = new ArrayList<Attempt>();
@@ -65,7 +67,6 @@ public class BreadRecipe extends Recipe {
     }
 
     // getters
-
     public double getFlourFraction() {
         return flourFraction;
     }
@@ -105,22 +106,27 @@ public class BreadRecipe extends Recipe {
     // setters
     public void setWaterFraction(double waterFraction) {
         this.waterFraction = waterFraction;
+        scaleByDoughWeight(this.doughWeight);
     }
 
     public void setSaltFraction(double saltFraction) {
         this.saltFraction = saltFraction;
+        scaleByDoughWeight(this.doughWeight);
     }
 
     public void setSugarFraction(double sugarFraction) {
         this.sugarFraction = sugarFraction;
+        scaleByDoughWeight(this.doughWeight);
     }
 
     public void setFatFraction(double fatFraction) {
         this.fatFraction = fatFraction;
+        scaleByDoughWeight(this.doughWeight);
     }
 
     public void setYeastFraction(double yeastFraction) {
         this.yeastFraction = yeastFraction;
+        scaleByDoughWeight(this.doughWeight);
     }
 
     public void setDoughWeight(int doughWeight) {
@@ -131,33 +137,56 @@ public class BreadRecipe extends Recipe {
         this.cookingVessel = cookingVessel;
     }
 
+    //EFFECTS:
+    public void scaleByDoughWeight(int doughWeight) {
+        this.setDoughWeight(doughWeight);
+        calcIngredientsFromDoughWeight(doughWeight);
+    }
+
+    public void scaleByFlourWeight(int flourWeight) {
+        calcIngredientsFromFlourWeight(flourWeight);
+        this.doughWeight = 0;
+        for (Ingredient i : ingredientList) {
+            this.doughWeight += i.getWeight();
+        }
+    }
+
+    //MODIFIES: this
+    //EFFECTS: creates an array list with unset ingredient weights
+    private void blankIngredientsTemplate() {
+        super.ingredientList.addAll(Arrays.asList(
+                new Ingredient("flour", -1),
+                new Ingredient("water", -1),
+                new Ingredient("salt", -1),
+                new Ingredient("fat", -1),
+                new Ingredient("sugar", -1),
+                new Ingredient("yeast", -1)));
+    }
+
     //REQUIRES: doughWeight > 0
     //MODIFIES: this
     //EFFECTS: calculate the ingredients list from the desired final wet dough weight
     private void calcIngredientsFromDoughWeight(int doughWeight) {
         int flourWeight = (int) (doughWeight / this.yield);
-        super.ingredientList.addAll(Arrays.asList(new Ingredient("flour", flourWeight),
-                new Ingredient("water", (int) (flourWeight * this.waterFraction)),
-                new Ingredient("salt",  (int) (flourWeight * this.saltFraction)),
-                new Ingredient("fat",   (int) (flourWeight * this.fatFraction)),
-                new Ingredient("sugar", (int) (flourWeight * this.sugarFraction)),
-                new Ingredient("yeast", (int) (flourWeight * this.yeastFraction))));
+        ArrayList<Double> bakersFractions = new ArrayList<Double>();
+        bakersFractions.addAll(Arrays.asList(this.flourFraction, this.waterFraction,
+                this.saltFraction, this.fatFraction,
+                this.sugarFraction, this.yeastFraction));
+        for (int i = 0; i < super.ingredientList.size(); i++) {
+            super.ingredientList.get(i).setWeight((int) (flourWeight * bakersFractions.get(i)));
+        }
     }
 
     //REQUIRES: flourWeight > 0
     //MODIFIES: this
     //EFFECTS: calculate the ingredients list from given flour weight
     private void calcIngredientsFromFlourWeight(int flourWeight) {
-        super.ingredientList.addAll(Arrays.asList(new Ingredient("flour", flourWeight),
-                new Ingredient("water", (int) (flourWeight * this.waterFraction)),
-                new Ingredient("salt",  (int) (flourWeight * this.saltFraction)),
-                new Ingredient("fat",   (int) (flourWeight * this.fatFraction)),
-                new Ingredient("sugar", (int) (flourWeight * this.sugarFraction)),
-                new Ingredient("yeast", (int) (flourWeight * this.yeastFraction))));
+        ArrayList<Double> bakersFractions = new ArrayList<Double>();
+        bakersFractions.addAll(Arrays.asList(this.flourFraction, this.waterFraction,
+                this.saltFraction, this.fatFraction,
+                this.sugarFraction, this.yeastFraction));
+        for (int i = 0; i < super.ingredientList.size(); i++) {
+            super.ingredientList.get(i).setWeight((int) (flourWeight * bakersFractions.get(i)));
+        }
     }
-
-    public int getFlourWeight() {
-        return this.ingredientList.get(0)
-    }
-
 }

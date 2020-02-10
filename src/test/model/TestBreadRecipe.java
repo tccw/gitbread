@@ -32,24 +32,75 @@ public class TestBreadRecipe {
     }
 
     @Test
-    public void TestRecalculation() {
-        pizza.setDoughWeight(2000);
-        System.out.println();
+    public void TestScaleByDoughWeight() {
+        HelperCheckBreadRecipeInitializedDoughWeight(frenchLoaf, 1000);
+        frenchLoaf.scaleByDoughWeight(25000);
+        HelperCheckBreadRecipeInitializedDoughWeight(frenchLoaf, 25000);
     }
 
-//    @Test
-//    public void TestBreadRecipeSetFields() {
-//        pizza.setCookingVessel("pizza stone");
-//        pizza.setCookTemp(500);
-//        pizza.setPrepTime(60);
-//        pizza.setSaltFraction(0.032);
-//        pizza.setSugarFraction(0.01);
-//        pizza.setFatFraction(0.02);
-//        pizza.setYeastFraction(0.05);
-//        pizza.setDoughWeight();
-//    }
+    @Test
+    public void TestScaleByFlourWeight() {
+        HelperCheckBreadRecipeInitializedFlourHydration(pizza, 500, 0.7);
+        pizza.scaleByFlourWeight(530);
+        HelperCheckBreadRecipeInitializedFlourHydration(pizza, 530, 0.7);
+    }
 
-    //TODO: should consider if changing one part of the recipe recalculates the rest of it.
+    @Test
+    public void TestMultiScaleByFlourWeight() {
+        HelperCheckBreadRecipeInitializedFlourHydration(pizza, 500, 0.7);
+        pizza.scaleByFlourWeight(300);
+        pizza.scaleByDoughWeight(123456);
+        pizza.scaleByFlourWeight(1350);
+        HelperCheckBreadRecipeInitializedFlourHydration(pizza, 1350, 0.7);
+    }
+
+    @Test
+    public void TestMultiScaleByDoughWeight() {
+        HelperCheckBreadRecipeInitializedDoughWeight(frenchLoaf, 1000);
+        frenchLoaf.scaleByDoughWeight(10000);
+        frenchLoaf.scaleByDoughWeight(1245);
+        frenchLoaf.scaleByDoughWeight(780);
+        HelperCheckBreadRecipeInitializedDoughWeight(frenchLoaf, 780);
+    }
+
+    @Test
+    public void TestSetInstructions() {
+        HelperCheckBreadRecipeInitializedDoughWeight(frenchLoaf, 1000);
+        String expected = "1. Mix the bread 2. Bake the bread 3. Eat the bread";
+        frenchLoaf.setInstructions(expected);
+        assertEquals(expected, frenchLoaf.getInstructions());
+    }
+
+    @Test
+    public void TestSetInstructionsMulti() {
+        HelperCheckBreadRecipeInitializedDoughWeight(frenchLoaf, 1000);
+        String expectedOne = "1. Mix the bread 2. Bake the bread 3. Eat the bread";
+        String expectedTwo = "1. Mix the bread 2. Burn the bread 3. Try to eat the bread";
+        String expectedThree = "1. Consider quitting baking";
+        frenchLoaf.setInstructions(expectedOne);
+        frenchLoaf.setInstructions(expectedTwo);
+        frenchLoaf.setInstructions(expectedThree);
+        assertEquals(expectedThree, frenchLoaf.getInstructions());
+    }
+
+    @Test
+    public void TestBreadRecipeSetFields() {
+        HelperCheckBreadRecipeInitializedFlourHydration(pizza, 500, 0.7);
+        pizza.setCookingVessel("pizza stone");
+        pizza.setCookTemp(500);
+        pizza.setPrepTime(60);
+        pizza.setCookTime(6);
+        pizza.setWaterFraction(0.64);
+        pizza.setSaltFraction(0.032);
+        pizza.setSugarFraction(0.01);
+        pizza.setFatFraction(0.02);
+        pizza.setYeastFraction(0.05);
+        assertEquals(500, pizza.getCookTemp());
+        assertEquals(60, pizza.getPrepTime());
+        assertEquals(6, pizza.getCookTime());
+        assertEquals("pizza stone", pizza.getCookingVessel());
+
+    }
 
     //EFFECTS: tests that the fields in the recipe are as we expect
     public void HelperCheckBreadRecipeInitializedDoughWeight(BreadRecipe r, int doughWeight) {
@@ -107,6 +158,5 @@ public class TestBreadRecipe {
         assertEquals(expectedDoughWeight, r.getDoughWeight());
 
     }
-
 
 }
