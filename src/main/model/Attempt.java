@@ -1,5 +1,6 @@
 package model;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 
 public class Attempt {
@@ -7,13 +8,19 @@ public class Attempt {
     private Recipe recipeVersion;
     private LocalDateTime dateTime;
     private String resultNotes;
-    private String weather;
+    private String weatherNow;
+    private String weatherForDay;
+    private final Clock clock;
 
-    public Attempt(Recipe recipeVersion, LocalDateTime dateTime, String resultNotes, String weather) {
+    //EFFECTS: Construct an attempt with the date, current weather, weather for the day,
+    // given recipe, and empty resultNotes.
+    public Attempt(Recipe recipeVersion, Clock clock) {
+        this.clock = clock;
         this.recipeVersion = recipeVersion;
-        this.dateTime = dateTime;
-        this.resultNotes = resultNotes;
-        this.weather = weather;
+        this.dateTime = LocalDateTime.now(clock);
+        this.resultNotes = "";
+        this.weatherNow = "It's sunny and beautiful!"; //placeholder for API call
+        this.weatherForDay = "A beautiful sunny day!"; //placeholder for API call
     }
 
     // getters
@@ -30,7 +37,7 @@ public class Attempt {
     }
 
     public String getWeather() {
-        return weather;
+        return weatherNow;
     }
 
     // setters
@@ -40,19 +47,13 @@ public class Attempt {
         //stub
     }
 
-    public void setRecipeVersion() {
-        //stub
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
+    //MODIFIES: this
+    //EFFECTS: changes the date time in case there is a mistaken entry
+    public void changeDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
-    //EFFECTS: Construct an attempt with the date, current weather, weather for the day,
-    //         given recipe, and empty resultNotes.
-    public Attempt(Recipe recipeVersion) {
-        //stub
-    }
-
-
 }
+
+
+

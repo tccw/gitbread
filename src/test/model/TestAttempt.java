@@ -4,58 +4,46 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestAttempt {
-    private ArrayList<Ingredient> ingredientList = new ArrayList<>();
-    private BreadRecipe hearthLoaf;
-    private String instructions;
+    private BreadRecipe frenchLoaf;
     private Attempt attempt;
-    private LocalDateTime timeNow = LocalDateTime.now();
+    Clock clock = Clock.fixed(LocalDateTime.of(2020, 2,14,12,10)
+            .toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
+    private LocalDateTime timeNow = LocalDateTime.now(clock);
 
     @BeforeEach
     public void setUp() {
-        ingredientList.add(new Ingredient("flour", 663));
-        ingredientList.add(new Ingredient("water", 454));
-        ingredientList.add(new Ingredient("sugar", 14));
-        ingredientList.add(new Ingredient("salt", 14));
-        ingredientList.add(new Ingredient("active-dry-yeast", 7));
-        instructions = "1. Mix all ingredients 2. Knead dough until smooth 3. Let rise in oiled bowl for 1 hour " +
-                        " 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered " +
-                        "5. Bake 30 minutes at 425F.";
-//        hearthLoaf = new BreadRecipe(ingredientList, instructions, 135, 30, 425);
-//        attempt = new Attempt(hearthLoaf);
-//        attempt.setDateTime(timeNow);
+        frenchLoaf = new BreadRecipe(550);
+        attempt = new Attempt(frenchLoaf, clock);
     }
 
     @Test
     public void TestAttemptConstructorWithParams() {
-        HelperCheckAttemptFields(attempt, hearthLoaf, timeNow, "");
+        HelperCheckAttemptFields(attempt, frenchLoaf, timeNow, "");
     }
 
     @Test
     public void TestAddSingleResultNotesToAttempt() {
-        HelperCheckAttemptFields(attempt, hearthLoaf, timeNow, "");
+        HelperCheckAttemptFields(attempt, frenchLoaf, timeNow, "");
         attempt.setResultNotes("open", "dark golden, crunchy", "tangy", "remove 5 mins earlier");
-//        HelperCheckAttemptFields(attempt, hearthLoaf, timeNow, );
-    }
-
-    @Test
-    public void TestAddMultipleResultNotesToAttempt() {
-        //stub
-    }
-
-    @Test
-    public void TestAddResultNotes() {
-        //stub
+        String expected = "Crumb: open, springy\n" +
+                          "Crust: golden, crunchy\n" +
+                          "Flavor: perfect\n" +
+                          "Other notes: remove 5 mins earlier\n";
+        HelperCheckAttemptFields(attempt, frenchLoaf, timeNow, expected);
     }
 
     //EFFECTS: checks that an attempt has the
-    private void HelperCheckAttemptFields(Attempt attempt, Recipe recipe, LocalDateTime time, String resultNotes) {
+    private void HelperCheckAttemptFields(Attempt attempt, Recipe recipe, LocalDateTime timeNow, String resultNotes) {
         assertSame(recipe, attempt.getRecipeVersion());
-        assertSame(time, attempt.getDateTime());
+        assertTrue(timeNow.isEqual(attempt.getDateTime()));
         assertEquals(resultNotes, attempt.getResultNotes());
+
     }
 }
