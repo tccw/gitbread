@@ -2,6 +2,9 @@ package model;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.Locale;
 
 public class Attempt {
 
@@ -44,13 +47,23 @@ public class Attempt {
 
     //EFFECTS: add notes to the result notes string
     public void setResultNotes(String crumbNote, String crustNote, String flavorNote, String otherNotes) {
-        //stub
+        this.resultNotes = "Crumb: "
+                + crumbNote + "\n"
+                + "Crust: "
+                + crustNote + "\n"
+                + "Flavor: "
+                + flavorNote + "\n"
+                + "Other notes: "
+                + otherNotes + '\n';
     }
 
-    //MODIFIES: this
-    //EFFECTS: changes the date time in case there is a mistaken entry
-    public void changeDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+    //EFFECTS: returns the LocalDateTime field to an easy to read string
+    public String attemptDatePretty() {
+        String result = getDateTime()
+                .format(DateTimeFormatter.RFC_1123_DATE_TIME
+                        .ofLocalizedDate(FormatStyle.FULL)
+                        .withLocale(Locale.CANADA));
+        return result;
     }
 
 }
