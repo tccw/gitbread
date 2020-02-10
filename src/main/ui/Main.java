@@ -59,9 +59,6 @@ public class Main {
                 .format(DateTimeFormatter
                         .ofLocalizedDate(FormatStyle.FULL)
                         .withLocale(Locale.CANADA)));
-
-
-
     }
 
 
