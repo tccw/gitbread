@@ -56,7 +56,7 @@ public class Attempt {
     }
 
     //EFFECTS: returns the LocalDateTime field to an easy to read string
-    public String attemptDatePretty() {
+    public String datePretty() {
         String result = getDateTime()
                 .format(DateTimeFormatter.RFC_1123_DATE_TIME
                         .ofLocalizedDate(FormatStyle.FULL)
