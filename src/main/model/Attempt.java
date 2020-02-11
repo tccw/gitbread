@@ -65,8 +65,4 @@ public class Attempt {
                         .withLocale(Locale.CANADA));
         return result;
     }
-
 }
-
-
-

@@ -11,18 +11,11 @@ public class Ingredient {
         this.weight = grams;
     }
 
-    //setters
-    //EFFECTS:
-    private void setType(String type) {
-        this.type = type;
-    }
-
     //EFFECTS:
     public void setWeight(int weight) {
         this.weight = weight;
     }
 
-    //
     //EFFECTS: returns the weight of an ingredient in grams
     public int getWeight() {
         return this.weight; //stub
