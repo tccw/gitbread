@@ -28,6 +28,11 @@ public class RecipeCollection {
         this.collection.remove(title);
     }
 
+    //EFFECTS: returns the recipe history associated with the given key
+    public RecipeHistory get(String key) {
+        return this.collection.get(key);
+    }
+
     //REQUIRES: non-empty RecipeCollection
     //EFFECTS: return a formatted string with all recipe names, cook time, and prep time
     // foreach with a HashMap https://stackoverflow.com/questions/4234985/how-to-for-each-the-hashmap

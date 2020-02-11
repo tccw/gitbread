@@ -23,6 +23,14 @@ public class RecipeHistory {
         history = new LinkedList<Recipe>();
     }
 
+    //EFFECTS: Creates a new RecipeHistory with the recipe passed as the first history entry and master
+    public RecipeHistory(Recipe recipe) {
+        masterRecipe = recipe;
+        testingRecipe = null;
+        history = new LinkedList<>();
+        history.add(recipe);
+    }
+
     // getters
     public Recipe getMasterRecipe() {
         return masterRecipe;

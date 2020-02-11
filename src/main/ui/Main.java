@@ -4,13 +4,17 @@ package ui;
 import com.google.gson.*;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
+import model.BreadRecipe;
+import model.RecipeCollection;
+import model.RecipeHistory;
 import tk.plogitech.darksky.forecast.*;
-import tk.plogitech.darksky.forecast.model.Forecast;
 import tk.plogitech.darksky.forecast.model.Latitude;
 import tk.plogitech.darksky.forecast.model.Longitude;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -23,7 +27,10 @@ public class Main {
 
 
     public static void main(String[] args) throws ForecastException, IOException, InterruptedException, ApiException {
+        new GitBreadApp();
+
         // get API keys from file
+        Clock clock = Clock.systemDefaultZone();
         String path = "res\\value\\api_keys.txt";
         ArrayList<String> apiKey = new ArrayList<String>(Files.readAllLines(Paths.get(path)));
 
@@ -59,6 +66,12 @@ public class Main {
                 .format(DateTimeFormatter
                         .ofLocalizedDate(FormatStyle.FULL)
                         .withLocale(Locale.CANADA)));
+        RecipeCollection collection = new RecipeCollection();
+        collection.add("French loaf", new RecipeHistory(new BreadRecipe(1000)));
+        collection.get("French loaf").attempt(collection.get("French loaf").getMasterRecipe(), clock);
+        System.out.println(collection.get("French loaf").get(0).toString());
+
+
     }
 
 
