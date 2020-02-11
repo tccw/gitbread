@@ -69,14 +69,14 @@ public abstract class Recipe {
     }
 
     //EFFECTS: counts the number of elements in the ingredients ArrayList
-    protected void countIngredients() {
-        //stub
+    protected int countIngredients() {
+        return this.ingredientList.size();
     }
 
     //MODIFIES: this
     //EFFECTS: adds an attempt to the attempt history
     protected void addAttempt(Recipe recipe, Clock clock) {
-        this.attemptHistory.add(new Attempt(recipe,clock));
+        this.attemptHistory.add(new Attempt(recipe, clock));
     }
 
     // Get ingredient weights
@@ -91,9 +91,7 @@ public abstract class Recipe {
     }
 
     //EFFECTS: this
-    public String toString() {
-        return ""; // stub
-    }
+    public abstract String toString();
 
 
 }

@@ -62,6 +62,20 @@ public class TestBreadRecipe {
     }
 
     @Test
+    public void TestGetIngredientWeight() {
+        HelperCheckBreadRecipeInitializedFlourHydration(pizza, 500, 0.7);
+        assertEquals(-1, pizza.getIngredientWeight("eggs"));
+        assertEquals(500, pizza.getIngredientWeight("flour"));
+        assertEquals(500, pizza.getIngredientWeight("fLoUR"));
+    }
+
+    @Test
+    public void TestCountIngredients() {
+        HelperCheckBreadRecipeInitializedDoughWeight(frenchLoaf, 1000);
+        assertEquals(6, frenchLoaf.countIngredients());
+    }
+
+    @Test
     public void TestSetInstructions() {
         HelperCheckBreadRecipeInitializedDoughWeight(frenchLoaf, 1000);
         String expected = "1. Mix the bread 2. Bake the bread 3. Eat the bread";
@@ -98,6 +112,31 @@ public class TestBreadRecipe {
         assertEquals(6, pizza.getCookTime());
         assertEquals("pizza stone", pizza.getCookingVessel());
 
+    }
+
+    @Test
+    public void TestToString() {
+        String expected = "Ingredients: \n" +
+                "   - Flour, 593g\n" +
+                "   - Water, 391g\n" +
+                "   - Salt, 11g\n" +
+                "   - Yeast, 3g\n" +
+                "\n" +
+                "Hydration: 66%\n" +
+                "Prep: 2 hr 15 min\n" +
+                "Bake: 0 hr 30 min\n" +
+                "Total: 2 hr 45 min\n" +
+                "Bake temp: 425 F\n" +
+                "Baking vessel: pan\n" +
+                "Yield: 1000 g\n" +
+                "\n" +
+                "Instructions:\n" +
+                "    1. Mix all ingredients \n" +
+                "    2. Knead dough until smooth \n" +
+                "    3. Let rise in oiled bowl for 1 hour \n" +
+                "    4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered \n" +
+                "    5. Bake 30 minutes at 425F\n";
+        assertEquals(expected, frenchLoaf.toString());
     }
 
     //EFFECTS: tests that the fields in the recipe are as we expect

@@ -1,5 +1,7 @@
 package model;
 
+import com.sun.corba.se.impl.legacy.connection.USLPort;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -9,7 +11,7 @@ public class BreadRecipe extends Recipe {
                     + " 2. Knead dough until smooth"
                     + " 3. Let rise in oiled bowl for 1 hour"
                     + " 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered"
-                    + " 5. Bake 30 minutes at 425F.";
+                    + " 5. Bake 30 minutes at 425F";
     private static final double flourConst = 1;
 
     private double flourFraction;
@@ -189,4 +191,49 @@ public class BreadRecipe extends Recipe {
             super.ingredientList.get(i).setWeight((int) (flourWeight * bakersFractions.get(i)));
         }
     }
+
+    //EFFECTS: builds a string representation of the recipe information
+    @Override
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("Ingredients: \n");
+        for (Ingredient i : ingredientList) {
+            if (i.getWeight() > 0) {
+                String name = i.getType().substring(0, 1).toUpperCase() + i.getType().substring(1).toLowerCase();
+                result.append(String.format("   - %1$s, %2$dg\n", name, i.getWeight()));
+            }
+        }
+        result.append(toStringHelperBakeNotes());
+        result.append(toStringHelperInstructions());
+
+        return result.toString();
+    }
+
+    //EFFECTS: format the bake notes for toString()
+    private String toStringHelperBakeNotes() {
+        StringBuilder result = new StringBuilder();
+        result.append(String.format("\nHydration: %1$d%%\n"
+                        + "Prep: %2$d hr %3$d min\n"
+                        + "Bake: %4$d hr %5$d min\n"
+                        + "Total: %6$d hr %7$d min\n"
+                        + "Bake temp: %8$d F\n"
+                        + "Baking vessel: %9$s\n"
+                        + "Yield: %10$d g\n",
+                (int) (this.waterFraction * 100), this.prepTime / 60, this.prepTime % 60,
+                this.cookTime / 60, this.cookTime % 60, (this.prepTime + this.cookTime) / 60,
+                (this.prepTime + this.cookTime) % 60, this.cookTemp, this.cookingVessel, this.doughWeight));
+        return result.toString();
+    }
+
+    //EFFECTS: format the instructions for toString
+    private String toStringHelperInstructions() {
+        StringBuilder result = new StringBuilder();
+        String[] splitList = this.instructions.split("\\d\\.");
+        result.append("\nInstructions:\n");
+        for (int i = 1; i < splitList.length; i++) {
+            result.append(String.format("    %d." + splitList[i] + "\n", i));
+        }
+        return result.toString();
+    }
 }
+

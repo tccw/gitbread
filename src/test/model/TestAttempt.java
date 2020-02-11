@@ -42,7 +42,10 @@ class TestAttempt {
     @Test
     public void TestAddSingleResultNotesToAttempt() {
         HelperCheckAttemptFields(attempt, frenchLoaf, timeNow, "");
-        attempt.setResultNotes("open", "dark golden, crunchy", "tangy", "remove 5 mins earlier");
+        attempt.setResultNotes("open",
+                "dark golden, crunchy",
+                "tangy",
+                "remove 5 mins earlier");
         String expected = "Crumb: open\n" +
                           "Crust: dark golden, crunchy\n" +
                           "Flavor: tangy\n" +
