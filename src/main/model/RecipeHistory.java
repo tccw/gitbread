@@ -1,18 +1,18 @@
 package model;
 /*
-Represents the version history for a single Recipe. This is represented by a RecipeMap which is a HashMap of recipes
-labeled with unique identifiers. It also has two Recipe objects which point to the "master", or default view recipe,
-and a "testing" recipe which points to some variation of the original recipe where a user might be testing changes to a
-recipe which is not final yet.
+Represents the version history for a single Recipe. This is represented by a LinkedList  of recipes. It also has two
+Recipe objects which point to the "master", or default view recipe, and a "testing" recipe which points to some
+variation of the original recipe where a user might be testing changes to a recipe which is not final yet.
 */
 
+import java.time.Clock;
 import java.util.LinkedList;
 
 public class RecipeHistory {
 
-    Recipe masterRecipe;
-    Recipe testingRecipe;
-    LinkedList<Recipe> recipeHistory;
+    private Recipe masterRecipe;
+    private Recipe testingRecipe;
+    private LinkedList<Recipe> history;
 
     //REQUIRES:
     //MODIFIES:
@@ -20,7 +20,7 @@ public class RecipeHistory {
     public RecipeHistory() {
         masterRecipe = null;
         testingRecipe = null;
-        recipeHistory = new LinkedList<Recipe>();
+        history = new LinkedList<Recipe>();
     }
 
     // getters
@@ -32,8 +32,8 @@ public class RecipeHistory {
         return testingRecipe;
     }
 
-    public LinkedList<Recipe> getRecipeHistory() {
-        return recipeHistory;
+    public LinkedList<Recipe> getHistory() {
+        return history;
     }
 
     // setters
@@ -50,7 +50,7 @@ public class RecipeHistory {
         // first version can simply return the length of the AttemptsList
         // future version might want to return attempts per recipe version
         int count = 0;
-        for (Recipe r : this.recipeHistory) {
+        for (Recipe r : this.history) {
             count += r.countAttempts();
         }
         return count;
@@ -59,12 +59,27 @@ public class RecipeHistory {
     //REQUIRES: recipeHistory length > 0
     //EFFECTS: print out the number of times a recipe has been modified, ignoring the first entry (initial 'commit')
     public int countTimesModified() {
-        return recipeHistory.size() - 1;
+        return this.history.size() - 1;
+    }
+
+    //EFFECTS: return the number of recipe versions in the list including the first entry (initial 'commit')
+    public int size() {
+        return this.history.size();
+    }
+
+    //EFFECTS: returns the element at the ith position of recipe history
+    public Recipe get(int i) {
+        return this.history.get(i);
+    }
+
+    //EFFECTS: attempts a recipe from the recipe history list
+    public void attempt(Recipe recipe, Clock clock) {
+        recipe.addAttempt(recipe, clock);
     }
 
     //EFFECTS: add a recipe version to the recipe list
     public void addToHistory(Recipe newVersion) {
-        recipeHistory.add(newVersion);
+        this.history.add(newVersion);
     }
 
 
@@ -83,10 +98,10 @@ public class RecipeHistory {
     Recipe Version: Hearth Bread v0
 
     Ingredients:
-        - Active-dry-yeast, 7g
+        - Yeast, 7g
         - Sugar, 14g
         - Salt, 14g
-        - Water (lukewarm), 454g
+        - Water , 454g
         - All-purpose flour, 663g
 
     Hydration: 68%
@@ -125,7 +140,7 @@ public class RecipeHistory {
 
     //EFFECTS: returns a formatted string with all the different recipe version names and dates, most recent first.
     /*
-    ------ RECIPE DEVELOPMENT HISTORY ------
+    ------ RECIPE DEVELOPMENT HISTORY: HEARTH BREAD ------
     Hearth Bread v2 (testing) : Saturday, February 8, 2020
     Hearth Bread v1 (master) : Tuesday, February 4, 2020
     Hearth Bread v0 : Monday, January 27, 2020

@@ -1,5 +1,6 @@
 package model;
 
+import java.time.Clock;
 import java.util.ArrayList;
 
 public abstract class Recipe {
@@ -74,8 +75,8 @@ public abstract class Recipe {
 
     //MODIFIES: this
     //EFFECTS: adds an attempt to the attempt history
-    protected void addAttempt(Attempt attempt) {
-        this.attemptHistory.add(attempt);
+    protected void addAttempt(Recipe recipe, Clock clock) {
+        this.attemptHistory.add(new Attempt(recipe,clock));
     }
 
     // Get ingredient weights

@@ -23,10 +23,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class TestAttempt {
     private BreadRecipe frenchLoaf;
     private Attempt attempt;
-    Clock clock = Clock.fixed(LocalDateTime.of(2020, 2,14,12,10)
+    private Clock clock = Clock.fixed(LocalDateTime.of(2020, 2,14,12,10)
             .toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
     private LocalDateTime timeNow = LocalDateTime.now(clock);
-    String path = "res\\value\\api_keys.txt";
+    private String path = "res\\value\\api_keys.txt";
 
     @BeforeEach
     public void setUp() {

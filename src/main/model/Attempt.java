@@ -12,18 +12,16 @@ public class Attempt {
     private LocalDateTime dateTime;
     private String resultNotes;
     private String weatherNow;
-    private String weatherForDay;
-    private final Clock clock;
+//    private String weatherForDay;
 
     //EFFECTS: Construct an attempt with the date, current weather, weather for the day,
     // given recipe, and empty resultNotes.
     public Attempt(Recipe recipeVersion, Clock clock) {
-        this.clock = clock;
         this.recipeVersion = recipeVersion;
         this.dateTime = LocalDateTime.now(clock);
         this.resultNotes = "";
         this.weatherNow = "It's sunny and beautiful!"; //placeholder for API call
-        this.weatherForDay = "A beautiful sunny day!"; //placeholder for API call
+//        this.weatherForDay = "A beautiful sunny day!"; //placeholder for API call
     }
 
     // getters

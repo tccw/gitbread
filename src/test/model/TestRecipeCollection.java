@@ -12,7 +12,7 @@ public class TestRecipeCollection {
     RecipeHistory recipeHistoryPizza;
     RecipeHistory recipeHistoryCinnamonRaisin;
     Recipe frenchLoaf = new BreadRecipe(1000);
-    Recipe pizza = pizza = new BreadRecipe(350, 0.68);
+    Recipe pizza = new BreadRecipe(350, 0.68);
     Recipe cinnamonRaisin = new BreadRecipe(800);
 
     @BeforeEach
