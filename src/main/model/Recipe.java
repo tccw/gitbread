@@ -58,7 +58,7 @@ public abstract class Recipe {
 
     //EFFECTS: Counts the number of elements in attemptHistory
     protected int countAttempts() {
-        return 0; //stub
+        return attemptHistory.size();
     }
 
     //MODIFIES: this

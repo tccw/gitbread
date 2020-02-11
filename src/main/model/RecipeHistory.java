@@ -6,32 +6,67 @@ and a "testing" recipe which points to some variation of the original recipe whe
 recipe which is not final yet.
 */
 
+import java.util.LinkedList;
+
 public class RecipeHistory {
+
+    Recipe masterRecipe;
+    Recipe testingRecipe;
+    LinkedList<Recipe> recipeHistory;
 
     //REQUIRES:
     //MODIFIES:
     //EFFECTS: Creates an empty RecipeHistory by initializing an empty RecipeMap.
     public RecipeHistory() {
-        //stub
+        masterRecipe = null;
+        testingRecipe = null;
+        recipeHistory = new LinkedList<Recipe>();
     }
 
     // getters
+    public Recipe getMasterRecipe() {
+        return masterRecipe;
+    }
+
+    public Recipe getTestingRecipe() {
+        return testingRecipe;
+    }
+
+    public LinkedList<Recipe> getRecipeHistory() {
+        return recipeHistory;
+    }
 
     // setters
     public void setMasterRecipe(Recipe master) {
-        //stub
+        this.masterRecipe = master;
     }
 
     public void setTestingRecipe(Recipe testing) {
-
+        this.testingRecipe = testing;
     }
 
     //EFFECTS: counts the number of times the recipe has been attempted
     public int countAttempts() {
         // first version can simply return the length of the AttemptsList
         // future version might want to return attempts per recipe version
-        return 0;
+        int count = 0;
+        for (Recipe r : this.recipeHistory) {
+            count += r.countAttempts();
+        }
+        return count;
     }
+
+    //REQUIRES: recipeHistory length > 0
+    //EFFECTS: print out the number of times a recipe has been modified, ignoring the first entry (initial 'commit')
+    public int countTimesModified() {
+        return recipeHistory.size() - 1;
+    }
+
+    //EFFECTS: add a recipe version to the recipe list
+    public void addToHistory(Recipe newVersion) {
+        recipeHistory.add(newVersion);
+    }
+
 
     //REQUIRES:
     //MODIFIES:
