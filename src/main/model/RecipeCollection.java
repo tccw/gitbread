@@ -36,13 +36,18 @@ public class RecipeCollection {
     //REQUIRES: non-empty RecipeCollection
     //EFFECTS: return a formatted string with all recipe names, cook time, and prep time
     // foreach with a HashMap https://stackoverflow.com/questions/4234985/how-to-for-each-the-hashmap
-    public String toString() {
+    public String toString(boolean verbose) {
         StringBuilder result = new StringBuilder();
         for (Map.Entry<String, RecipeHistory> entry : this.collection.entrySet()) {
             String title = entry.getKey();
             int numAttempts = entry.getValue().countAttempts();
             int numChanges = entry.getValue().countTimesModified();
-            result.append(String.format("%1$s - %2$d attempts, %3$d changes\n", title, numAttempts, numChanges));
+
+            if (verbose) {
+                result.append(String.format("%1$s - %2$d attempts, %3$d changes\n", title, numAttempts, numChanges));
+            } else {
+                result.append(String.format("%1$s\n", title));
+            }
         }
         return result.toString();
     }

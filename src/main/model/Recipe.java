@@ -13,7 +13,7 @@ public abstract class Recipe {
     protected int cookTemp; // in F
 
     // setters
-    protected void setInstructions(String instructions) {
+    public void setInstructions(String instructions) {
         this.instructions = instructions;
     }
 
