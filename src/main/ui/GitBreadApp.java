@@ -59,28 +59,40 @@ public class GitBreadApp {
         System.out.println("        usage example: bread view testing -n Pizza dough");
         System.out.println("    bread attempt : [-n name] [-m master] [-t testing]");
         System.out.println("        usage example: bread attempt -n French loaf -m");
+        System.out.println("    bread scale : [-n name] [-m master] [-t testing] [-v verbose]");
+        System.out.println("        usage example: bread scale -n French loaf -m");
+        System.out.println("        usage example: bread scale -n Pizza dough -v");
     }
 
     //EFFECTS: processes the commands the user inputs.
+    //notes: a scaled recipe is not considered a new recipe.
     private void processCommand(String command) {
         String phrase = parseCommandPhrase(command);
         if (phrase.equals("bread new")) {
-            breadAddCommand(command);
+            doBreadNew(command);
         } else if (phrase.equals("bread list")) {
-            breadListCommand(command);
+            doBreadList(command);
         } else if (phrase.equals("bread attempt")) {
-            breadAttemptCommand(command);
+            doBreadAttempt(command);
         } else if (phrase.equals("bread view master")) {
-            breadViewCommand(command, true);
+            doBreadView(command, true);
         } else if (phrase.equals("bread view testing")) {
-            breadViewCommand(command, false);
+            doBreadView(command, false);
+        } else if (phrase.equals("bread scale")) {
+            doBreadScale(command);
         } else {
             System.out.println(String.format("'%s' is not a valid command.", command));
         }
     }
 
+    //EFFECTS: helper for processCommand(), scales the recipe and modifies only the ingredient weights in the master
+    private void doBreadScale(String c) {
+        String[] flags = {"-n", "-m", "-t", "-v"};
+
+    }
+
     //EFFECTS: helper for processCommand(), attempts the requested recipe using the master or testing version
-    private void breadAttemptCommand(String c) {
+    private void doBreadAttempt(String c) {
         String[] flags = {"-n", "-m", "-t"};
         String title = "";
         List<Integer> indexes = new ArrayList<>();
@@ -99,7 +111,7 @@ public class GitBreadApp {
 
         if (c.contains("-m")) {
             Recipe master = collection.get(title).getMasterRecipe();
-            collection.get(title).attempt(master,clock);
+            collection.get(title).attempt(master, clock);
         } else {
             Recipe testing = collection.get(title).getTestingRecipe();
             collection.get(title).attempt(testing, clock);
@@ -128,7 +140,7 @@ public class GitBreadApp {
     }
 
     //EFFECTS: helper for processCommand(), prints the full recipe and instructions to the console
-    private void breadViewCommand(String c, boolean master) {
+    private void doBreadView(String c, boolean master) {
         String key = c.substring(c.indexOf("-n") + 2).trim();
         if (master) {
             System.out.println(String.format("----------%s (master branch)----------\n", key));
@@ -141,7 +153,7 @@ public class GitBreadApp {
 
     //TODO: Easier parsing is to use the index of the comand and the index of the nex hypen if it exists
     //EFFECTS: helper for processCommand(), prints the recipes in the collection
-    private void breadListCommand(String c) {
+    private void doBreadList(String c) {
         if (c.contains("-v")) {
             System.out.println("------- Recipe Collection -------");
             System.out.println(collection.toString(true));
@@ -153,7 +165,7 @@ public class GitBreadApp {
 
     //MODIFIES: collection
     //EFFECTS: helper for processCommand(), adds a new recipe history to the collection
-    private void breadAddCommand(String c) {
+    private void doBreadNew(String c) {
         String title = parseTitle(c);
         if (c.contains("-dw")) {
             int doughWeight = Integer

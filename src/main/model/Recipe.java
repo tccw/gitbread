@@ -64,9 +64,9 @@ public abstract class Recipe {
 
     //MODIFIES: this
     //EFFECTS: adds an ingredient to the ingredient list
-    protected void addIngredient() {
-        //stub
-    }
+//    protected void addIngredient() {
+//        //stub
+//    }
 
     //EFFECTS: counts the number of elements in the ingredients ArrayList
     protected int countIngredients() {

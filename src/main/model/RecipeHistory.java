@@ -141,10 +141,10 @@ public class RecipeHistory {
         - Flavor: perfect
 
      */
-    public String viewAttempts() {
-        // returns a formatted string of all attempts
-        return "";
-    }
+//    public String viewAttempts() {
+//        // returns a formatted string of all attempts
+//        return "";
+//    }
 
     //EFFECTS: returns a formatted string with all the different recipe version names and dates, most recent first.
     /*
@@ -154,9 +154,9 @@ public class RecipeHistory {
     Hearth Bread v0 : First attempted - Monday, January 27, 2020
 
      */
-    public String viewRecipeVersionList() {
-        return "";
-    }
+//    public String viewRecipeVersionList() {
+//        return "";
+//    }
 
 
 }

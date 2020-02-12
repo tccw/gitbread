@@ -37,9 +37,9 @@ public class Attempt {
         return resultNotes;
     }
 
-    public String getWeather() {
-        return weatherNow;
-    }
+//    public String getWeather() {
+//        return weatherNow;
+//    }
 
     // setters
 
@@ -56,11 +56,11 @@ public class Attempt {
     }
 
     //EFFECTS: returns the LocalDateTime field to an easy to read string
-    public String datePretty() {
-        String result = getDateTime()
-                .format(DateTimeFormatter.RFC_1123_DATE_TIME
-                        .ofLocalizedDate(FormatStyle.FULL)
-                        .withLocale(Locale.CANADA));
-        return result;
-    }
+//    public String datePretty() {
+//        String result = getDateTime()
+//                .format(DateTimeFormatter.RFC_1123_DATE_TIME
+//                        .ofLocalizedDate(FormatStyle.FULL)
+//                        .withLocale(Locale.CANADA));
+//        return result;
+//    }
 }
