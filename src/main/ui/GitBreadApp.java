@@ -5,6 +5,7 @@ import model.BreadRecipe;
 import model.RecipeCollection;
 import model.RecipeHistory;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -50,30 +51,46 @@ public class GitBreadApp {
         System.out.println("        usage example: bread arc -n Pizza -fw 350 -h 0.7");
         System.out.println("        usage example: bread arc -n French loaf -fw 350 -h 0.7 -si 1. Mix ingredients "
                 + "2. Rise for 2-24 hours 3. Stretch dough into circle 4. Top and bake for 6 minutes\n");
-        System.out.println("    bread select : [-n name]");
-        System.out.println("        usage example: bread select -n Pizza\n");
         System.out.println("    bread list : [-v verbose]");
         System.out.println("        usage example: bread list");
         System.out.println("        usage example: bread list -v\n");
-
-
+        System.out.println("    bread select : [-n name]");
+        System.out.println("        usage example: bread select -n Pizza\n");
     }
 
     //EFFECTS: processes the commands the user inputs.
     private void processCommand(String command) {
-        String localCmd = command.substring(0, command.indexOf("-")).trim();
+        String localCmd;
+        if (command.contains("-")) {
+            localCmd = command.substring(0, command.indexOf("-")).trim();
+        } else {
+            localCmd = command.trim();
+        }
 
         if (localCmd.equals("bread arc")) {
             breadArcCommand(command);
         } else if (localCmd.equals("bread list")) {
-            //stub
+            breadListCommand(command);
         } else if (localCmd.equals("attempt")) {
             //stub
         } else if (localCmd.equals("view")) {
             //stub
         } else if (localCmd.equals("read")) {
             //stub
+        } else {
+            System.err.println("Not a valid command.");
         }
+    }
+
+    private void breadListCommand(String c) {
+        if (c.contains("-v")) {
+            System.out.println("------- Recipe Collection -------");
+            System.out.println(collection.toString());
+        } else {
+            System.out.println("------- Recipe Collection -------");
+            System.out.println(collection.toString());
+        }
+
     }
 
     //MODIFIES: collection
