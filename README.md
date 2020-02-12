@@ -25,7 +25,7 @@ GitBread allows for things like:
  started and what you changed.
  
 
-###Phase 1 User Stories
+### Phase 1 User Stories
 
 - As a user, I want to be able to add a recipe to my collection
 - As a user, I want to be able to view the titles of all my recipes
@@ -33,7 +33,7 @@ GitBread allows for things like:
 - As a user, I want to be able to view the number of times I have attempted a recipe
 - As a user I want to be able scale a recipe up or down easily
 ------
-###Future User stories
+### Future User stories
 - As a user, I want to to be able to view the master version of a recipe
 - As a user, I want to be able to view the testing version of a recipe
 - As a user, I want to be able to make notes about the results of my attempt, and view these results later

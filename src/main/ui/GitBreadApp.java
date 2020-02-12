@@ -139,7 +139,7 @@ public class GitBreadApp {
         }
     }
 
-
+    //TODO: Easier parsing is to use the index of the comand and the index of the nex hypen if it exists
     //EFFECTS: helper for processCommand(), prints the recipes in the collection
     private void breadListCommand(String c) {
         if (c.contains("-v")) {
