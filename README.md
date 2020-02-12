@@ -31,6 +31,7 @@ GitBread allows for things like:
 - As a user, I want to be able to view the titles of all my recipes
 - As a user, I want to be able to attempt a recipe
 - As a user, I want to be able to view the number of times I have attempted a recipe
+- As a user I want to be able scale a recipe up or down easily
 ------
 ###Future User stories
 - As a user, I want to to be able to view the master version of a recipe
@@ -38,5 +39,5 @@ GitBread allows for things like:
 - As a user, I want to be able to make notes about the results of my attempt, and view these results later
 - As a user, I want to be able to test a variation of a recipe and replace the master if it is better, or leave
 it in my recipe history if it makes it worse.
-- As a user I want to be able scale a recipe up or down easily
+
 
