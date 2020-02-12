@@ -1,7 +1,7 @@
 package ui;
 
+import com.sun.javafx.image.IntPixelGetter;
 import model.BreadRecipe;
-import model.Recipe;
 import model.RecipeCollection;
 import model.RecipeHistory;
 
@@ -24,9 +24,9 @@ public class GitBreadApp {
         String command = null;
         input = new Scanner(System.in);
 
-        System.out.println("GitBread v0.0");
+        System.out.println("GitBread v0.0 (type 'bread help' for available commands.)");
         while (keepGoing) {
-
+            System.out.print("> ");
             command = input.nextLine();
             command = command.toLowerCase();
 
@@ -59,24 +59,13 @@ public class GitBreadApp {
 
     }
 
+    //EFFECTS: processes the commands the user inputs.
     private void processCommand(String command) {
-        List<String> parsed = parseCommand(command);
-        String localCmd = parsed.get(0).trim();
-        List<String> params = parsed.subList(1, parsed.size() - 1);
+        String localCmd = command.substring(0, command.indexOf("-")).trim();
 
         if (localCmd.equals("bread arc")) {
-            String title = getTitle(command);
-            double hydration;
-            double flourWeight;
-            int doughWeight;
-
-            if (command.contains("-dw")) {
-                doughWeight = Integer
-                        .parseInt(command.substring(command.indexOf("-dw"))
-                                .replaceAll("\\D+", ""));
-                collection.add(title, new RecipeHistory(new BreadRecipe(doughWeight)));
-            }
-        } else if (localCmd.equals("select")) {
+            breadArcCommand(command);
+        } else if (localCmd.equals("bread list")) {
             //stub
         } else if (localCmd.equals("attempt")) {
             //stub
@@ -87,26 +76,61 @@ public class GitBreadApp {
         }
     }
 
-    private String getTitle(String c) {
+    //MODIFIES: collection
+    //EFFECTS: helper for processCommand(), adds a new recipe history to the collection
+    private void breadArcCommand(String command) {
+        String title = parseTitle(command);
+        if (command.contains("-dw")) {
+            int doughWeight = Integer
+                    .parseInt(command.substring(command.indexOf("-dw"))
+                            .replaceAll("\\D+", ""));
+            collection.add(title, new RecipeHistory(new BreadRecipe(doughWeight)));
+        } else if (command.contains("-fw")) {
+            parseFlourAndHydration(command, title);
+        }
+    }
+
+    //MODIFIES: collection
+    //EFFECTS: helper for breadArcCommand(), pulls the flour weight and hydration from a command
+    private void parseFlourAndHydration(String c, String title) {
+        int fwIndex = c.indexOf("-fw");
+        int hydrationIndex = c.indexOf("-h");
+        double hydration = Double.parseDouble(c.substring(hydrationIndex + 2, hydrationIndex + 6));
+        int flourWeight;
+        if (fwIndex > hydrationIndex) {
+            flourWeight = Integer.parseInt(c.substring(fwIndex)
+                    .replaceAll("\\D+", "").trim());
+        } else {
+            flourWeight = Integer.parseInt(c.substring(fwIndex, hydrationIndex)
+                    .replaceAll("\\D+", "").trim());
+            //this should account for -n being between -h and -fw since it removes all non numeric strings.
+        }
+        collection.add(title, new RecipeHistory(new BreadRecipe(flourWeight, hydration)));
+    }
+
+    //EFFECTS: helper for breadArcCommand(), pulls the title/name from a 'bread arc' command.
+    private String parseTitle(String c) {
         String result = "";
         if (c.contains("-dw")) {
             int dwIndex = c.indexOf("-dw");
-            int nIndex = c.indexOf("-n");
-            if (dwIndex > nIndex) {
-                result = c.substring(nIndex + 2, dwIndex).trim();
+            int nameIndex = c.indexOf("-n");
+
+            if (dwIndex > nameIndex) {
+                result = c.substring(nameIndex + 2, dwIndex).trim();
             } else {
-                result = c.substring(nIndex + 2).trim();
+                result = c.substring(nameIndex + 2).trim();
             }
         } else if (c.contains("-fw")) {
             int fwIndex = c.indexOf("-fw");
-            int hIndex = c.indexOf("-h");
-            int nIndex = c.indexOf("-n");
-            if (nIndex > Math.max(hIndex, fwIndex)) {
-                result = c.substring(nIndex + 2).trim();
-            } else if ((nIndex < fwIndex) && (fwIndex < hIndex)) {
-                result = c.substring(nIndex + 2, hIndex).trim();
-            } else if ((nIndex < fwIndex) && (fwIndex > hIndex)) {
-                result = c.substring(nIndex + 2, fwIndex).trim();
+            int hydrationIndex = c.indexOf("-h");
+            int nameIndex = c.indexOf("-n");
+
+            if (nameIndex > Math.max(hydrationIndex, fwIndex)) {
+                result = c.substring(nameIndex + 2).trim();
+            } else if ((nameIndex < fwIndex) && (fwIndex < hydrationIndex)) {
+                result = c.substring(nameIndex + 2, hydrationIndex).trim();
+            } else if ((nameIndex < fwIndex) && (fwIndex > hydrationIndex)) {
+                result = c.substring(nameIndex + 2, fwIndex).trim();
             }
         }
         return result;

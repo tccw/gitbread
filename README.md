@@ -39,5 +39,6 @@ GitBread allows for things like:
 - As a user, I want to be able to make notes about the results of my attempt, and view these results later
 - As a user, I want to be able to test a variation of a recipe and replace the master if it is better, or leave
 it in my recipe history if it makes it worse.
+- As a user, I want to be able to set my location by typing in my address or city.
 
 
