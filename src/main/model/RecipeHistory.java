@@ -149,9 +149,9 @@ public class RecipeHistory {
     //EFFECTS: returns a formatted string with all the different recipe version names and dates, most recent first.
     /*
     ------ RECIPE DEVELOPMENT HISTORY: HEARTH BREAD ------
-    Hearth Bread v2 (testing) : Saturday, February 8, 2020
-    Hearth Bread v1 (master) : Tuesday, February 4, 2020
-    Hearth Bread v0 : Monday, January 27, 2020
+    Hearth Bread v2 (testing) : First attempted - Saturday, February 8, 2020
+    Hearth Bread v1 (master) : First attempted - Tuesday, February 4, 2020
+    Hearth Bread v0 : First attempted - Monday, January 27, 2020
 
      */
     public String viewRecipeVersionList() {
