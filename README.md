@@ -9,6 +9,10 @@ by recording variations in ingredients, cook times, cooking vessels and more.
 The GitBread concept of recipe version control is loosely based on [git](https://git-scm.com/),
 a version control system for tracking changes in source code during software development.
 
+GitBread is based on the concept of "Baker's Percentage", which expresses flour as 100% and all 
+other ingredients as some percentage of the flour's weight. This method allows for quick and easy recipe scaling. 
+You can read more about the this idea here: [King Arthur Flour: Bakers Percentage](https://www.kingarthurflour.com/pro/reference/bakers-percentage).
+
 GitBread allows for things like:
 - Recording recipes
 - *branch* recipes to test variations
@@ -29,12 +33,12 @@ GitBread allows for things like:
 
 - As a user, I want to be able to add a recipe to my collection
 - As a user, I want to be able to view the titles of all my recipes
-- As a user, I want to be able to attempt a recipe
+- As a user, I want to be able to log an attempt of a recipe
 - As a user, I want to be able to view the number of times I have attempted a recipe
 - As a user I want to be able scale a recipe up or down easily
+- As a user, I want to to be able to view the master version of a recipe
 ------
 ### Future User stories
-- As a user, I want to to be able to view the master version of a recipe
 - As a user, I want to be able to view the testing version of a recipe
 - As a user, I want to be able to make notes about the results of my attempt, and view these results later
 - As a user, I want to be able to test a variation of a recipe and replace the master if it is better, or leave

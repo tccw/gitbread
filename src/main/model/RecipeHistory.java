@@ -31,29 +31,7 @@ public class RecipeHistory {
         history.add(recipe);
     }
 
-    // getters
-    public Recipe getMasterRecipe() {
-        return masterRecipe;
-    }
-
-    public Recipe getTestingRecipe() {
-        return testingRecipe;
-    }
-
-    public LinkedList<Recipe> getHistory() {
-        return history;
-    }
-
-    // setters
-    public void setMasterRecipe(Recipe master) {
-        this.masterRecipe = master;
-    }
-
-    public void setTestingRecipe(Recipe testing) {
-        this.testingRecipe = testing;
-    }
-
-    //EFFECTS: counts the number of times the recipe has been attempted
+   //EFFECTS: counts the number of times the recipe has been attempted
     public int countAttempts() {
         // first version can simply return the length of the AttemptsList
         // future version might want to return attempts per recipe version
@@ -65,7 +43,7 @@ public class RecipeHistory {
     }
 
     //REQUIRES: recipeHistory length > 0
-    //EFFECTS: print out the number of times a recipe has been modified, ignoring the first entry (initial 'commit')
+    //EFFECTS: return the number of times a recipe has been modified, ignoring the first entry (initial 'commit')
     public int countTimesModified() {
         return this.history.size() - 1;
     }
@@ -90,6 +68,27 @@ public class RecipeHistory {
         this.history.add(newVersion);
     }
 
+    // getters
+    public Recipe getMasterRecipe() {
+        return masterRecipe;
+    }
+
+    public Recipe getTestingRecipe() {
+        return testingRecipe;
+    }
+
+    public LinkedList<Recipe> getHistory() {
+        return history;
+    }
+
+    // setters
+    public void setMasterRecipe(Recipe master) {
+        this.masterRecipe = master;
+    }
+
+    public void setTestingRecipe(Recipe testing) {
+        this.testingRecipe = testing;
+    }
 
     //REQUIRES:
     //MODIFIES:
@@ -141,10 +140,10 @@ public class RecipeHistory {
         - Flavor: perfect
 
      */
-    public String viewAttempts() {
-        // returns a formatted string of all attempts
-        return "";
-    }
+//    public String viewAttempts() {
+//        // returns a formatted string of all attempts
+//        return "";
+//    }
 
     //EFFECTS: returns a formatted string with all the different recipe version names and dates, most recent first.
     /*
@@ -154,9 +153,9 @@ public class RecipeHistory {
     Hearth Bread v0 : First attempted - Monday, January 27, 2020
 
      */
-    public String viewRecipeVersionList() {
-        return "";
-    }
+//    public String viewRecipeVersionList() {
+//        return "";
+//    }
 
 
 }

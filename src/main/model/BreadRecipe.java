@@ -1,9 +1,13 @@
 package model;
 
-import com.sun.corba.se.impl.legacy.connection.USLPort;
-
 import java.util.ArrayList;
 import java.util.Arrays;
+
+/*
+Bread recipe is a subclass of Recipe and represents recipes recipes made of primarily flour, with little to no fat
+(i.e. this should not be used for pastry). It uses baker's formulas to allow for easy scaling of recipes and the
+main constructor will back-calculate all the necessary ingredient weights.
+ */
 
 public class BreadRecipe extends Recipe {
     private static final String defaultInstructions =
@@ -66,77 +70,6 @@ public class BreadRecipe extends Recipe {
         super.prepTime = 135; //minutes
         super.cookTemp = 425; // in degrees F
         this.cookingVessel = "pan";
-    }
-
-    // getters
-    public double getFlourFraction() {
-        return flourFraction;
-    }
-
-    public double getWaterFraction() {
-        return waterFraction;
-    }
-
-    public double getSaltFraction() {
-        return saltFraction;
-    }
-
-    public double getSugarFraction() {
-        return sugarFraction;
-    }
-
-    public double getFatFraction() {
-        return fatFraction;
-    }
-
-    public double getYeastFraction() {
-        return yeastFraction;
-    }
-
-    public double getYield() {
-        return yield;
-    }
-
-    public int getDoughWeight() {
-        return doughWeight;
-    }
-
-    public String getCookingVessel() {
-        return cookingVessel;
-    }
-
-    // setters
-    public void setWaterFraction(double waterFraction) {
-        this.waterFraction = waterFraction;
-        scaleByDoughWeight(this.doughWeight);
-    }
-
-    public void setSaltFraction(double saltFraction) {
-        this.saltFraction = saltFraction;
-        scaleByDoughWeight(this.doughWeight);
-    }
-
-    public void setSugarFraction(double sugarFraction) {
-        this.sugarFraction = sugarFraction;
-        scaleByDoughWeight(this.doughWeight);
-    }
-
-    public void setFatFraction(double fatFraction) {
-        this.fatFraction = fatFraction;
-        scaleByDoughWeight(this.doughWeight);
-    }
-
-    public void setYeastFraction(double yeastFraction) {
-        this.yeastFraction = yeastFraction;
-        scaleByDoughWeight(this.doughWeight);
-    }
-
-    public void setDoughWeight(int doughWeight) {
-        this.doughWeight = doughWeight;
-    }
-
-    public void setCookingVessel(String cookingVessel) {
-        this.cookingVessel = cookingVessel;
     }
 
     //EFFECTS:
@@ -234,6 +167,77 @@ public class BreadRecipe extends Recipe {
             result.append(String.format("    %d." + splitList[i] + "\n", i));
         }
         return result.toString();
+    }
+
+    // getters
+    public double getFlourFraction() {
+        return flourFraction;
+    }
+
+    public double getWaterFraction() {
+        return waterFraction;
+    }
+
+    public double getSaltFraction() {
+        return saltFraction;
+    }
+
+    public double getSugarFraction() {
+        return sugarFraction;
+    }
+
+    public double getFatFraction() {
+        return fatFraction;
+    }
+
+    public double getYeastFraction() {
+        return yeastFraction;
+    }
+
+    public double getYield() {
+        return yield;
+    }
+
+    public int getDoughWeight() {
+        return doughWeight;
+    }
+
+    public String getCookingVessel() {
+        return cookingVessel;
+    }
+
+    // setters
+    public void setWaterFraction(double waterFraction) {
+        this.waterFraction = waterFraction;
+        scaleByDoughWeight(this.doughWeight);
+    }
+
+    public void setSaltFraction(double saltFraction) {
+        this.saltFraction = saltFraction;
+        scaleByDoughWeight(this.doughWeight);
+    }
+
+    public void setSugarFraction(double sugarFraction) {
+        this.sugarFraction = sugarFraction;
+        scaleByDoughWeight(this.doughWeight);
+    }
+
+    public void setFatFraction(double fatFraction) {
+        this.fatFraction = fatFraction;
+        scaleByDoughWeight(this.doughWeight);
+    }
+
+    public void setYeastFraction(double yeastFraction) {
+        this.yeastFraction = yeastFraction;
+        scaleByDoughWeight(this.doughWeight);
+    }
+
+    public void setDoughWeight(int doughWeight) {
+        this.doughWeight = doughWeight;
+    }
+
+    public void setCookingVessel(String cookingVessel) {
+        this.cookingVessel = cookingVessel;
     }
 }
 

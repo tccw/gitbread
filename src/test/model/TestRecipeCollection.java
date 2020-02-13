@@ -3,6 +3,9 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestRecipeCollection {
@@ -77,6 +80,15 @@ public class TestRecipeCollection {
     }
 
     @Test
+    public void TestGet() {
+        assertEquals(0, recipeCollection.size());
+        recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
+        recipeCollection.add("Pizza", recipeHistoryPizza);
+        recipeCollection.add("Cinnamon Raisin", recipeHistoryCinnamonRaisin);
+        assertEquals(recipeHistoryFrenchLoaf, recipeCollection.get("French loaf"));
+    }
+
+    @Test
     public void TestToStringVerbose() {
         assertEquals(0, recipeCollection.size());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
@@ -94,6 +106,14 @@ public class TestRecipeCollection {
         String expected = "Pizza dough\n"
                         + "French loaf\n";
         assertEquals(expected, recipeCollection.toString(false));
+    }
+
+    @Test
+    public void TestRecipeHistory() {
+        assertEquals(1, recipeHistoryCinnamonRaisin.size());
+        List<Recipe> expected = new LinkedList<>();
+        expected.add(cinnamonRaisin);
+        assertEquals(expected, recipeHistoryCinnamonRaisin.getHistory());
     }
 
 }
