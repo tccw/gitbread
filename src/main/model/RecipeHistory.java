@@ -65,7 +65,7 @@ public class RecipeHistory {
     }
 
     //REQUIRES: recipeHistory length > 0
-    //EFFECTS: print out the number of times a recipe has been modified, ignoring the first entry (initial 'commit')
+    //EFFECTS: return the number of times a recipe has been modified, ignoring the first entry (initial 'commit')
     public int countTimesModified() {
         return this.history.size() - 1;
     }

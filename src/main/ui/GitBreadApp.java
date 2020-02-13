@@ -88,6 +88,19 @@ public class GitBreadApp {
     //EFFECTS: helper for processCommand(), scales the recipe and modifies only the ingredient weights in the master
     private void doBreadScale(String c) {
         String[] flags = {"-n", "-m", "-t", "-v"};
+        Map<String, String> args = new HashMap<>();
+        for (String s : flags) {
+            if (c.contains(s)) {
+                int start = c.indexOf(s) + s.length() - 1;
+                String arg = c.substring(start);
+                int end = arg.indexOf("-");
+                if (end != -1) {
+                    args.put(s, c.substring(start, end)).trim();
+                } else {
+                    args.put(s, arg.trim());
+                }
+            }
+        }
 
     }
 
@@ -118,16 +131,6 @@ public class GitBreadApp {
         }
     }
 
-    //EFFECTS:
-//    private Map<String, Integer> getFlagIndexes(String[] flags, String c) {
-//        Map<String, Integer> indexes = new HashMap<>();
-//        for (String s : flags) {
-//            if (c.contains(s)) {
-//                indexes.put(s, c.indexOf(s));
-//            }
-//        }
-//        return indexes;
-//    }
     //EFFECTS: pulls the command phrase 'bread <command>' from the input string
     private String parseCommandPhrase(String c) {
         String phrase;
@@ -227,14 +230,5 @@ public class GitBreadApp {
             }
         }
         return result;
-    }
-
-    private List<String> parseCommand(String command) {
-        String[] split = command.split("\\-"); //splitting the input string by hyphen
-        //        List<String> parsed = new ArrayList<String>();
-//        for (String s : split) {
-//            parsed.add(s.replaceAll("\\s+", ""));
-//        }
-        return new ArrayList<String>(Arrays.asList(split));
     }
 }
