@@ -1,8 +1,13 @@
 package model;
 
+/*
+A single ingredient for any type of recipe. It has a type which is generally the name of the ingredient, and a weight
+which is in grams.
+ */
+
 public class Ingredient {
     String type;
-    int weight;
+    int weight; // in grams
 
     //REQUIRES: Ingredient must be from a known list (flour, water, salt, sugar, eggs, yeast, preferment)
     //EFFECTS: constructs an ingredient with a description and weight (in grams)

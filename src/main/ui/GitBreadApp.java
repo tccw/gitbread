@@ -1,5 +1,6 @@
 package ui;
 
+import com.sun.javafx.image.IntPixelGetter;
 import model.BreadRecipe;
 import model.Recipe;
 import model.RecipeCollection;
@@ -39,30 +40,56 @@ public class GitBreadApp {
         }
     }
 
+    //EFFECTS: display help information about the available commands
     private void displayHelp() {
         System.out.println("\nAvailable commands:\n");
-        System.out.println("Command style is 'bread <command> <flags>'");
-        System.out.println("<command> list");
-        System.out.println("    bread new : [-n name] [-dw dough weight] || [-fw flour weight] [-h hydration]"
+        System.out.println("Command style is 'bread <command> <flags> <args>'");
+        System.out.println("<command> list\n");
+        breadNewHelp();
+        breadListHelp();
+        breadViewHelp();
+        breadAttemptHelp();
+        breadScaleHelp();
+    }
+
+    private void breadNewHelp() {
+        System.out.println("    bread new : [-n <name>] [-dw dough weight] || [-fw flour weight] [-h hydration]"
                 + " [-si set instructions]");
         System.out.println("        usage example: bread new -n French loaf -dw 1000");
         System.out.println("        usage example: bread new -n Pizza -fw 350 -h 0.7");
         System.out.println("        usage example: bread new -n Pizza dough -fw 350 -h 0.7 -si 1. Mix ingredients "
-                + "2. Rise for 2-24 hours 3. Stretch dough into circle 4. Top and bake for 6 minutes\n");
+                + "2. Rise for 2-24 hours 3. Stretch dough into circle 4. Top and bake for 6 minutes");
+    }
+
+    private void breadListHelp() {
         System.out.println("    bread list : [-v verbose]");
         System.out.println("        usage example: bread list");
         System.out.println("        usage example: bread list -v");
+    }
+
+    private void breadSelectHelp() {
         System.out.println("    bread select : [-n name]");
         System.out.println("        usage example: bread select -n Pizza");
+    }
+
+    private void breadViewHelp() {
         System.out.println("    bread view master/testing : [-n name]");
         System.out.println("        usage example: bread view master -n Pizza dough");
         System.out.println("        usage example: bread view testing -n Pizza dough");
+    }
+
+    private void breadAttemptHelp() {
         System.out.println("    bread attempt : [-n name] [-m master] [-t testing]");
         System.out.println("        usage example: bread attempt -n French loaf -m");
-        System.out.println("    bread scale : [-n name] [-m master] [-t testing] [-v verbose]");
+    }
+
+    private void breadScaleHelp() {
+        System.out.println("    bread scale : [-n name] [-m master] [-t testing] [-v verbose] [-dw dough weight]"
+                + " || [-fw flour weight]");
         System.out.println("        usage example: bread scale -n French loaf -m");
         System.out.println("        usage example: bread scale -n Pizza dough -v");
     }
+
 
     //EFFECTS: processes the commands the user inputs.
     //notes: a scaled recipe is not considered a new recipe.
@@ -87,21 +114,42 @@ public class GitBreadApp {
 
     //EFFECTS: helper for processCommand(), scales the recipe and modifies only the ingredient weights in the master
     private void doBreadScale(String c) {
-        String[] flags = {"-n", "-m", "-t", "-v"};
+        Map<String, String> args = breadScaleArgsHelper(c);
+        scaleBreadRecipe(c, args);
+    }
+
+    //EFFECTS: helper for doBreadScale which uses the parsed args from breadScaleArgsHelper to actually call
+    //        the scaling methods from BreadRecipe.
+    private void scaleBreadRecipe(String c, Map<String, String> args) {
+        BreadRecipe recipe = (BreadRecipe) collection.get(args.get("-n")).getMasterRecipe();
+        if (c.contains("-dw")) {
+            recipe.scaleByDoughWeight(Integer.parseInt(args.get("-dw")));
+        } else if (c.contains("-fw")) {
+            recipe.scaleByFlourWeight(Integer.parseInt(args.get("-fw")));
+        }
+
+        if (c.contains("-v")) {
+            System.out.println(recipe.toString());
+        }
+    }
+
+    //EFFECTS: helper for doBreadScale which parses the arguments from the command
+    private Map<String, String> breadScaleArgsHelper(String c) {
+        String[] flags = {"-n", "-m", "-t", "-v", "-dw", "-fw"};
         Map<String, String> args = new HashMap<>();
         for (String s : flags) {
             if (c.contains(s)) {
-                int start = c.indexOf(s) + s.length() - 1;
+                int start = c.indexOf(s) + s.length();
                 String arg = c.substring(start);
-                int end = arg.indexOf("-");
-                if (end != -1) {
-                    args.put(s, c.substring(start, end)).trim();
+                int end = arg.indexOf("-") + start;
+                if (arg.contains("-")) {
+                    args.put(s, c.substring(start, end).trim());
                 } else {
                     args.put(s, arg.trim());
                 }
             }
         }
-
+        return args;
     }
 
     //EFFECTS: helper for processCommand(), attempts the requested recipe using the master or testing version
@@ -114,13 +162,7 @@ public class GitBreadApp {
                 indexes.add(c.indexOf(s));
             }
         }
-        if (c.contains("-m") && (c.contains("-t"))) {
-            System.out.println("Cannot add an attempt with two recipe version simultaneously.");
-        } else if (indexes.get(0) > indexes.get(1)) {
-            title = c.substring(indexes.get(0) + 2).trim();
-        } else {
-            title = c.substring(indexes.get(0) + 2, indexes.get(1)).trim();
-        }
+        title = breadAttemptTitleParse(c, title, indexes);
 
         if (c.contains("-m")) {
             Recipe master = collection.get(title).getMasterRecipe();
@@ -129,6 +171,18 @@ public class GitBreadApp {
             Recipe testing = collection.get(title).getTestingRecipe();
             collection.get(title).attempt(testing, clock);
         }
+    }
+
+    //EFFECTS: helper for doBreadAttempt to parse the name/title from the command string.
+    private String breadAttemptTitleParse(String c, String title, List<Integer> indexes) {
+        if (c.contains("-m") && (c.contains("-t"))) {
+            System.out.println("Cannot add an attempt with two recipe version simultaneously.");
+        } else if (indexes.get(0) > indexes.get(1)) {
+            title = c.substring(indexes.get(0) + 2).trim();
+        } else {
+            title = c.substring(indexes.get(0) + 2, indexes.get(1)).trim();
+        }
+        return title;
     }
 
     //EFFECTS: pulls the command phrase 'bread <command>' from the input string
@@ -209,10 +263,15 @@ public class GitBreadApp {
             System.out.println("Cannot set a recipe by both dough weight and flour weight.");
         }
 
+        result = parseTitleHelper(c, result);
+        return result;
+
+    }
+
+    private String parseTitleHelper(String c, String result) {
+        int nameIndex = c.indexOf("-n");
         if (c.contains("-dw")) {
             int dwIndex = c.indexOf("-dw");
-            int nameIndex = c.indexOf("-n");
-
             if (dwIndex > nameIndex) {
                 result = c.substring(nameIndex + 2, dwIndex).trim();
             } else {
@@ -221,7 +280,6 @@ public class GitBreadApp {
         } else if (c.contains("-fw")) {
             int fwIndex = c.indexOf("-fw");
             int hydrationIndex = c.indexOf("-h");
-            int nameIndex = c.indexOf("-n");
 
             if (nameIndex > Math.max(hydrationIndex, fwIndex)) {
                 result = c.substring(nameIndex + 2).trim();

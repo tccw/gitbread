@@ -6,6 +6,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.Locale;
 
+/*
+The attempt class represents an attempt at making a recipe. It records the date and time, as well as the weather, since
+bread preparation can be sensitive to humidity and temperature. It also sets a pointer to the bread recipe used
+and allows the user to enter in some notes about the results of the attempt.
+ */
+
 public class Attempt {
 
     private Recipe recipeVersion;
@@ -23,25 +29,6 @@ public class Attempt {
         this.weatherNow = "It's sunny and beautiful!"; //placeholder for API call
 //        this.weatherForDay = "A beautiful sunny day!"; //placeholder for API call
     }
-
-    // getters
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public Recipe getRecipeVersion() {
-        return recipeVersion;
-    }
-
-    public String getResultNotes() {
-        return resultNotes;
-    }
-
-//    public String getWeather() {
-//        return weatherNow;
-//    }
-
-    // setters
 
     //EFFECTS: add notes to the result notes string
     public void setResultNotes(String crumbNote, String crustNote, String flavorNote, String otherNotes) {
@@ -63,4 +50,23 @@ public class Attempt {
 //                        .withLocale(Locale.CANADA));
 //        return result;
 //    }
+
+    // getters
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public Recipe getRecipeVersion() {
+        return recipeVersion;
+    }
+
+    public String getResultNotes() {
+        return resultNotes;
+    }
+
+//    public String getWeather() {
+//        return weatherNow;
+//    }
+
+    // setters
 }

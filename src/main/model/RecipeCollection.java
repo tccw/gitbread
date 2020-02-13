@@ -3,6 +3,10 @@ package model;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+Represents a collection/log of recipes histories, which is a LinkedList of past recipe versions.
+ */
+
 public class RecipeCollection {
 
     Map<String, RecipeHistory> collection;
