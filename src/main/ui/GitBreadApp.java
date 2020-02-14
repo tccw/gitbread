@@ -1,6 +1,9 @@
 package ui;
 
-import com.sun.javafx.image.IntPixelGetter;
+import com.sun.xml.internal.ws.policy.EffectiveAlternativeSelector;
+import commandline.CommandParser;
+import commandline.Option;
+import commandline.Options;
 import model.BreadRecipe;
 import model.Recipe;
 import model.RecipeCollection;
@@ -17,6 +20,7 @@ public class GitBreadApp {
 
     public GitBreadApp() {
         runGitBread();
+        makeOptions();
     }
 
     private void runGitBread() {
@@ -38,6 +42,18 @@ public class GitBreadApp {
                 processCommand(command);
             }
         }
+    }
+
+    private void makeOptions() {
+        Options options = new Options();
+        options.addOption(new Option("-n", "--name", false, "The name of the recipe"));
+        options.addOption(new Option("-dw", "--doughweight", false, "Mixed dough weight in grams"));
+        options.addOption(new Option("-fw", "--flourweight", false, "Flour weight in grams"));
+        options.addOption(new Option("-h", "--hydration", false, "Hydration fraction for fluid calculation"));
+        options.addOption(new Option("-si", "--setinstructions", false, "Recipe instructions"));
+        options.addOption(new Option("-v", "--verbose", true, "Print out what is happening"));
+        options.addOption(new Option("-m", "--master", true, "master recipe selector"));
+        options.addOption(new Option("-t", "--testing", false, "testing recipe selector"));
     }
 
     //EFFECTS: display help information about the available commands
@@ -94,6 +110,7 @@ public class GitBreadApp {
     //EFFECTS: processes the commands the user inputs.
     //notes: a scaled recipe is not considered a new recipe.
     private void processCommand(String command) {
+        CommandParser parser = new CommandParser();
         String phrase = parseCommandPhrase(command);
         if (phrase.equals("bread new")) {
             doBreadNew(command);

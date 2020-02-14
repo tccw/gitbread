@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Options {
 
-    List<Option> options;
+    private List<Option> options;
 
     //EFFECTS: creates a new options object with an empty ArrayList
     public Options() {
@@ -25,5 +25,9 @@ public class Options {
 
     public Option get(int i) {
         return this.options.get(i);
+    }
+
+    public List<Option> getOptions() {
+        return this.options;
     }
 }
