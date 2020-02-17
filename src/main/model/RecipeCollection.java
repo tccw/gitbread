@@ -48,7 +48,7 @@ public class RecipeCollection {
             int numChanges = entry.getValue().countTimesModified();
 
             if (verbose) {
-                result.append(String.format("%1$s - %2$d attempts, %3$d changes\n", title, numAttempts, numChanges));
+                result.append(String.format("%1$s : %2$d attempts, %3$d changes\n", title, numAttempts, numChanges));
             } else {
                 result.append(String.format("%1$s\n", title));
             }

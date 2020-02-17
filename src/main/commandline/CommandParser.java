@@ -4,25 +4,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CommandParser {
-    Options options;
     String command;
-    Map<String, String> parsedCommand;
+    Map<String, String> parsedOptions;
 
     //EFFECTS: creates a new parser
     public CommandParser() {
-        this.parsedCommand = new HashMap<String, String>();
+        this.parsedOptions = new HashMap<String, String>();
+        command = null;
     }
 
     //MODIFIES: this
     //EFFECTS: returns a hash map of the commands
+    // TODO: Fix the bug allowing -verbose to be parsed the same as -v and --verbose.
     public void parse(Options options, String command) {
-        this.parsedCommand.clear();
+        this.command = commandPhrase(command);
+        this.parsedOptions.clear();
         for (Option opt : options.getOptions()) {
-            if (opt.isBoolean() && (command.contains(opt.argShort) || command.contains(opt.argLong))) {
-                parsedCommand.put(opt.getArgShort(), null);
-            } else if (command.contains(opt.getArgLong())) {
+            if (opt.isBoolean() && (command.contains(opt.getArgShort()) || command.contains(opt.getArgLong()))) {
+                parsedOptions.put(opt.getArgShort(), null);
+            } else if (command.contains(opt.getArgLong()) && command.contains("--")) {
                 extractArgParams(command, opt, false);
-            } else if (command.contains(opt.getArgShort())) {
+            } else if (command.contains("//d") && !command.contains("--")) {
                 extractArgParams(command, opt, true);
             }
         }
@@ -39,28 +41,39 @@ public class CommandParser {
         String arg = command.substring(start);
         int end = arg.indexOf("-") + start;
         if (arg.contains("-")) {
-            parsedCommand.put(opt.getArgShort(), command.substring(start, end).trim());
+            parsedOptions.put(opt.getArgShort(), command.substring(start, end).trim());
         } else {
-            parsedCommand.put(opt.getArgShort(), arg.trim());
+            parsedOptions.put(opt.getArgShort(), arg.trim());
         }
+    }
+
+    //EFFECTS: pulls the command phrase 'bread <command>' from the input string
+    private String commandPhrase(String c) {
+        String phrase;
+        if (c.contains("-")) {
+            phrase = c.substring(0, c.indexOf("-")).trim();
+        } else {
+            phrase = c.trim();
+        }
+        return phrase;
     }
 
     //EFFECTS: returns true of a
     public boolean containsFlag(String k) {
-        return parsedCommand.containsKey(k);
+        return parsedOptions.containsKey(k);
     }
 
-    //EFFECTS:
+    //EFFECTS: returns the value associated with the key 'k'
     public String get(String k) {
-        return parsedCommand.get(k);
+        return parsedOptions.get(k);
     }
 
+    //EFFECTS: returns the size of the map
     public int size() {
-        return parsedCommand.size();
+        return parsedOptions.size();
     }
 
-    public Map<String, String> getParsedCommand() {
-        return this.parsedCommand;
+    public String getCommand() {
+        return command;
     }
-
 }
