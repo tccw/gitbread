@@ -6,9 +6,9 @@ public class Option {
     String description;
     boolean isBoolean;
 
-    public Option(String argShort, String argLong, boolean isBoolean, String description) {
-        this.argShort = argShort;
-        this.argLong = argLong;
+    public Option(String shortFlag, String longFlag, boolean isBoolean, String description) {
+        this.argShort = shortFlag;
+        this.argLong = longFlag;
         this.isBoolean = isBoolean;
         this.description = description;
     }

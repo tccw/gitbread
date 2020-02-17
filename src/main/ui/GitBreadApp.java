@@ -17,10 +17,12 @@ public class GitBreadApp {
     private Scanner input;
     RecipeCollection collection = new RecipeCollection();
     Clock clock = Clock.systemDefaultZone();
+    Options options;
 
     public GitBreadApp() {
         runGitBread();
         makeOptions();
+        options = makeOptions();
     }
 
     private void runGitBread() {
@@ -44,8 +46,8 @@ public class GitBreadApp {
         }
     }
 
-    private void makeOptions() {
-        Options options = new Options();
+    private Options makeOptions() {
+        options = new Options();
         options.addOption(new Option("-n", "--name", false, "The name of the recipe"));
         options.addOption(new Option("-dw", "--doughweight", false, "Mixed dough weight in grams"));
         options.addOption(new Option("-fw", "--flourweight", false, "Flour weight in grams"));
@@ -53,8 +55,10 @@ public class GitBreadApp {
         options.addOption(new Option("-si", "--setinstructions", false, "Recipe instructions"));
         options.addOption(new Option("-v", "--verbose", true, "Print out what is happening"));
         options.addOption(new Option("-m", "--master", true, "master recipe selector"));
-        options.addOption(new Option("-t", "--testing", false, "testing recipe selector"));
+        options.addOption(new Option("-t", "--testing", true, "testing recipe selector"));
+        return options;
     }
+
 
     //EFFECTS: display help information about the available commands
     private void displayHelp() {
@@ -111,17 +115,16 @@ public class GitBreadApp {
     //notes: a scaled recipe is not considered a new recipe.
     private void processCommand(String command) {
         CommandParser parser = new CommandParser();
+        parser.parse(makeOptions(), command);
         String phrase = parseCommandPhrase(command);
         if (phrase.equals("bread new")) {
-            doBreadNew(command);
+            doBreadNew(parser);
         } else if (phrase.equals("bread list")) {
-            doBreadList(command);
+            doBreadList(parser);
         } else if (phrase.equals("bread attempt")) {
-            doBreadAttempt(command);
-        } else if (phrase.equals("bread view master")) {
-            doBreadView(command, true);
-        } else if (phrase.equals("bread view testing")) {
-            doBreadView(command, false);
+            doBreadAttempt(phrase);
+        } else if (phrase.equals("bread view")) {
+            doBreadView(parser);
         } else if (phrase.equals("bread scale")) {
             doBreadScale(command);
         } else {
@@ -214,21 +217,28 @@ public class GitBreadApp {
     }
 
     //EFFECTS: helper for processCommand(), prints the full recipe and instructions to the console
-    private void doBreadView(String c, boolean master) {
-        String key = c.substring(c.indexOf("-n") + 2).trim();
-        if (master) {
+    private void doBreadView(CommandParser p) {
+        String key = p.get("-n");
+        if (p.containsFlag("-m") && p.containsFlag("-t")) {
             System.out.println(String.format("----------%s (master branch)----------\n", key));
             System.out.println(collection.get(key).getMasterRecipe().toString());
-        } else {
             System.out.println(String.format("----------%s (testing branch)----------\n", key));
             System.out.println(collection.get(key).getTestingRecipe().toString());
+        } else if (p.containsFlag("-m")) {
+            System.out.println(String.format("----------%s (master branch)----------\n", key));
+            System.out.println(collection.get(key).getMasterRecipe().toString());
+        } else if (p.containsFlag("-t")) {
+            System.out.println(String.format("----------%s (testing branch)----------\n", key));
+            System.out.println(collection.get(key).getTestingRecipe().toString());
+        } else {
+            System.out.println("Use '-m' to view the master, '-t' to view the testing, or -m -t to view both");
         }
     }
 
-    //TODO: Easier parsing is to use the index of the comand and the index of the nex hypen if it exists
+    //TODO: Easier parsing is to use the index of the command and the index of the nex hypen if it exists
     //EFFECTS: helper for processCommand(), prints the recipes in the collection
-    private void doBreadList(String c) {
-        if (c.contains("-v")) {
+    private void doBreadList(CommandParser p) {
+        if (p.containsFlag("-v")) {
             System.out.println("------- Recipe Collection -------");
             System.out.println(collection.toString(true));
         } else {
@@ -239,19 +249,16 @@ public class GitBreadApp {
 
     //MODIFIES: collection
     //EFFECTS: helper for processCommand(), adds a new recipe history to the collection
-    private void doBreadNew(String c) {
-        String title = parseTitle(c);
-        if (c.contains("-dw")) {
-            int doughWeight = Integer
-                    .parseInt(c.substring(c.indexOf("-dw"))
-                            .replaceAll("\\D+", ""));
-            collection.add(title, new RecipeHistory(new BreadRecipe(doughWeight)));
-        } else if (c.contains("-fw")) {
-            parseFlourAndHydration(c, title);
+    private void doBreadNew(CommandParser p) {
+        String title = p.get("-n");
+        if (p.containsFlag("-dw")) {
+            collection.add(title, new RecipeHistory(new BreadRecipe(Integer.parseInt(p.get("-dw")))));
+        } else if (p.containsFlag("-fw")) {
+            collection.add(title, new RecipeHistory(new BreadRecipe(Integer.parseInt(p.get("-fw")),
+                    Double.parseDouble(p.get("-h")))));
         }
-
-        if (c.contains("-si")) {
-            collection.get(title).get(0).setInstructions(c.substring(c.indexOf("-si") + 3).trim());
+        if (p.containsFlag("-si")) {
+            collection.get(title).get(0).setInstructions(p.get("-si"));
         }
     }
 
