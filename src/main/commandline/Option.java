@@ -1,14 +1,14 @@
 package commandline;
 
 public class Option {
-    String argShort;
-    String argLong;
-    String description;
-    boolean isBoolean;
+    private String argShort;
+    private String argLong;
+    private String description;
+    private boolean isBoolean;
 
-    public Option(String argShort, String argLong, boolean isBoolean, String description) {
-        this.argShort = argShort;
-        this.argLong = argLong;
+    public Option(String shortFlag, String longFlag, boolean isBoolean, String description) {
+        this.argShort = shortFlag;
+        this.argLong = longFlag;
         this.isBoolean = isBoolean;
         this.description = description;
     }

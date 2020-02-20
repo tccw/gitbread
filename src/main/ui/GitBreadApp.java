@@ -1,6 +1,9 @@
 package ui;
 
-import com.sun.javafx.image.IntPixelGetter;
+import com.sun.xml.internal.ws.policy.EffectiveAlternativeSelector;
+import commandline.CommandParser;
+import commandline.Option;
+import commandline.Options;
 import model.BreadRecipe;
 import model.Recipe;
 import model.RecipeCollection;
@@ -11,18 +14,20 @@ import java.util.*;
 
 public class GitBreadApp {
 
-    private Scanner input;
     RecipeCollection collection = new RecipeCollection();
     Clock clock = Clock.systemDefaultZone();
+    Options options;
 
     public GitBreadApp() {
         runGitBread();
+        makeOptions();
+        options = makeOptions();
     }
 
     private void runGitBread() {
         boolean keepGoing = true;
         String command;
-        input = new Scanner(System.in);
+        Scanner input = new Scanner(System.in);
 
         System.out.println("GitBread v0.0 (type 'bread help' for available commands.)");
         while (keepGoing) {
@@ -39,6 +44,20 @@ public class GitBreadApp {
             }
         }
     }
+
+    private Options makeOptions() {
+        options = new Options();
+        options.addOption(new Option("-n", "--name", false, "The name of the recipe"));
+        options.addOption(new Option("-dw", "--doughweight", false, "Mixed dough weight in grams"));
+        options.addOption(new Option("-fw", "--flourweight", false, "Flour weight in grams"));
+        options.addOption(new Option("-h", "--hydration", false, "Hydration fraction for fluid calculation"));
+        options.addOption(new Option("-si", "--setinstructions", false, "Recipe instructions"));
+        options.addOption(new Option("-v", "--verbose", true, "Print out what is happening"));
+        options.addOption(new Option("-m", "--master", true, "master recipe selector"));
+        options.addOption(new Option("-t", "--testing", true, "testing recipe selector"));
+        return options;
+    }
+
 
     //EFFECTS: display help information about the available commands
     private void displayHelp() {
@@ -94,124 +113,79 @@ public class GitBreadApp {
     //EFFECTS: processes the commands the user inputs.
     //notes: a scaled recipe is not considered a new recipe.
     private void processCommand(String command) {
-        String phrase = parseCommandPhrase(command);
+        CommandParser parser = new CommandParser();
+        parser.parse(makeOptions(), command);
+        String phrase = parser.getCommand();
         if (phrase.equals("bread new")) {
-            doBreadNew(command);
+            doBreadNew(parser);
         } else if (phrase.equals("bread list")) {
-            doBreadList(command);
+            doBreadList(parser);
         } else if (phrase.equals("bread attempt")) {
-            doBreadAttempt(command);
-        } else if (phrase.equals("bread view master")) {
-            doBreadView(command, true);
-        } else if (phrase.equals("bread view testing")) {
-            doBreadView(command, false);
+            doBreadAttempt(parser);
+        } else if (phrase.equals("bread view")) {
+            doBreadView(parser);
         } else if (phrase.equals("bread scale")) {
-            doBreadScale(command);
+            doBreadScale(parser);
         } else {
             System.out.println(String.format("'%s' is not a valid command.", command));
         }
     }
 
     //EFFECTS: helper for processCommand(), scales the recipe and modifies only the ingredient weights in the master
-    private void doBreadScale(String c) {
-        Map<String, String> args = breadScaleArgsHelper(c);
-        scaleBreadRecipe(c, args);
-    }
-
-    //EFFECTS: helper for doBreadScale which uses the parsed args from breadScaleArgsHelper to actually call
-    //        the scaling methods from BreadRecipe.
-    private void scaleBreadRecipe(String c, Map<String, String> args) {
-        BreadRecipe recipe = (BreadRecipe) collection.get(args.get("-n")).getMasterRecipe();
-        if (c.contains("-dw")) {
-            recipe.scaleByDoughWeight(Integer.parseInt(args.get("-dw")));
-        } else if (c.contains("-fw")) {
-            recipe.scaleByFlourWeight(Integer.parseInt(args.get("-fw")));
+    private void doBreadScale(CommandParser p) {
+        BreadRecipe recipe;
+        if (p.containsFlag("-t")) {
+            recipe = (BreadRecipe) collection.get(p.get("-t")).getMasterRecipe();
+        } else {
+            recipe = (BreadRecipe) collection.get(p.get("-n")).getMasterRecipe();
         }
-
-        if (c.contains("-v")) {
+        if (p.containsFlag("-dw")) {
+            recipe.scaleByDoughWeight(Integer.parseInt(p.get("-dw")));
+        } else if (p.containsFlag("-fw")) {
+            recipe.scaleByFlourWeight(Integer.parseInt(p.get("-fw")));
+        }
+        if (p.containsFlag("-v")) {
             System.out.println(recipe.toString());
         }
-    }
 
-    //EFFECTS: helper for doBreadScale which parses the arguments from the command
-    private Map<String, String> breadScaleArgsHelper(String c) {
-        String[] flags = {"-n", "-m", "-t", "-v", "-dw", "-fw"};
-        Map<String, String> args = new HashMap<>();
-        for (String s : flags) {
-            if (c.contains(s)) {
-                int start = c.indexOf(s) + s.length();
-                String arg = c.substring(start);
-                int end = arg.indexOf("-") + start;
-                if (arg.contains("-")) {
-                    args.put(s, c.substring(start, end).trim());
-                } else {
-                    args.put(s, arg.trim());
-                }
-            }
-        }
-        return args;
     }
 
     //EFFECTS: helper for processCommand(), attempts the requested recipe using the master or testing version
-    private void doBreadAttempt(String c) {
-        String[] flags = {"-n", "-m", "-t"};
-        String title = "";
-        List<Integer> indexes = new ArrayList<>();
-        for (String s : flags) {
-            if (c.contains(s)) {
-                indexes.add(c.indexOf(s));
-            }
-        }
-        title = breadAttemptTitleParse(c, title, indexes);
-
-        if (c.contains("-m")) {
+    private void doBreadAttempt(CommandParser p) {
+        String title = p.get("-n");
+        if (p.containsFlag("-m") && !p.containsFlag("-t")) {
             Recipe master = collection.get(title).getMasterRecipe();
             collection.get(title).attempt(master, clock);
-        } else {
+        } else if (p.containsFlag("-t")) {
             Recipe testing = collection.get(title).getTestingRecipe();
             collection.get(title).attempt(testing, clock);
-        }
-    }
-
-    //EFFECTS: helper for doBreadAttempt to parse the name/title from the command string.
-    private String breadAttemptTitleParse(String c, String title, List<Integer> indexes) {
-        if (c.contains("-m") && (c.contains("-t"))) {
-            System.out.println("Cannot add an attempt with two recipe version simultaneously.");
-        } else if (indexes.get(0) > indexes.get(1)) {
-            title = c.substring(indexes.get(0) + 2).trim();
         } else {
-            title = c.substring(indexes.get(0) + 2, indexes.get(1)).trim();
+            System.out.println("Please specify whether you are using the master or testing recipe.");
         }
-        return title;
-    }
-
-    //EFFECTS: pulls the command phrase 'bread <command>' from the input string
-    private String parseCommandPhrase(String c) {
-        String phrase;
-        if (c.contains("-")) {
-            phrase = c.substring(0, c.indexOf("-")).trim();
-        } else {
-            phrase = c.trim();
-        }
-        return phrase;
     }
 
     //EFFECTS: helper for processCommand(), prints the full recipe and instructions to the console
-    private void doBreadView(String c, boolean master) {
-        String key = c.substring(c.indexOf("-n") + 2).trim();
-        if (master) {
+    private void doBreadView(CommandParser p) {
+        String key = p.get("-n");
+        if (p.containsFlag("-m") && p.containsFlag("-t")) {
             System.out.println(String.format("----------%s (master branch)----------\n", key));
             System.out.println(collection.get(key).getMasterRecipe().toString());
-        } else {
             System.out.println(String.format("----------%s (testing branch)----------\n", key));
             System.out.println(collection.get(key).getTestingRecipe().toString());
+        } else if (p.containsFlag("-m")) {
+            System.out.println(String.format("----------%s (master branch)----------\n", key));
+            System.out.println(collection.get(key).getMasterRecipe().toString());
+        } else if (p.containsFlag("-t")) {
+            System.out.println(String.format("----------%s (testing branch)----------\n", key));
+            System.out.println(collection.get(key).getTestingRecipe().toString());
+        } else {
+            System.out.println("Use '-m' to view the master, '-t' to view the testing, or -m -t to view both");
         }
     }
 
-    //TODO: Easier parsing is to use the index of the comand and the index of the nex hypen if it exists
     //EFFECTS: helper for processCommand(), prints the recipes in the collection
-    private void doBreadList(String c) {
-        if (c.contains("-v")) {
+    private void doBreadList(CommandParser p) {
+        if (p.containsFlag("-v")) {
             System.out.println("------- Recipe Collection -------");
             System.out.println(collection.toString(true));
         } else {
@@ -222,71 +196,16 @@ public class GitBreadApp {
 
     //MODIFIES: collection
     //EFFECTS: helper for processCommand(), adds a new recipe history to the collection
-    private void doBreadNew(String c) {
-        String title = parseTitle(c);
-        if (c.contains("-dw")) {
-            int doughWeight = Integer
-                    .parseInt(c.substring(c.indexOf("-dw"))
-                            .replaceAll("\\D+", ""));
-            collection.add(title, new RecipeHistory(new BreadRecipe(doughWeight)));
-        } else if (c.contains("-fw")) {
-            parseFlourAndHydration(c, title);
+    private void doBreadNew(CommandParser p) {
+        String title = p.get("-n");
+        if (p.containsFlag("-dw")) {
+            collection.add(title, new RecipeHistory(new BreadRecipe(Integer.parseInt(p.get("-dw")))));
+        } else if (p.containsFlag("-fw")) {
+            collection.add(title, new RecipeHistory(new BreadRecipe(Integer.parseInt(p.get("-fw")),
+                    Double.parseDouble(p.get("-h")))));
         }
-
-        if (c.contains("-si")) {
-            collection.get(title).get(0).setInstructions(c.substring(c.indexOf("-si") + 3).trim());
+        if (p.containsFlag("-si")) {
+            collection.get(title).get(0).setInstructions(p.get("-si"));
         }
-    }
-
-    //MODIFIES: collection
-    //EFFECTS: helper for breadArcCommand(), pulls the flour weight and hydration from a command
-    private void parseFlourAndHydration(String c, String title) {
-        int fwIndex = c.indexOf("-fw");
-        int hydrationIndex = c.indexOf("-h");
-        double hydration = Double.parseDouble(c.substring(hydrationIndex + 2, hydrationIndex + 6));
-        int flourWeight;
-        if (fwIndex > hydrationIndex) {
-            flourWeight = Integer.parseInt(c.substring(fwIndex)
-                    .replaceAll("\\D+", "").trim());
-        } else {
-            flourWeight = Integer.parseInt(c.substring(fwIndex, hydrationIndex)
-                    .replaceAll("\\D+", "").trim());
-            //this should account for -n being between -h and -fw since it removes all non numeric strings.
-        }
-        collection.add(title, new RecipeHistory(new BreadRecipe(flourWeight, hydration)));
-    }
-
-    //EFFECTS: helper for breadArcCommand(), pulls the title/name from a 'bread new' command.
-    private String parseTitle(String c) {
-        String result = "";
-        if (c.contains("-dw") && (c.contains("-fw") || (c.contains("-h")))) {
-            System.out.println("Cannot set a recipe by both dough weight and flour weight.");
-        }
-
-        result = parseTitleHelper(c, result);
-        return result;
-
-    }
-
-    private String parseTitleHelper(String c, String result) {
-        int nameIndex = c.indexOf("-n");
-        if (c.contains("-dw")) {
-            int dwIndex = c.indexOf("-dw");
-            if (dwIndex > nameIndex) {
-                result = c.substring(nameIndex + 2, dwIndex).trim();
-            } else {
-                result = c.substring(nameIndex + 2).trim();
-            }
-        } else if (c.contains("-fw")) {
-            int fwIndex = c.indexOf("-fw");
-            int hydrationIndex = c.indexOf("-h");
-
-            if (nameIndex > Math.max(hydrationIndex, fwIndex)) {
-                result = c.substring(nameIndex + 2).trim();
-            } else {
-                result = c.substring(nameIndex + 2, Math.min(hydrationIndex, fwIndex)).trim();
-            }
-        }
-        return result;
     }
 }

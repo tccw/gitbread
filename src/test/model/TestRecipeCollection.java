@@ -93,8 +93,8 @@ public class TestRecipeCollection {
         assertEquals(0, recipeCollection.size());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza dough", recipeHistoryPizza);
-        String expected = "Pizza dough - 0 attempts, 2 changes\n"
-                        + "French loaf - 0 attempts, 0 changes\n";
+        String expected = "Pizza dough : 0 attempts, 2 changes\n"
+                        + "French loaf : 0 attempts, 0 changes\n";
         assertEquals(expected, recipeCollection.toString(true));
     }
 
