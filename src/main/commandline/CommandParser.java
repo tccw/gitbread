@@ -24,7 +24,7 @@ public class CommandParser {
                 parsedOptions.put(opt.getArgShort(), null);
             } else if (command.contains(opt.getArgLong()) && command.contains("--")) {
                 extractArgParams(command, opt, false);
-            } else if (command.contains("//d") && !command.contains("--")) {
+            } else if (command.contains(opt.getArgShort() + " ")) {
                 extractArgParams(command, opt, true);
             }
         }

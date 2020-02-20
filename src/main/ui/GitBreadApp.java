@@ -14,7 +14,6 @@ import java.util.*;
 
 public class GitBreadApp {
 
-    private Scanner input;
     RecipeCollection collection = new RecipeCollection();
     Clock clock = Clock.systemDefaultZone();
     Options options;
@@ -28,7 +27,7 @@ public class GitBreadApp {
     private void runGitBread() {
         boolean keepGoing = true;
         String command;
-        input = new Scanner(System.in);
+        Scanner input = new Scanner(System.in);
 
         System.out.println("GitBread v0.0 (type 'bread help' for available commands.)");
         while (keepGoing) {
@@ -126,50 +125,29 @@ public class GitBreadApp {
         } else if (phrase.equals("bread view")) {
             doBreadView(parser);
         } else if (phrase.equals("bread scale")) {
-            doBreadScale(command);
+            doBreadScale(parser);
         } else {
             System.out.println(String.format("'%s' is not a valid command.", command));
         }
     }
 
     //EFFECTS: helper for processCommand(), scales the recipe and modifies only the ingredient weights in the master
-    private void doBreadScale(String c) {
-        Map<String, String> args = breadScaleArgsHelper(c);
-        scaleBreadRecipe(c, args);
-    }
-
-    //EFFECTS: helper for doBreadScale which uses the parsed args from breadScaleArgsHelper to actually call
-    //        the scaling methods from BreadRecipe.
-    private void scaleBreadRecipe(String c, Map<String, String> args) {
-        BreadRecipe recipe = (BreadRecipe) collection.get(args.get("-n")).getMasterRecipe();
-        if (c.contains("-dw")) {
-            recipe.scaleByDoughWeight(Integer.parseInt(args.get("-dw")));
-        } else if (c.contains("-fw")) {
-            recipe.scaleByFlourWeight(Integer.parseInt(args.get("-fw")));
+    private void doBreadScale(CommandParser p) {
+        BreadRecipe recipe;
+        if (p.containsFlag("-t")) {
+            recipe = (BreadRecipe) collection.get(p.get("-t")).getMasterRecipe();
+        } else {
+            recipe = (BreadRecipe) collection.get(p.get("-n")).getMasterRecipe();
         }
-
-        if (c.contains("-v")) {
+        if (p.containsFlag("-dw")) {
+            recipe.scaleByDoughWeight(Integer.parseInt(p.get("-dw")));
+        } else if (p.containsFlag("-fw")) {
+            recipe.scaleByFlourWeight(Integer.parseInt(p.get("-fw")));
+        }
+        if (p.containsFlag("-v")) {
             System.out.println(recipe.toString());
         }
-    }
 
-    //EFFECTS: helper for doBreadScale which parses the arguments from the command
-    private Map<String, String> breadScaleArgsHelper(String c) {
-        String[] flags = {"-n", "-m", "-t", "-v", "-dw", "-fw"};
-        Map<String, String> args = new HashMap<>();
-        for (String s : flags) {
-            if (c.contains(s)) {
-                int start = c.indexOf(s) + s.length();
-                String arg = c.substring(start);
-                int end = arg.indexOf("-") + start;
-                if (arg.contains("-")) {
-                    args.put(s, c.substring(start, end).trim());
-                } else {
-                    args.put(s, arg.trim());
-                }
-            }
-        }
-        return args;
     }
 
     //EFFECTS: helper for processCommand(), attempts the requested recipe using the master or testing version
