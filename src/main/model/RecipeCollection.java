@@ -1,5 +1,11 @@
 package model;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import persistence.Saveable;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,7 +13,7 @@ import java.util.Map;
 Represents a collection/log of recipes histories, which is a LinkedList of past recipe versions.
  */
 
-public class RecipeCollection {
+public class RecipeCollection implements Saveable {
 
     Map<String, RecipeHistory> collection;
 
@@ -54,6 +60,15 @@ public class RecipeCollection {
             }
         }
         return result.toString();
+    }
+
+    //MODIFIES: fileWriter
+    //EFFECTS: writes the file to disk as a serialized JSON file in a human readable format (prettyPrinting)
+    @Override
+    public void save(FileWriter fileWriter) throws IOException {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String json = gson.toJson(this);
+        fileWriter.write(json);
     }
 }
 

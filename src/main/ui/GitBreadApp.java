@@ -1,6 +1,5 @@
 package ui;
 
-import com.sun.xml.internal.ws.policy.EffectiveAlternativeSelector;
 import commandline.CommandParser;
 import commandline.Option;
 import commandline.Options;
@@ -8,20 +7,21 @@ import model.BreadRecipe;
 import model.Recipe;
 import model.RecipeCollection;
 import model.RecipeHistory;
+import persistence.Writer;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.Clock;
 import java.util.*;
 
 public class GitBreadApp {
-
-    RecipeCollection collection = new RecipeCollection();
-    Clock clock = Clock.systemDefaultZone();
-    Options options;
+    private static final String SAVE_DIRECTORY = "data/recipecollections/";
+    private RecipeCollection collection = new RecipeCollection();
+    private Clock clock = Clock.systemDefaultZone();
+    private Options options;
 
     public GitBreadApp() {
         runGitBread();
-        makeOptions();
-        options = makeOptions();
     }
 
     private void runGitBread() {
@@ -33,9 +33,9 @@ public class GitBreadApp {
         while (keepGoing) {
             System.out.print("> ");
             command = input.nextLine();
-//            command = command.toLowerCase();
 
             if (command.equals("bread quit")) {
+                askToSave();
                 keepGoing = false;
             } else if (command.equals("bread help")) {
                 displayHelp();
@@ -45,6 +45,40 @@ public class GitBreadApp {
         }
     }
 
+    //EFFECTS: helper to ask a user if they want to save a collection and what they want to call it.
+    private void askToSave() {
+        try {
+            String command;
+            Scanner input = new Scanner(System.in);
+            System.out.print("Would you like to save the current recipe collection? (y/n): ");
+            command = input.next().toLowerCase();
+            if (command.equals("y")) {
+                yesToSave(command, input);
+            } else if (!command.equals("n")) {
+                System.out.println(String.format("%s is not a valid input, please enter 'y' or 'n'.", command));
+            }
+        } catch (IOException e) {
+            System.out.println("The file could not be saved.");
+            e.printStackTrace();
+        }
+    }
+
+    private void yesToSave(String command, Scanner input) throws IOException {
+        System.out.print("Enter a file name without spaces: ");
+        command = input.next();
+        if (command.contains(" ")) {
+            System.out.println("Please choose a name with no spaces.");
+        } else {
+            File file = new File(String.format(SAVE_DIRECTORY + "%s" + ".json", command));
+            Writer writer = new Writer(file);
+            writer.write(collection);
+            writer.close();
+            System.out.println("Your file was successfully saved!");
+        }
+    }
+
+    //MODIFIES: options
+    //EFFECTS: create the options object and add the desired flags
     private Options makeOptions() {
         options = new Options();
         options.addOption(new Option("-n", "--name", false, "The name of the recipe"));
@@ -57,58 +91,6 @@ public class GitBreadApp {
         options.addOption(new Option("-t", "--testing", true, "testing recipe selector"));
         return options;
     }
-
-
-    //EFFECTS: display help information about the available commands
-    private void displayHelp() {
-        System.out.println("\nAvailable commands:\n");
-        System.out.println("Command style is 'bread <command> <flags> <args>'");
-        System.out.println("<command> list\n");
-        breadNewHelp();
-        breadListHelp();
-        breadViewHelp();
-        breadAttemptHelp();
-        breadScaleHelp();
-    }
-
-    private void breadNewHelp() {
-        System.out.println("    bread new : [-n <name>] [-dw dough weight] || [-fw flour weight] [-h hydration]"
-                + " [-si set instructions]");
-        System.out.println("        usage example: bread new -n French loaf -dw 1000");
-        System.out.println("        usage example: bread new -n Pizza -fw 350 -h 0.7");
-        System.out.println("        usage example: bread new -n Pizza dough -fw 350 -h 0.7 -si 1. Mix ingredients "
-                + "2. Rise for 2-24 hours 3. Stretch dough into circle 4. Top and bake for 6 minutes");
-    }
-
-    private void breadListHelp() {
-        System.out.println("    bread list : [-v verbose]");
-        System.out.println("        usage example: bread list");
-        System.out.println("        usage example: bread list -v");
-    }
-
-    private void breadSelectHelp() {
-        System.out.println("    bread select : [-n name]");
-        System.out.println("        usage example: bread select -n Pizza");
-    }
-
-    private void breadViewHelp() {
-        System.out.println("    bread view master/testing : [-n name]");
-        System.out.println("        usage example: bread view master -n Pizza dough");
-        System.out.println("        usage example: bread view testing -n Pizza dough");
-    }
-
-    private void breadAttemptHelp() {
-        System.out.println("    bread attempt : [-n name] [-m master] [-t testing]");
-        System.out.println("        usage example: bread attempt -n French loaf -m");
-    }
-
-    private void breadScaleHelp() {
-        System.out.println("    bread scale : [-n name] [-m master] [-t testing] [-v verbose] [-dw dough weight]"
-                + " || [-fw flour weight]");
-        System.out.println("        usage example: bread scale -n French loaf -m");
-        System.out.println("        usage example: bread scale -n Pizza dough -v");
-    }
-
 
     //EFFECTS: processes the commands the user inputs.
     //notes: a scaled recipe is not considered a new recipe.
@@ -208,4 +190,57 @@ public class GitBreadApp {
             collection.get(title).get(0).setInstructions(p.get("-si"));
         }
     }
+
+    //----------------------------------------------------------------------
+    //----------------------------------------------------------------------
+    //EFFECTS: display help information about the available commands
+    private void displayHelp() {
+        System.out.println("\nAvailable commands:\n");
+        System.out.println("Command style is 'bread <command> <flags> <args>'");
+        System.out.println("<command> list\n");
+        breadNewHelp();
+        breadListHelp();
+        breadViewHelp();
+        breadAttemptHelp();
+        breadScaleHelp();
+    }
+
+    private void breadNewHelp() {
+        System.out.println("    bread new : [-n <name>] [-dw dough weight] || [-fw flour weight] [-h hydration]"
+                + " [-si set instructions]");
+        System.out.println("        usage example: bread new -n French loaf -dw 1000");
+        System.out.println("        usage example: bread new -n Pizza -fw 350 -h 0.7");
+        System.out.println("        usage example: bread new -n Pizza dough -fw 350 -h 0.7 -si 1. Mix ingredients "
+                + "2. Rise for 2-24 hours 3. Stretch dough into circle 4. Top and bake for 6 minutes");
+    }
+
+    private void breadListHelp() {
+        System.out.println("    bread list : [-v verbose]");
+        System.out.println("        usage example: bread list");
+        System.out.println("        usage example: bread list -v");
+    }
+
+    private void breadSelectHelp() {
+        System.out.println("    bread select : [-n name]");
+        System.out.println("        usage example: bread select -n Pizza");
+    }
+
+    private void breadViewHelp() {
+        System.out.println("    bread view master/testing : [-n name]");
+        System.out.println("        usage example: bread view master -n Pizza dough");
+        System.out.println("        usage example: bread view testing -n Pizza dough");
+    }
+
+    private void breadAttemptHelp() {
+        System.out.println("    bread attempt : [-n name] [-m master] [-t testing]");
+        System.out.println("        usage example: bread attempt -n French loaf -m");
+    }
+
+    private void breadScaleHelp() {
+        System.out.println("    bread scale : [-n name] [-m master] [-t testing] [-v verbose] [-dw dough weight]"
+                + " || [-fw flour weight]");
+        System.out.println("        usage example: bread scale -n French loaf -m");
+        System.out.println("        usage example: bread scale -n Pizza dough -v");
+    }
+
 }

@@ -3,6 +3,8 @@ package model;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import static java.lang.Math.round;
+
 /*
 Bread recipe is a subclass of Recipe and represents recipes recipes made of primarily flour, with little to no fat
 (i.e. this should not be used for pastry). It uses baker's formulas to allow for easy scaling of recipes and the
@@ -31,6 +33,7 @@ public class BreadRecipe extends Recipe {
     //REQUIRES: flourWeight and hydrationFraction are > 0
     //EFFECTS: constructs bread recipe for a given flour weight and desired hydration. All other parameters are empty
     //         or zeroed out.
+    // TODO: change yield to round to the nearest two decimal places.
     public BreadRecipe(int flourWeight, double hydrationPercentage) {
         this.flourFraction = flourConst; // flour baker's percentage is always 1
         this.waterFraction = hydrationPercentage;
@@ -103,8 +106,8 @@ public class BreadRecipe extends Recipe {
     //EFFECTS: calculate the ingredients list from the desired final wet dough weight
     private void calcIngredientsFromDoughWeight(int doughWeight) {
         int flourWeight = (int) (doughWeight / this.yield);
-        ArrayList<Double> bakersFractions = new ArrayList<Double>();
-        bakersFractions.addAll(Arrays.asList(this.flourFraction, this.waterFraction,
+        ArrayList<Double> bakersFractions = new ArrayList<Double>(Arrays.asList(
+                this.flourFraction, this.waterFraction,
                 this.saltFraction, this.fatFraction,
                 this.sugarFraction, this.yeastFraction));
         for (int i = 0; i < super.ingredientList.size(); i++) {
@@ -116,8 +119,8 @@ public class BreadRecipe extends Recipe {
     //MODIFIES: this
     //EFFECTS: calculate the ingredients list from given flour weight
     private void calcIngredientsFromFlourWeight(int flourWeight) {
-        ArrayList<Double> bakersFractions = new ArrayList<Double>();
-        bakersFractions.addAll(Arrays.asList(this.flourFraction, this.waterFraction,
+        ArrayList<Double> bakersFractions = new ArrayList<Double>(Arrays.asList(
+                this.flourFraction, this.waterFraction,
                 this.saltFraction, this.fatFraction,
                 this.sugarFraction, this.yeastFraction));
         for (int i = 0; i < super.ingredientList.size(); i++) {
@@ -144,8 +147,7 @@ public class BreadRecipe extends Recipe {
 
     //EFFECTS: format the bake notes for toString()
     private String toStringHelperBakeNotes() {
-        StringBuilder result = new StringBuilder();
-        result.append(String.format("\nHydration: %1$d%%\n"
+        String result = String.format("\nHydration: %1$d%%\n"
                         + "Prep: %2$d hr %3$d min\n"
                         + "Bake: %4$d hr %5$d min\n"
                         + "Total: %6$d hr %7$d min\n"
@@ -154,8 +156,8 @@ public class BreadRecipe extends Recipe {
                         + "Yield: %10$d g\n",
                 (int) (this.waterFraction * 100), this.prepTime / 60, this.prepTime % 60,
                 this.cookTime / 60, this.cookTime % 60, (this.prepTime + this.cookTime) / 60,
-                (this.prepTime + this.cookTime) % 60, this.cookTemp, this.cookingVessel, this.doughWeight));
-        return result.toString();
+                (this.prepTime + this.cookTime) % 60, this.cookTemp, this.cookingVessel, this.doughWeight);
+        return result;
     }
 
     //EFFECTS: format the instructions for toString
