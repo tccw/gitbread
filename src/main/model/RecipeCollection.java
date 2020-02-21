@@ -85,17 +85,6 @@ public class RecipeCollection implements Saveable {
         fileWriter.write(json);
     }
 
-//    private Map<String, List<Attempt>> makeHistoryFile() {
-//        Map<String, List<Attempt>> attemptHistoryMap = new HashMap<>();
-//        List<Attempt> attemptHistory = new ArrayList<Attempt>();
-//        for (Map.Entry<String, RecipeHistory> entry : this.collection.entrySet()) {
-//            String key = entry.getKey();
-//            attemptHistoryMap.put(key, entry)
-//
-//
-//        }
-//    }
-
     public void setCollection(Map<String, RecipeHistory> collection) {
         this.collection = collection;
     }

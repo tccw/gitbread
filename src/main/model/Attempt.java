@@ -1,10 +1,6 @@
 package model;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import jacksonlocaldatetime.LocalDateTimeDeserializer;
-import jacksonlocaldatetime.LocalDateTimeSerializer;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -22,20 +18,27 @@ public class Attempt {
 
     @JsonBackReference
     private Recipe recipeVersion;
+    @JsonIgnore
+    private LocalDateTime dateTime;
     private String resultNotes;
     private String weatherNow;
 //    private String weatherForDay;
 
-    @JsonDeserialize(using = LocalDateTimeDeserializer.class);
-    @JsonSerialize(using = LocalDateTimeSerializer.class);
-    private LocalDateTime dateTime;
-
     //EFFECTS: Construct an attempt with the date, current weather, weather for the day,
     // given recipe, and empty resultNotes.
-    @JsonCreator
-    public Attempt(@JsonProperty("recipeVersion") Recipe recipeVersion, @JsonProperty("clock") Clock clock) {
+
+    public Attempt(Recipe recipeVersion, Clock clock) {
         this.recipeVersion = recipeVersion;
         this.dateTime = LocalDateTime.now(clock);
+        this.resultNotes = "";
+        this.weatherNow = "It's sunny and beautiful!"; //placeholder for API call
+//        this.weatherForDay = "A beautiful sunny day!"; //placeholder for API call
+    }
+
+    @JsonCreator
+    public Attempt(@JsonProperty("recipeVersion") Recipe recipeVersion) {
+        this.recipeVersion = recipeVersion;
+//        this.dateTime = LocalDateTime.now(clock);
         this.resultNotes = "";
         this.weatherNow = "It's sunny and beautiful!"; //placeholder for API call
 //        this.weatherForDay = "A beautiful sunny day!"; //placeholder for API call
@@ -54,7 +57,7 @@ public class Attempt {
     }
 
     //EFFECTS: returns the LocalDateTime field to an easy to read string
-//    public String datePretty() {
+//    private String datePretty() {
 //        String result = getDateTime()
 //                .format(DateTimeFormatter.RFC_1123_DATE_TIME
 //                        .ofLocalizedDate(FormatStyle.FULL)
@@ -84,11 +87,6 @@ public class Attempt {
     public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
-
-    public void setResultNotes(String resultNotes) {
-        this.resultNotes = resultNotes;
-    }
-
 
 //    public String getWeather() {
 //        return weatherNow;

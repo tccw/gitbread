@@ -44,7 +44,7 @@ public class Main {
 //                .activateDefaultTyping(validator)
                 .build();
         safeMapper.registerSubtypes(RecipeCollection.class, RecipeHistory.class, Recipe.class, BreadRecipe.class, Attempt.class, Ingredient.class);
-        safeMapper.registerModule(JavaTimeModule());
+//        safeMapper.registerModule(JavaTimeModule());
         String json = safeMapper.writerWithDefaultPrettyPrinter().writeValueAsString(collection);
 
         fileWriter.write(json);
@@ -54,6 +54,7 @@ public class Main {
         RecipeCollection testCollection = safeMapper.readValue(fileReader, RecipeCollection.class);
         System.out.println(testCollection.get("French loaf").getMasterRecipe().toString());
         System.out.println(testCollection.toString(true));
+        System.out.println(testCollection.get("French loaf"));
 
 
 
