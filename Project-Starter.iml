@@ -96,5 +96,47 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jackson-databind-2.10.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jackson-annotations-2.10.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/jackson-core-2.10.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/lib/jackson-modules-java8.jar!/docs/javadoc/datatypes/2.10" />
+          <root url="jar://$MODULE_DIR$/lib/jackson-modules-java8.jar!/docs/javadoc/datetime/2.10" />
+          <root url="jar://$MODULE_DIR$/lib/jackson-modules-java8.jar!/docs/javadoc/parameter-names/2.10" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/jackson-modules-java8.jar!/datatypes/src/main/java" />
+          <root url="jar://$MODULE_DIR$/lib/jackson-modules-java8.jar!/datetime/src/main/java" />
+          <root url="jar://$MODULE_DIR$/lib/jackson-modules-java8.jar!/parameter-names/src/main/java" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>

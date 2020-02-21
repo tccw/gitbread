@@ -1,12 +1,16 @@
 package model;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import persistence.Saveable;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -62,13 +66,38 @@ public class RecipeCollection implements Saveable {
         return result.toString();
     }
 
+    public Map<String, RecipeHistory> getCollection() {
+        return collection;
+    }
+
     //MODIFIES: fileWriter
-    //EFFECTS: writes the file to disk as a serialized JSON file in a human readable format (prettyPrinting)
+    //EFFECTS: writes the file to disk as a serialized JSON file
     @Override
     public void save(FileWriter fileWriter) throws IOException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(this);
+        ObjectMapper mapper = JsonMapper.builder().build();
+        mapper.registerSubtypes(
+                RecipeCollection.class,
+                RecipeHistory.class,
+                Recipe.class,
+                BreadRecipe.class,
+                Attempt.class);
+        String json = mapper.writeValueAsString(this);
         fileWriter.write(json);
+    }
+
+//    private Map<String, List<Attempt>> makeHistoryFile() {
+//        Map<String, List<Attempt>> attemptHistoryMap = new HashMap<>();
+//        List<Attempt> attemptHistory = new ArrayList<Attempt>();
+//        for (Map.Entry<String, RecipeHistory> entry : this.collection.entrySet()) {
+//            String key = entry.getKey();
+//            attemptHistoryMap.put(key, entry)
+//
+//
+//        }
+//    }
+
+    public void setCollection(Map<String, RecipeHistory> collection) {
+        this.collection = collection;
     }
 }
 

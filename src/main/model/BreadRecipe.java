@@ -1,16 +1,18 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import static java.lang.Math.round;
 
 /*
 Bread recipe is a subclass of Recipe and represents recipes recipes made of primarily flour, with little to no fat
 (i.e. this should not be used for pastry). It uses baker's formulas to allow for easy scaling of recipes and the
 main constructor will back-calculate all the necessary ingredient weights.
  */
-
 public class BreadRecipe extends Recipe {
     private static final String defaultInstructions =
             "1. Mix all ingredients"
@@ -34,14 +36,15 @@ public class BreadRecipe extends Recipe {
     //EFFECTS: constructs bread recipe for a given flour weight and desired hydration. All other parameters are empty
     //         or zeroed out.
     // TODO: change yield to round to the nearest two decimal places.
-    public BreadRecipe(int flourWeight, double hydrationPercentage) {
+    @JsonCreator
+    public BreadRecipe(@JsonProperty("flourWeight") int flourWeight, @JsonProperty("waterFraction") double waterFraction) {
         this.flourFraction = flourConst; // flour baker's percentage is always 1
-        this.waterFraction = hydrationPercentage;
+        this.waterFraction = waterFraction;
         this.saltFraction = 0.02;
         this.sugarFraction = 0;
         this.fatFraction = 0;
         this.yeastFraction = 0.006;
-        this.yield = flourFraction + waterFraction + saltFraction + sugarFraction + fatFraction + yeastFraction;
+        this.yield = flourFraction + this.waterFraction + saltFraction + sugarFraction + fatFraction + yeastFraction;
         this.blankIngredientsTemplate();
         this.calcIngredientsFromFlourWeight(flourWeight);
         for (Ingredient i : ingredientList) {
@@ -241,5 +244,9 @@ public class BreadRecipe extends Recipe {
     public void setCookingVessel(String cookingVessel) {
         this.cookingVessel = cookingVessel;
     }
+
+
+
+
 }
 

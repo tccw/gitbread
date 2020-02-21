@@ -1,5 +1,11 @@
 package model;
 
+import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jacksonlocaldatetime.LocalDateTimeDeserializer;
+import jacksonlocaldatetime.LocalDateTimeSerializer;
+
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,15 +20,20 @@ and allows the user to enter in some notes about the results of the attempt.
 
 public class Attempt {
 
+    @JsonBackReference
     private Recipe recipeVersion;
-    private LocalDateTime dateTime;
     private String resultNotes;
     private String weatherNow;
 //    private String weatherForDay;
 
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class);
+    @JsonSerialize(using = LocalDateTimeSerializer.class);
+    private LocalDateTime dateTime;
+
     //EFFECTS: Construct an attempt with the date, current weather, weather for the day,
     // given recipe, and empty resultNotes.
-    public Attempt(Recipe recipeVersion, Clock clock) {
+    @JsonCreator
+    public Attempt(@JsonProperty("recipeVersion") Recipe recipeVersion, @JsonProperty("clock") Clock clock) {
         this.recipeVersion = recipeVersion;
         this.dateTime = LocalDateTime.now(clock);
         this.resultNotes = "";
@@ -53,16 +64,31 @@ public class Attempt {
 
     // getters
     public LocalDateTime getDateTime() {
-        return dateTime;
+        return this.dateTime;
     }
 
     public Recipe getRecipeVersion() {
-        return recipeVersion;
+        return this.recipeVersion;
     }
 
     public String getResultNotes() {
-        return resultNotes;
+        return this.resultNotes;
     }
+
+    // setters
+
+    public void setRecipeVersion(Recipe recipeVersion) {
+        this.recipeVersion = recipeVersion;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setResultNotes(String resultNotes) {
+        this.resultNotes = resultNotes;
+    }
+
 
 //    public String getWeather() {
 //        return weatherNow;
