@@ -81,7 +81,7 @@ public class RecipeCollection implements Saveable {
                 Recipe.class,
                 BreadRecipe.class,
                 Attempt.class);
-        String json = mapper.writeValueAsString(this);
+        String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
         fileWriter.write(json);
     }
 

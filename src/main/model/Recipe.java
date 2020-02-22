@@ -14,6 +14,12 @@ public abstract class Recipe {
 
     protected ArrayList<Ingredient> ingredientList = new ArrayList<Ingredient>();
     protected String instructions;
+    /*
+     @JsonManagedReference tells Jackson to serialize this part of the circular reference and use it during
+     deserialization to reconstruct the other side of the circular reference/bidirectional relationship. In this case,
+     the other side is recipeHistory which is of type Recipe within the Attempt class.
+     More here: https://www.baeldung.com/jackson-bidirectional-relationships-and-infinite-recursion
+     */
     @JsonManagedReference
     protected ArrayList<Attempt> attemptHistory = new ArrayList<Attempt>();
     protected int cookTime; // in minutes
@@ -81,6 +87,7 @@ public abstract class Recipe {
     }
 
     // getters
+    @JsonSerialize
     protected ArrayList<Ingredient> getIngredientList() {
         return this.ingredientList;
     }

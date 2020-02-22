@@ -5,13 +5,17 @@ A single ingredient for any type of recipe. It has a type which is generally the
 which is in grams.
  */
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Ingredient {
     String type;
     int weight; // in grams
 
     //REQUIRES: Ingredient must be from a known list (flour, water, salt, sugar, eggs, yeast, preferment)
     //EFFECTS: constructs an ingredient with a description and weight (in grams)
-    public Ingredient(String type, int grams) {
+    @JsonCreator
+    public Ingredient(@JsonProperty("type") String type, @JsonProperty("grams") int grams) {
         this.type = type;
         this.weight = grams;
     }
@@ -21,9 +25,13 @@ public class Ingredient {
         this.weight = weight;
     }
 
+    public void setType(String type) {
+        this.type = type;
+    }
+
     //EFFECTS: returns the weight of an ingredient in grams
     public int getWeight() {
-        return this.weight; //stub
+        return this.weight;
     }
 
     //EFFECTS: returns the type of ingredient
