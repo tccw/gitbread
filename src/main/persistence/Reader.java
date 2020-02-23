@@ -10,10 +10,6 @@ import java.io.IOException;
 
 public class Reader {
 
-    public Reader(){
-
-    }
-
     //REQUIRES: a properly formatted JSON file
     //EFFECTS: Load the provided collection file as a a RecipeCollection object.
     public static RecipeCollection loadRecipeCollection(File file) throws IOException {
@@ -24,7 +20,8 @@ public class Reader {
                 RecipeHistory.class,
                 Recipe.class,
                 BreadRecipe.class,
-                Attempt.class);
+                Attempt.class,
+                Ingredient.class);
         return mapper.readValue(reader, RecipeCollection.class);
     }
 }

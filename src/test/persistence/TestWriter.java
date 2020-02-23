@@ -27,7 +27,6 @@ class TestWriter {
     BreadRecipe hearthLoaf;
     BreadRecipe hearthLoafTesting;
     RecipeHistory frenchLoafHist;
-
     RecipeHistory hearthLoafHist;
 
     @BeforeEach

@@ -12,9 +12,10 @@ public class Ingredient {
     String type;
     int weight; // in grams
 
-    //REQUIRES: Ingredient must be from a known list (flour, water, salt, sugar, eggs, yeast, preferment)
+    //REQUIRES: Ingredient must be from a known list (flour, water, salt, sugar, eggs, yeast, preferment) and weight
+    //          in grams must be positive.
     //EFFECTS: constructs an ingredient with a description and weight (in grams)
-    @JsonCreator
+    @JsonCreator // needed because there is not parameterless constructor. For deserializing ingredients with Jackson.
     public Ingredient(@JsonProperty("type") String type, @JsonProperty("grams") int grams) {
         this.type = type;
         this.weight = grams;

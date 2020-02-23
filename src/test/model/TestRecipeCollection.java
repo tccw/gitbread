@@ -45,14 +45,14 @@ public class TestRecipeCollection {
 
     @Test
     public void TestAddSingle() {
-        assertEquals(0, recipeCollection.size());
+        assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French Loaf", recipeHistoryFrenchLoaf);
         assertEquals(1, recipeCollection.size());
     }
 
     @Test
     public void TestAddMultiple() {
-        assertEquals(0, recipeCollection.size());
+        assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza", recipeHistoryPizza);
         recipeCollection.add("Cinnamon Raisin", recipeHistoryCinnamonRaisin);
@@ -61,7 +61,7 @@ public class TestRecipeCollection {
 
     @Test
     public void TestAddSingleRemoveSingle() {
-        assertEquals(0, recipeCollection.size());
+        assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.remove("French loaf");
         assertEquals(0, recipeCollection.size());
@@ -69,7 +69,7 @@ public class TestRecipeCollection {
 
     @Test
     public void TestAddRemoveAddMultiple() {
-        assertEquals(0, recipeCollection.size());
+        assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza", recipeHistoryPizza);
         recipeCollection.add("Cinnamon Raisin", recipeHistoryCinnamonRaisin);
@@ -81,7 +81,7 @@ public class TestRecipeCollection {
 
     @Test
     public void TestGet() {
-        assertEquals(0, recipeCollection.size());
+        assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza", recipeHistoryPizza);
         recipeCollection.add("Cinnamon Raisin", recipeHistoryCinnamonRaisin);
@@ -90,7 +90,7 @@ public class TestRecipeCollection {
 
     @Test
     public void TestToStringVerbose() {
-        assertEquals(0, recipeCollection.size());
+        assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza dough", recipeHistoryPizza);
         String expected = "Pizza dough : 0 attempts, 2 changes\n"
@@ -100,7 +100,7 @@ public class TestRecipeCollection {
 
     @Test
     public void TestToString() {
-        assertEquals(0, recipeCollection.size());
+        assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza dough", recipeHistoryPizza);
         String expected = "Pizza dough\n"

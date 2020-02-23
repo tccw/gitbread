@@ -33,6 +33,11 @@ public class RecipeCollection implements Saveable {
         return this.collection.size();
     }
 
+    //EFFECTS: return true if the collection is empty (size = 0)
+    public boolean isEmpty() {
+        return this.collection.isEmpty();
+    }
+
     //EFFECTS: removes a specific recipe from the collection
     public void remove(String title) {
         this.collection.remove(title);

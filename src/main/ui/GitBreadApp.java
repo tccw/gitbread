@@ -7,6 +7,7 @@ import model.BreadRecipe;
 import model.Recipe;
 import model.RecipeCollection;
 import model.RecipeHistory;
+import persistence.Reader;
 import persistence.Writer;
 
 import java.io.File;
@@ -31,7 +32,7 @@ public class GitBreadApp {
 
         System.out.println("GitBread v0.0 (type 'bread help' for available commands.)");
         while (keepGoing) {
-            System.out.print("> ");
+            System.out.print(">");
             command = input.nextLine();
 
             if (command.equals("bread quit")) {
@@ -39,6 +40,12 @@ public class GitBreadApp {
                 keepGoing = false;
             } else if (command.equals("bread help")) {
                 displayHelp();
+            } else if (command.equals("bread save")) {
+                try {
+                    yesToSave(input);
+                } catch (IOException e) {
+                    System.out.println("The file could not be saved.");
+                }
             } else {
                 processCommand(command);
             }
@@ -53,7 +60,7 @@ public class GitBreadApp {
             System.out.print("Would you like to save the current recipe collection? (y/n): ");
             command = input.next().toLowerCase();
             if (command.equals("y")) {
-                yesToSave(command, input);
+                yesToSave(input);
             } else if (!command.equals("n")) {
                 System.out.println(String.format("%s is not a valid input, please enter 'y' or 'n'.", command));
             }
@@ -63,17 +70,17 @@ public class GitBreadApp {
         }
     }
 
-    private void yesToSave(String command, Scanner input) throws IOException {
-        System.out.print("Enter a file name without spaces: ");
-        command = input.next();
-        if (command.contains(" ")) {
-            System.out.println("Please choose a name with no spaces.");
+    private void yesToSave(Scanner input) throws IOException {
+        System.out.print("Enter a file name without spaces or hyphens: ");
+        String command = input.next();
+        if (command.contains(" ") || command.contains("-")) {
+            System.out.println("Please choose a name with no spaces or hyphens.");
         } else {
             File file = new File(String.format(SAVE_DIRECTORY + "%s" + ".json", command));
             Writer writer = new Writer(file);
             writer.write(collection);
             writer.close();
-            System.out.println("Your file was successfully saved!");
+            System.out.print("Your file was successfully saved!");
         }
     }
 
@@ -89,6 +96,7 @@ public class GitBreadApp {
         options.addOption(new Option("-v", "--verbose", true, "Print out what is happening"));
         options.addOption(new Option("-m", "--master", true, "master recipe selector"));
         options.addOption(new Option("-t", "--testing", true, "testing recipe selector"));
+        options.addOption(new Option("-fn", "--filename", false, "file name for loading"));
         return options;
     }
 
@@ -108,8 +116,37 @@ public class GitBreadApp {
             doBreadView(parser);
         } else if (phrase.equals("bread scale")) {
             doBreadScale(parser);
+        } else if (phrase.equals("bread listcols")) {
+            doBreadListCols(new File(SAVE_DIRECTORY));
+        } else if (phrase.equals("bread load")) {
+            doBreadLoad(parser);
         } else {
             System.out.println(String.format("'%s' is not a valid command.", command));
+        }
+    }
+
+    //MODIFIES: RecipeCollection collection;
+    //EFFECTS: replaces the current recipe collection with a previously saved collection. If the current collection is
+    //         not empty, it also prompts the user to save it before loading a different collection.
+    private void doBreadLoad(CommandParser p) {
+        assert p.get("-fn") != null;
+        File file = new File(SAVE_DIRECTORY + p.get("-fn"));
+        if (!collection.isEmpty()) {
+            askToSave();
+        }
+        try {
+            collection = Reader.loadRecipeCollection(file);
+        } catch (IOException e) {
+            System.out.println(String.format("Couldn't load file %s", p.get("-fn")));
+        }
+    }
+
+    //EFFECTS: lists the names of all saved collections in /data/recipecollections
+    private void doBreadListCols(File dir) {
+        String[] fileList = dir.list();
+        assert fileList != null;
+        for (String fn : fileList) {
+            System.out.println(fn);
         }
     }
 
@@ -203,6 +240,8 @@ public class GitBreadApp {
         breadViewHelp();
         breadAttemptHelp();
         breadScaleHelp();
+        breadSaveHelp();
+        breadListColHelp();
     }
 
     private void breadNewHelp() {
@@ -241,6 +280,14 @@ public class GitBreadApp {
                 + " || [-fw flour weight]");
         System.out.println("        usage example: bread scale -n French loaf -m");
         System.out.println("        usage example: bread scale -n Pizza dough -v");
+    }
+
+    private void breadSaveHelp() {
+        System.out.println("    bread save");
+    }
+
+    private void breadListColHelp() {
+        System.out.println("    bread listcols");
     }
 
 }

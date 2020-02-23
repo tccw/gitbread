@@ -31,16 +31,20 @@ GitBread allows for things like:
 
 ### Phase 1 User Stories
 
-- As a user, I want to be able to add a recipe to my collection
-- As a user, I want to be able to view the titles of all my recipes
-- As a user, I want to be able to log an attempt of a recipe
-- As a user, I want to be able to view the number of times I have attempted a recipe
-- As a user I want to be able scale a recipe up or down easily
-- As a user, I want to to be able to view the master version of a recipe
+- As a user, I want to be able to add a recipe to my collection.
+- As a user, I want to be able to view the titles of all my recipes.
+- As a user, I want to be able to log an attempt of a recipe.
+- As a user, I want to be able to view the number of times I have attempted a recipe.
+- As a user, I want to be able scale a recipe up or down easily.
+- As a user, I want to to be able to view the master version of a recipe.
+
+### Phase 2 User Stories
+- As a user, I want to to be asked if I want to save my collection when I quit the application.
+- As a user, I want to be able to reload my collection to continue working on it. 
 ------
 ### Future User stories
-- As a user, I want to be able to view the testing version of a recipe
-- As a user, I want to be able to make notes about the results of my attempt, and view these results later
+- As a user, I want to be able to view the testing version of a recipe.
+- As a user, I want to be able to make notes about the results of my attempt, and view these results later.
 - As a user, I want to be able to test a variation of a recipe and replace the master if it is better, or leave
 it in my recipe history if it makes it worse.
 - As a user, I want to be able to set my location by typing in my address or city.
