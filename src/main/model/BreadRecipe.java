@@ -37,7 +37,8 @@ public class BreadRecipe extends Recipe {
     //         or zeroed out.
     // TODO: change yield to round to the nearest two decimal places.
     @JsonCreator
-    public BreadRecipe(@JsonProperty("flourWeight") int flourWeight, @JsonProperty("waterFraction") double waterFraction) {
+    public BreadRecipe(@JsonProperty("flourWeight") int flourWeight,
+                       @JsonProperty("waterFraction") double waterFraction) {
         this.flourFraction = flourConst; // flour baker's percentage is always 1
         this.waterFraction = waterFraction;
         this.saltFraction = 0.02;

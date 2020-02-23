@@ -5,9 +5,6 @@ Recipe objects which point to the "master", or default view recipe, and a "testi
 variation of the original recipe where a user might be testing changes to a recipe which is not final yet.
 */
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-
 import java.time.Clock;
 import java.util.LinkedList;
 
