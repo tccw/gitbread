@@ -241,6 +241,7 @@ public class GitBreadApp {
         breadAttemptHelp();
         breadScaleHelp();
         breadSaveHelp();
+        breadLoadHelp();
         breadListColHelp();
     }
 
@@ -284,6 +285,10 @@ public class GitBreadApp {
 
     private void breadSaveHelp() {
         System.out.println("    bread save");
+    }
+
+    private void breadLoadHelp() {
+        System.out.println("    bread load");
     }
 
     private void breadListColHelp() {

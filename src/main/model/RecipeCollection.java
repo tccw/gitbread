@@ -1,5 +1,6 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import persistence.Saveable;
@@ -34,6 +35,7 @@ public class RecipeCollection implements Saveable {
     }
 
     //EFFECTS: return true if the collection is empty (size = 0)
+    @JsonIgnore
     public boolean isEmpty() {
         return this.collection.isEmpty();
     }
