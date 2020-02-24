@@ -1,5 +1,7 @@
 package model;
 
+import com.fasterxml.jackson.annotation.*;
+
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,8 +15,15 @@ and allows the user to enter in some notes about the results of the attempt.
  */
 
 public class Attempt {
-
+/*
+@JsonBackReference tells Jackson to not serialize this field but to reconstruct using the @JasonManagedReference
+annotated field on the other side of the circular reference/bidirectional relationship. In this case that reference is
+attemptHistory which is ArrayList<Attempt> within Recipe (of which recipeVersion is type Recipe).
+More here: https://www.baeldung.com/jackson-bidirectional-relationships-and-infinite-recursion
+ */
+    @JsonBackReference
     private Recipe recipeVersion;
+    @JsonIgnore
     private LocalDateTime dateTime;
     private String resultNotes;
     private String weatherNow;
@@ -22,9 +31,19 @@ public class Attempt {
 
     //EFFECTS: Construct an attempt with the date, current weather, weather for the day,
     // given recipe, and empty resultNotes.
+
     public Attempt(Recipe recipeVersion, Clock clock) {
         this.recipeVersion = recipeVersion;
         this.dateTime = LocalDateTime.now(clock);
+        this.resultNotes = "";
+        this.weatherNow = "It's sunny and beautiful!"; //placeholder for API call
+//        this.weatherForDay = "A beautiful sunny day!"; //placeholder for API call
+    }
+
+    @JsonCreator
+    public Attempt(@JsonProperty("recipeVersion") Recipe recipeVersion) {
+        this.recipeVersion = recipeVersion;
+//        this.dateTime = LocalDateTime.now(clock);
         this.resultNotes = "";
         this.weatherNow = "It's sunny and beautiful!"; //placeholder for API call
 //        this.weatherForDay = "A beautiful sunny day!"; //placeholder for API call
@@ -43,7 +62,7 @@ public class Attempt {
     }
 
     //EFFECTS: returns the LocalDateTime field to an easy to read string
-//    public String datePretty() {
+//    private String datePretty() {
 //        String result = getDateTime()
 //                .format(DateTimeFormatter.RFC_1123_DATE_TIME
 //                        .ofLocalizedDate(FormatStyle.FULL)
@@ -53,16 +72,26 @@ public class Attempt {
 
     // getters
     public LocalDateTime getDateTime() {
-        return dateTime;
+        return this.dateTime;
     }
 
     public Recipe getRecipeVersion() {
-        return recipeVersion;
+        return this.recipeVersion;
     }
 
     public String getResultNotes() {
-        return resultNotes;
+        return this.resultNotes;
     }
+
+    // setters
+
+    public void setRecipeVersion(Recipe recipeVersion) {
+        this.recipeVersion = recipeVersion;
+    }
+
+//    public void setDateTime(LocalDateTime dateTime) {
+//        this.dateTime = dateTime;
+//    }
 
 //    public String getWeather() {
 //        return weatherNow;

@@ -1,5 +1,12 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import persistence.Saveable;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -7,7 +14,7 @@ import java.util.Map;
 Represents a collection/log of recipes histories, which is a LinkedList of past recipe versions.
  */
 
-public class RecipeCollection {
+public class RecipeCollection implements Saveable {
 
     Map<String, RecipeHistory> collection;
 
@@ -25,6 +32,12 @@ public class RecipeCollection {
     //EFFECTS: return the size of the recipe collection
     public int size() {
         return this.collection.size();
+    }
+
+    //EFFECTS: return true if the collection is empty (size = 0)
+    @JsonIgnore
+    public boolean isEmpty() {
+        return this.collection.isEmpty();
     }
 
     //EFFECTS: removes a specific recipe from the collection
@@ -54,6 +67,29 @@ public class RecipeCollection {
             }
         }
         return result.toString();
+    }
+
+    public Map<String, RecipeHistory> getCollection() {
+        return collection;
+    }
+
+    //MODIFIES: fileWriter
+    //EFFECTS: writes the file to disk as a serialized JSON file
+    @Override
+    public void save(FileWriter fileWriter) throws IOException {
+        ObjectMapper mapper = JsonMapper.builder().build();
+        mapper.registerSubtypes(
+                RecipeCollection.class,
+                RecipeHistory.class,
+                Recipe.class,
+                BreadRecipe.class,
+                Attempt.class);
+        String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        fileWriter.write(json);
+    }
+
+    public void setCollection(Map<String, RecipeHistory> collection) {
+        this.collection = collection;
     }
 }
 

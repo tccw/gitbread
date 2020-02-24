@@ -31,7 +31,7 @@ public class RecipeHistory {
         history.add(recipe);
     }
 
-   //EFFECTS: counts the number of times the recipe has been attempted
+    //EFFECTS: counts the number of times the recipe has been attempted
     public int countAttempts() {
         // first version can simply return the length of the AttemptsList
         // future version might want to return attempts per recipe version
@@ -81,6 +81,7 @@ public class RecipeHistory {
         return history;
     }
 
+
     // setters
     public void setMasterRecipe(Recipe master) {
         this.masterRecipe = master;
@@ -88,6 +89,10 @@ public class RecipeHistory {
 
     public void setTestingRecipe(Recipe testing) {
         this.testingRecipe = testing;
+    }
+
+    public void setHistory(LinkedList<Recipe> history) {
+        this.history = history;
     }
 
     //REQUIRES:

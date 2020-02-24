@@ -56,6 +56,13 @@ class TestCommandParser {
     }
 
     @Test
+    void TestNoFlags() {
+        command = "bread list";
+        parser.parse(options, command);
+        assertEquals("bread list", parser.getCommand());
+    }
+
+    @Test
     void get() {
     }
 }
