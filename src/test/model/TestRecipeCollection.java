@@ -2,9 +2,14 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import persistence.Writer;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,7 +24,7 @@ public class TestRecipeCollection {
     Recipe cinnamonRaisin = new BreadRecipe(800);
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         recipeCollection = new RecipeCollection();
         recipeHistoryFrenchLoaf = new RecipeHistory();
         recipeHistoryPizza = new RecipeHistory();
@@ -39,19 +44,19 @@ public class TestRecipeCollection {
     }
 
     @Test
-    public void TestConstructor() {
+    void TestConstructor() {
         assertEquals(0, recipeCollection.size());
     }
 
     @Test
-    public void TestAddSingle() {
+    void TestAddSingle() {
         assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French Loaf", recipeHistoryFrenchLoaf);
         assertEquals(1, recipeCollection.size());
     }
 
     @Test
-    public void TestAddMultiple() {
+    void TestAddMultiple() {
         assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza", recipeHistoryPizza);
@@ -60,7 +65,7 @@ public class TestRecipeCollection {
     }
 
     @Test
-    public void TestAddSingleRemoveSingle() {
+    void TestAddSingleRemoveSingle() {
         assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.remove("French loaf");
@@ -68,7 +73,7 @@ public class TestRecipeCollection {
     }
 
     @Test
-    public void TestAddRemoveAddMultiple() {
+    void TestAddRemoveAddMultiple() {
         assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza", recipeHistoryPizza);
@@ -80,7 +85,7 @@ public class TestRecipeCollection {
     }
 
     @Test
-    public void TestGet() {
+    void TestGet() {
         assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza", recipeHistoryPizza);
@@ -89,31 +94,65 @@ public class TestRecipeCollection {
     }
 
     @Test
-    public void TestToStringVerbose() {
+    void TestToStringVerbose() {
         assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza dough", recipeHistoryPizza);
         String expected = "Pizza dough : 0 attempts, 2 changes\n"
-                        + "French loaf : 0 attempts, 0 changes\n";
+                + "French loaf : 0 attempts, 0 changes\n";
         assertEquals(expected, recipeCollection.toString(true));
     }
 
     @Test
-    public void TestToString() {
+    void TestToString() {
         assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza dough", recipeHistoryPizza);
         String expected = "Pizza dough\n"
-                        + "French loaf\n";
+                + "French loaf\n";
         assertEquals(expected, recipeCollection.toString(false));
     }
 
     @Test
-    public void TestRecipeHistory() {
+    void TestRecipeHistory() {
         assertEquals(1, recipeHistoryCinnamonRaisin.size());
         List<Recipe> expected = new LinkedList<>();
         expected.add(cinnamonRaisin);
         assertEquals(expected, recipeHistoryCinnamonRaisin.getHistory());
+    }
+
+    @Test
+    void TestGetCollection() {
+        assertTrue(recipeCollection.isEmpty());
+        recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
+        recipeCollection.add("Pizza dough", recipeHistoryPizza);
+        Map<String, RecipeHistory> testCollection = recipeCollection.getCollection();
+        assertEquals(testCollection.get("French loaf"), recipeHistoryFrenchLoaf);
+        assertEquals(testCollection.get("Pizza dough"), recipeHistoryPizza);
+    }
+
+    @Test
+    void TestSave() {
+        assertTrue(recipeCollection.isEmpty());
+        recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
+        recipeCollection.add("Pizza dough", recipeHistoryPizza);
+
+        try {
+            Writer writer = new Writer(new File("data/recipecollections/recipeCollectionTest.json"));
+            writer.write(recipeCollection);
+        } catch (IOException e) {
+            fail("Unexpected IOException.");
+        }
+    }
+
+    @Test
+    void setRecipeCollection() {
+        assertTrue(recipeCollection.isEmpty());
+        Map<String, RecipeHistory> testCollection = new HashMap<>();
+        testCollection.put("French loaf", recipeHistoryFrenchLoaf);
+        testCollection.put("Pizza dough", recipeHistoryPizza);
+        recipeCollection.setCollection(testCollection);
+        assertEquals(testCollection, recipeCollection.getCollection());
     }
 
 }

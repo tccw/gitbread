@@ -63,6 +63,14 @@ class TestCommandParser {
     }
 
     @Test
+    void TestBoolVerboseFlag() {
+        command = "bread list --verbose";
+        parser.parse(options, command);
+        assertEquals("bread list", parser.getCommand());
+        assertNull(parser.get("-v"));
+    }
+
+    @Test
     void get() {
     }
 }
