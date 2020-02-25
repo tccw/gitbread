@@ -186,20 +186,29 @@ public class GitBreadApp {
     //EFFECTS: helper for processCommand(), prints the full recipe and instructions to the console
     private void doBreadView(CommandParser p) {
         String key = p.get("-n");
-        if (p.containsFlag("-m") && p.containsFlag("-t")) {
-            System.out.println(String.format("----------%s (master branch)----------\n", key));
-            System.out.println(collection.get(key).getMasterRecipe().toString());
-            System.out.println(String.format("----------%s (testing branch)----------\n", key));
-            System.out.println(collection.get(key).getTestingRecipe().toString());
-        } else if (p.containsFlag("-m")) {
-            System.out.println(String.format("----------%s (master branch)----------\n", key));
-            System.out.println(collection.get(key).getMasterRecipe().toString());
-        } else if (p.containsFlag("-t")) {
-            System.out.println(String.format("----------%s (testing branch)----------\n", key));
-            System.out.println(collection.get(key).getTestingRecipe().toString());
-        } else {
-            System.out.println("Use '-m' to view the master, '-t' to view the testing, or -m -t to view both");
+        try {
+            if (!p.containsFlag("-m") && !p.containsFlag("-t")) {
+                System.out.println("Use '-m' to view the master, '-t' to view the testing, or -m -t to view both");
+            } else if (p.containsFlag("-m") && p.containsFlag("-t")) {
+                System.out.println(String.format("----------%s (master branch)----------\n", key));
+                System.out.println(collection.get(key).getMasterRecipe().toString());
+                System.out.println(String.format("----------%s (testing branch)----------\n", key));
+                System.out.println(collection.get(key).getTestingRecipe().toString());
+            } else if (p.containsFlag("-m")) {
+                System.out.println(String.format("----------%s (master branch)----------\n", key));
+                System.out.println(collection.get(key).getMasterRecipe().toString());
+            } else if (p.containsFlag("-t")) {
+                if (collection.get(key).getTestingRecipe() == null) {
+                    throw new NullPointerException();
+                } else {
+                    System.out.println(String.format("----------%s (testing branch)----------\n", key));
+                    System.out.println(collection.get(key).getTestingRecipe().toString());
+                }
+            }
+        } catch (NullPointerException e) {
+            System.out.println("No testing branch set.");
         }
+
     }
 
     //EFFECTS: helper for processCommand(), prints the recipes in the collection
