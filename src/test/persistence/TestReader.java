@@ -18,7 +18,7 @@ import java.time.ZoneOffset;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestReader {
-    private static final String TEST_DIRECTORY = "data/recipecollections/testWriter.json";
+    private static final String TEST_DIRECTORY = "./data/recipecollections/testWriter.json";
     private Clock clock = Clock.fixed(LocalDateTime.of(1989, 8,5,12,0)
             .toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
     private Writer testWriter;

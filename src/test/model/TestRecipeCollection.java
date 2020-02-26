@@ -138,7 +138,7 @@ public class TestRecipeCollection {
         recipeCollection.add("Pizza dough", recipeHistoryPizza);
 
         try {
-            Writer writer = new Writer(new File("data/recipecollections/recipeCollectionTest.json"));
+            Writer writer = new Writer(new File("./data/recipecollections/recipeCollectionTest.json"));
             writer.write(recipeCollection);
         } catch (IOException e) {
             fail("Unexpected IOException.");
