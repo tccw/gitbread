@@ -16,7 +16,7 @@ import java.time.Clock;
 import java.util.*;
 
 public class GitBreadApp {
-    private static final String SAVE_DIRECTORY = "data/recipecollections/";
+    private static final String SAVE_DIRECTORY = "./data/recipecollections/";
     private RecipeCollection collection = new RecipeCollection();
     private Clock clock = Clock.systemDefaultZone();
     private Options options;

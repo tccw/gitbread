@@ -5,9 +5,11 @@ import model.RecipeCollection;
 import model.RecipeHistory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import sun.text.normalizer.UTF16;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -17,8 +19,8 @@ import java.time.ZoneOffset;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TestWriter {
-    private static final String TEST_DIRECTORY = "data/recipecollections/testWriter.json";
-    private Clock clock = Clock.fixed(LocalDateTime.of(1989, 8,5,12,0)
+    private static final String TEST_DIRECTORY = "./data/recipecollections/testWriter.json";
+    private Clock clock = Clock.fixed(LocalDateTime.of(1989, 8, 5, 12, 0)
             .toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
     private Writer testWriter;
     private RecipeCollection collection;
@@ -55,15 +57,49 @@ class TestWriter {
             collection.get("French loaf").attempt(collection.get("French loaf").getMasterRecipe(), clock);
             collection.get("French loaf").attempt(collection.get("French loaf").getTestingRecipe(), clock);
         } catch (FileNotFoundException e) {
-            System.out.println("Unexpected FileNotFoundException");
+            fail("Unexpected FileNotFoundException");
         } catch (IOException e) {
-            System.out.println("Unexpected IOException in setUp()");
+            fail("Unexpected IOException in setUp()");
+        }
+    }
+
+    @Test
+    void TestConstructor() {
+        try {
+            File file = new File(TEST_DIRECTORY);
+            Writer writer = new Writer(file);
+            assertEquals("UTF8", writer.getFileWriter().getEncoding());
+        } catch (IOException e) {
+            fail("Unexpected IOException in TestConstructor()");
+        }
+    }
+
+    @Test
+    void TestSetter() {
+        try {
+            File file = new File(TEST_DIRECTORY);
+            Writer writer = new Writer(file);
+            writer.setFileWriter(new FileWriter(new File(TEST_DIRECTORY)));
+            assertEquals("UTF8", writer.getFileWriter().getEncoding());
+        } catch (IOException e) {
+            fail("Unexpected IOException in TestConstructor()");
+        }
+    }
+
+    @Test
+    void TestWriteExpectedIOException() {
+        try {
+            Writer writer = new Writer(new File("data/persistence/folderThatDoesntExist/test.json"));
+            writer.write(new RecipeCollection());
+            fail("Should have thrown an exception.");
+        } catch (IOException e){
+            // do nothing as this is expected
         }
     }
 
     @Test
     void TestWrite() {
-        try{
+        try {
             testWriter.write(collection);
             testWriter.close();
             //Try reading them back

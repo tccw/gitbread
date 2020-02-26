@@ -24,4 +24,12 @@ public class Writer {
     public void close() throws IOException {
         fileWriter.close();
     }
+
+    public FileWriter getFileWriter() {
+        return fileWriter;
+    }
+
+    public void setFileWriter(FileWriter fileWriter) {
+        this.fileWriter = fileWriter;
+    }
 }
