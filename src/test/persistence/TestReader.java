@@ -1,10 +1,9 @@
 package persistence;
 
 import model.BreadRecipe;
-import model.Recipe;
+
 import model.RecipeCollection;
 import model.RecipeHistory;
-import org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +16,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class TestReader {
     private static final String TEST_DIRECTORY = "data/recipecollections/testWriter.json";
