@@ -63,29 +63,6 @@ class TestWriter {
     }
 
     @Test
-    void TestConstructor() {
-        try {
-            File file = new File(TEST_DIRECTORY);
-            Writer writer = new Writer(file);
-            assertEquals("UTF8", writer.getFileWriter().getEncoding());
-        } catch (IOException e) {
-            fail("Unexpected IOException in TestConstructor()");
-        }
-    }
-
-    @Test
-    void TestSetter() {
-        try {
-            File file = new File(TEST_DIRECTORY);
-            Writer writer = new Writer(file);
-            writer.setFileWriter(new FileWriter(new File(TEST_DIRECTORY)));
-            assertEquals("UTF8", writer.getFileWriter().getEncoding());
-        } catch (IOException e) {
-            fail("Unexpected IOException in TestConstructor()");
-        }
-    }
-
-    @Test
     void TestWriteExpectedIOException() {
         try {
             Writer writer = new Writer(new File("data/persistence/folderThatDoesntExist/test.json"));

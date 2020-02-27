@@ -10,11 +10,6 @@ import java.io.IOException;
 
 public class Reader {
 
-
-    public Reader() {
-       //dummy constructor for code coverage
-    }
-
     //REQUIRES: a properly formatted JSON file
     //EFFECTS: Load the provided collection file as a a RecipeCollection object.
     public static RecipeCollection loadRecipeCollection(File file) throws IOException {
