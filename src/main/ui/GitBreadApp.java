@@ -275,7 +275,7 @@ public class GitBreadApp {
     }
 
     private void breadViewHelp() {
-        System.out.println("    bread view master/testing : [-n name]");
+        System.out.println("    bread view : [-n name] [-m master] [-t testing]");
         System.out.println("        usage example: bread view master -n Pizza dough");
         System.out.println("        usage example: bread view testing -n Pizza dough");
     }
