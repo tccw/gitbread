@@ -22,7 +22,7 @@ public class CommandParser {
         for (Option opt : options.getOptions()) {
             if (opt.isBoolean() && (command.contains(opt.getArgShort()) || command.contains(opt.getArgLong()))) {
                 parsedOptions.put(opt.getArgShort(), null);
-            } else if (command.contains(opt.getArgLong()) && command.contains("--")) {
+            } else if (command.contains(opt.getArgLong())) {
                 extractArgParams(command, opt, false);
             } else if (command.contains(opt.getArgShort() + " ")) {
                 extractArgParams(command, opt, true);
