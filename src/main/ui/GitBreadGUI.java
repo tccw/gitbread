@@ -5,10 +5,14 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Stack;
 
 // following thenewboston tutorial as reference
@@ -27,6 +31,7 @@ public class GitBreadGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("GitBread v0.0");
+        Label label = new Label("Holla at ya boy!");
         button1 = new Button();
         button2 = new Button();
         button1.setText("Click me");
@@ -43,9 +48,10 @@ public class GitBreadGUI extends Application {
         layout.getChildren().add(button1);
         layout.getChildren().add(button2);
         Scene scene = new Scene(layout, WIDTH, HEIGHT);
-        scene.getStylesheets().add("./ui/gitbreadstyle.css");
+//        scene.getStylesheets().add("./ui/gitbreadstyle.css");
         primaryStage.setScene(scene);
         primaryStage.show();
+
 
     }
 
