@@ -3,7 +3,6 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -31,8 +30,8 @@ public class TestHashCodeMaker {
     void TestSha1() {
         try {
             String sha1 = HashCodeMaker.sha1(testRecipe);
-            String testClaculatedSha1 = sha1Helper(stringExpected);
-            assertEquals(testClaculatedSha1, sha1);
+            String testCalculatedSHA1 = sha1Helper(stringExpected);
+            assertEquals(testCalculatedSHA1, sha1);
             assertEquals(sha1Expected, sha1);
         } catch (NoSuchAlgorithmException e) {
             fail();
