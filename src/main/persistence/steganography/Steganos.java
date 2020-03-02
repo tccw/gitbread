@@ -1,9 +1,10 @@
 package persistence.steganography;
 
-import persistence.Saveable;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.awt.image.Raster;
+import java.awt.image.WritableRaster;
 import java.io.*;
 
 /*
@@ -13,13 +14,13 @@ stack-overflow posts as well as the following discussion on dream-to-code:
                         https://www.dreamincode.net/forums/topic/27950-steganography/
  */
 public class Steganos {
-    private static final int OFFSET = 1000; // 69 bytes is the important header for a PNG file.
+    private static final int OFFSET = 0;
     private ByteArrayOutputStream outputStream;
     private ByteArrayInputStream inputStream;
     private BufferedImage image;
     private byte[] byteMessage;
-    private byte[] byteImageOriginal;
-    private byte[] byteImageEncoded;
+    private byte[] originalPixels;
+    private byte[] encodedPixels;
 
 
     //EFFECTS: constructs a steganos object with empty ImageBuffer
@@ -28,8 +29,8 @@ public class Steganos {
         inputStream = null;
         image = null;
         byteMessage = null;
-        byteImageOriginal = null;
-        byteImageEncoded = null;
+        originalPixels = null;
+        encodedPixels = null;
     }
 
     //MODIFIES: this
@@ -40,24 +41,19 @@ public class Steganos {
         writeMessageToImage();
     }
 
-    //EFFECTS: embed the message within the original image byte array.
-    private void writeMessageToImage() {
-        int offset = OFFSET;
-        byteImageEncoded = byteImageOriginal;
-        if (byteMessage.length + OFFSET > byteImageOriginal.length) {
-            throw new IllegalArgumentException("Image to small to embed.");
+    //EFFECTS:
+    //https://stackoverflow.com/questions/36407866/converting-byte-array-to-png
+    //https://stackoverflow.com/questions/27389249/what-type-of-array-required-in-writableraster-method-setpixels
+    //https://stackoverflow.com/questions/6524196/java-get-pixel-array-from-image
+    private void toByteImageOriginal(File f) {
+        try {
+            this.image = ImageIO.read(f.toURI().toURL());
+            ImageIO.write(image, "png", outputStream);
+//            originalPixels = outputStream.toByteArray();
+            originalPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        } catch (IOException e) {
+            System.out.println("IOException for " + "'" + f.toString() + "'");
         }
-        for (int msgByte : byteMessage) {
-            for (int bit = 7; bit >= 0; --bit, ++offset) {
-                int b = (msgByte >> bit) & 1;
-                byteImageEncoded[offset] = (byte) ((byteImageEncoded[offset] & 0xFE) | b);
-            }
-        }
-    }
-
-    //EFFECTS: decode a byte array
-    public void decode(byte[] byteImage) {
-        //stub
     }
 
     //EFFECTS: convert the message to a byte array
@@ -65,23 +61,40 @@ public class Steganos {
         this.byteMessage = message.getBytes();
     }
 
-    //EFFECTS:
-    private void toByteImageOriginal(File f) {
-        try {
-            this.image = ImageIO.read(f.toURI().toURL());
-            ImageIO.write(image, "png", outputStream);
-            byteImageOriginal = outputStream.toByteArray();
-            outputStream.close();
-        } catch (IOException e) {
-            System.out.println("IOException for " + "'" + f.toString() + "'");
+    //EFFECTS: embed the message within the original image byte array.
+    private void writeMessageToImage() {
+        int offset = OFFSET;
+        encodedPixels = originalPixels;
+        if (byteMessage.length + OFFSET > originalPixels.length) {
+            throw new IllegalArgumentException("Image to small to embed.");
         }
+        for (int msgByte : byteMessage) {
+            for (int bit = 7; bit >= 0; --bit, ++offset) {
+                int b = (msgByte >> bit) & 1;
+                encodedPixels[offset] = (byte) ((encodedPixels[offset] & 0xFE) | b);
+            }
+        }
+        System.out.println("EncodedPixels: " + encodedPixels.length);
+        System.out.println("OriginalPixels " + outputStream.toByteArray().length);
     }
 
+    //EFFECTS: decode a byte array
+    /*
+    put the byte array length in the first 4 bytes of the message so decode() can know how long the message is.
+     */
+    public String decode(byte[] byteImage) {
+        return ""; //stub
+    }
+
+    //https://stackoverflow.com/questions/8996105/best-method-for-saving-a-java-image-object-with-a-custom-palette-to-a-gif-file
     public void save(File file) throws IOException {
-//        inputStream = new ByteArrayInputStream(byteImageEncoded);
-        inputStream = new ByteArrayInputStream(byteImageOriginal);
-        BufferedImage imageOut = ImageIO.read(inputStream);
-        ImageIO.write(imageOut, "png", file);
+        DataBufferByte buffer = new DataBufferByte(encodedPixels, encodedPixels.length);
+        WritableRaster raster = Raster.createWritableRaster(image.getSampleModel(), buffer, null);
+        BufferedImage finalImage = new BufferedImage(image.getColorModel(),
+                raster,
+                image.getColorModel().isAlphaPremultiplied(),
+                null);
+        ImageIO.write(finalImage, "png", file);
     }
 
     // getters
@@ -93,12 +106,12 @@ public class Steganos {
         return byteMessage;
     }
 
-    public byte[] getByteImageOriginal() {
-        return byteImageOriginal;
+    public byte[] getOriginalPixels() {
+        return originalPixels;
     }
 
-    public byte[] getByteImageEncoded() {
-        return byteImageEncoded;
+    public byte[] getEncodedPixels() {
+        return encodedPixels;
     }
 
     public ByteArrayInputStream getInputStream() {

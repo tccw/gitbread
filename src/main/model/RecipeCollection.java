@@ -92,7 +92,7 @@ public class RecipeCollection implements Saveable {
                 Attempt.class);
         String json = null;
         try {
-            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+            json = mapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
             System.err.println("Problem converting collection to Json.");
             e.printStackTrace();
