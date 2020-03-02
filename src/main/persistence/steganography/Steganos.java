@@ -1,11 +1,15 @@
 package persistence.steganography;
 
 import javax.imageio.ImageIO;
+import javax.sound.midi.Soundbank;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.*;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.List;
 
 /*
 Steganography class for construction shareable recipes and recipe collections. Uses LSB (Least Significant Bit)
@@ -74,16 +78,25 @@ public class Steganos {
                 encodedPixels[offset] = (byte) ((encodedPixels[offset] & 0xFE) | b);
             }
         }
-        System.out.println("EncodedPixels: " + encodedPixels.length);
-        System.out.println("OriginalPixels " + outputStream.toByteArray().length);
     }
 
     //EFFECTS: decode a byte array
     /*
     put the byte array length in the first 4 bytes of the message so decode() can know how long the message is.
      */
-    public String decode(byte[] byteImage) {
-        return ""; //stub
+    public String decode(byte[] byteImage, int length) {
+        int offset = OFFSET;
+        byte[] result = new byte[length];
+        try {
+            for (int b = 0; b < length; ++b) {
+                for (int i = 0; i < 8; ++i, ++offset) {
+                    result[b] = (byte) ((result[b] << 1) | (byteImage[offset] & 1));
+                }
+            }
+        } catch (RuntimeException e) {
+            System.out.println("Unexpected RuntimeException");
+        }
+        return new String(result);
     }
 
     //https://stackoverflow.com/questions/8996105/best-method-for-saving-a-java-image-object-with-a-custom-palette-to-a-gif-file
