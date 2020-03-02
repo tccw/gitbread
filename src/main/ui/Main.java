@@ -28,12 +28,12 @@ public class Main {
         BufferedImage image = ImageIO.read(readFile);
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         ImageIO.write(image, "png", outputStream);
-        outputStream.write(recipeData.getBytes());
+//        outputStream.write(recipeData.getBytes());
         outputStream.flush();
         byte[] out = outputStream.toByteArray();
         outputStream.close();
-        System.out.println((out.length - 32) / 8);
-        System.out.println(recipeBytes.length);
+//        System.out.println((out.length - 32) / 8);
+//        System.out.println(recipeBytes.length);
         //writing the text into the image
         for (int i = startByte, j = 0; j < recipeBytes.length; i += step, j++) {
             out[i] = recipeBytes[j];
