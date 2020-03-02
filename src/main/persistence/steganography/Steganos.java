@@ -8,7 +8,9 @@ import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.*;
 import java.lang.reflect.Array;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -18,7 +20,7 @@ stack-overflow posts as well as the following discussion on dream-to-code:
                         https://www.dreamincode.net/forums/topic/27950-steganography/
  */
 public class Steganos {
-    private static final int OFFSET = 0;
+    private static final int OFFSET = 32; // using 32 bits to store the length of the embedded message
     private ByteArrayOutputStream outputStream;
     private ByteArrayInputStream inputStream;
     private BufferedImage image;
@@ -69,9 +71,12 @@ public class Steganos {
     private void writeMessageToImage() {
         int offset = OFFSET;
         encodedPixels = originalPixels;
+        byte[] length = intToByteArray(this.byteMessage.length);
+
         if (byteMessage.length + OFFSET > originalPixels.length) {
             throw new IllegalArgumentException("Image to small to embed.");
         }
+        System.arraycopy(length, 0, encodedPixels, 0, offset / 8);
         for (int msgByte : byteMessage) {
             for (int bit = 7; bit >= 0; --bit, ++offset) {
                 int b = (msgByte >> bit) & 1;
@@ -84,8 +89,12 @@ public class Steganos {
     /*
     put the byte array length in the first 4 bytes of the message so decode() can know how long the message is.
      */
-    public String decode(byte[] byteImage, int length) {
+    public String decode(File file) {
+        byte[] byteImage = imageToByteArray(file);
         int offset = OFFSET;
+        byte[] byteLength = new byte[4];
+        System.arraycopy(byteImage, 0, byteLength, 0, offset / 8);
+        int length = byteArrayToInt(byteLength);
         byte[] result = new byte[length];
         try {
             for (int b = 0; b < length; ++b) {
@@ -97,6 +106,18 @@ public class Steganos {
             System.out.println("Unexpected RuntimeException");
         }
         return new String(result);
+    }
+
+    private byte[] imageToByteArray(File file) {
+        BufferedImage image = null;
+        try {
+            URL path = file.toURI().toURL();
+            image = ImageIO.read(path);
+            return ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        } catch (IOException e) {
+            System.err.println("Problem reading file.");
+        }
+        return null;
     }
 
     //https://stackoverflow.com/questions/8996105/best-method-for-saving-a-java-image-object-with-a-custom-palette-to-a-gif-file
@@ -129,5 +150,27 @@ public class Steganos {
 
     public ByteArrayInputStream getInputStream() {
         return inputStream;
+    }
+
+    //https://stackoverflow.com/questions/5399798/byte-array-and-int-conversion-in-java/11419863
+    private byte[] intToByteArray(int i) {
+        if (i < 0) {
+            throw new IllegalArgumentException("Message length is negative!");
+        } else if (i == 0) {
+            throw new IllegalArgumentException("Cannot encode a collection with length zero.");
+        }
+        byte byte3 = (byte) ((i & 0xFF000000) >> 24);
+        byte byte2 = (byte) ((i & 0x00FF0000) >> 16);
+        byte byte1 = (byte) ((i & 0x0000FF00) >> 8);
+        byte byte0 = (byte) ((i & 0x000000FF));
+        return (new byte[]{byte3, byte2, byte1, byte0});
+    }
+
+
+    private int byteArrayToInt(byte[] b) {
+        return b[3] & 0xFF
+                | (b[2] & 0xFF) << 8
+                | (b[1] & 0xFF) << 16
+                | (b[0] & 0xFF) << 24;
     }
 }

@@ -13,6 +13,7 @@ import java.awt.image.DataBufferByte;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -77,17 +78,10 @@ public class TestSteganography {
         assertNotNull(encoder.getEncodedPixels());
     }
 
-    // TODO: find out why the BufferedImage img is so much shorter than the encoded byte stream before it is written out
     @Test
     void TestDecode() {
-        try {
-            encoder.encode(message, fileOut);
-            BufferedImage img = ImageIO.read(fileOut.toURI().toURL());
-            byte[] d = ((DataBufferByte) img.getRaster().getDataBuffer()).getData();
-            String out = encoder.decode(d, recipeCollection.toJson().getBytes().length);
-            System.out.println(out);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        encoder.encode(message, fileOut);
+        String out = encoder.decode(fileOut);
+        assertEquals(recipeCollection.toJson(), out);
     }
 }
