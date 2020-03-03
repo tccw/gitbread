@@ -1,17 +1,12 @@
 package persistence.steganography;
 
 import javax.imageio.ImageIO;
-import javax.sound.midi.Soundbank;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 import java.io.*;
-import java.lang.reflect.Array;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /*
 Steganography class for construction shareable recipes and recipe collections. Uses LSB (Least Significant Bit)
@@ -108,8 +103,9 @@ public class Steganos {
         return new String(result);
     }
 
+    //EFFECTS: convert the image linked in the given file to a byte array.
     private byte[] imageToByteArray(File file) {
-        BufferedImage image = null;
+        BufferedImage image;
         try {
             URL path = file.toURI().toURL();
             image = ImageIO.read(path);
@@ -121,14 +117,42 @@ public class Steganos {
     }
 
     //https://stackoverflow.com/questions/8996105/best-method-for-saving-a-java-image-object-with-a-custom-palette-to-a-gif-file
-    public void save(File file) throws IOException {
+    // EFFECTS: save the encoded encoded image to a PNG.
+    public void save(File outPath) throws IOException {
         DataBufferByte buffer = new DataBufferByte(encodedPixels, encodedPixels.length);
         WritableRaster raster = Raster.createWritableRaster(image.getSampleModel(), buffer, null);
         BufferedImage finalImage = new BufferedImage(image.getColorModel(),
                 raster,
                 image.getColorModel().isAlphaPremultiplied(),
                 null);
-        ImageIO.write(finalImage, "png", file);
+        ImageIO.write(finalImage, "png", outPath);
+    }
+
+    //https://stackoverflow.com/questions/5399798/byte-array-and-int-conversion-in-java/11419863
+    //EFFECTS: converts an integer into a 4-byte byte array.
+    private byte[] intToByteArray(int i) {
+        if (i < 0) {
+            throw new IllegalArgumentException("Message length is negative!");
+        } else if (i == 0) {
+            throw new IllegalArgumentException("Cannot encode a collection with length zero.");
+        }
+        byte byte3 = (byte) ((i & 0xFF000000) >> 24);
+        byte byte2 = (byte) ((i & 0x00FF0000) >> 16);
+        byte byte1 = (byte) ((i & 0x0000FF00) >> 8);
+        byte byte0 = (byte) ((i & 0x000000FF));
+        return (new byte[]{byte3, byte2, byte1, byte0});
+    }
+
+    //EFFECTS: converts a 4-byte byte array into an integer
+    private int byteArrayToInt(byte[] b) throws IllegalArgumentException {
+        if (b.length > OFFSET / 8) {
+            throw new IllegalArgumentException();
+        } else {
+            return b[3] & 0xFF
+                    | (b[2] & 0xFF) << 8
+                    | (b[1] & 0xFF) << 16
+                    | (b[0] & 0xFF) << 24;
+        }
     }
 
     // getters
@@ -152,25 +176,5 @@ public class Steganos {
         return inputStream;
     }
 
-    //https://stackoverflow.com/questions/5399798/byte-array-and-int-conversion-in-java/11419863
-    private byte[] intToByteArray(int i) {
-        if (i < 0) {
-            throw new IllegalArgumentException("Message length is negative!");
-        } else if (i == 0) {
-            throw new IllegalArgumentException("Cannot encode a collection with length zero.");
-        }
-        byte byte3 = (byte) ((i & 0xFF000000) >> 24);
-        byte byte2 = (byte) ((i & 0x00FF0000) >> 16);
-        byte byte1 = (byte) ((i & 0x0000FF00) >> 8);
-        byte byte0 = (byte) ((i & 0x000000FF));
-        return (new byte[]{byte3, byte2, byte1, byte0});
-    }
 
-
-    private int byteArrayToInt(byte[] b) {
-        return b[3] & 0xFF
-                | (b[2] & 0xFF) << 8
-                | (b[1] & 0xFF) << 16
-                | (b[0] & 0xFF) << 24;
-    }
 }

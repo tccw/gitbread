@@ -22,9 +22,9 @@ public class TestSteganography {
     RecipeHistory recipeHistoryFrenchLoaf;
     RecipeHistory recipeHistoryPizza;
     RecipeHistory recipeHistoryCinnamonRaisin;
-    Recipe frenchLoaf = new BreadRecipe(1000);
-    Recipe pizza = new BreadRecipe(350, 0.68);
-    Recipe cinnamonRaisin = new BreadRecipe(800);
+    Recipe frenchLoaf;
+    Recipe pizza;
+    Recipe cinnamonRaisin;
 
     private String message;
     private File fileIn;
@@ -33,6 +33,10 @@ public class TestSteganography {
 
     @BeforeEach
     void setUp() {
+        frenchLoaf = new BreadRecipe(1000);
+        pizza = new BreadRecipe(350, 0.68);
+        cinnamonRaisin = new BreadRecipe(800);
+        cinnamonRaisin.setInstructions("1. Mix it up 2. Bake it down 3. funky town");
         recipeCollection = new RecipeCollection();
         recipeHistoryFrenchLoaf = new RecipeHistory();
         recipeHistoryPizza = new RecipeHistory();
@@ -80,7 +84,7 @@ public class TestSteganography {
 
     @Test
     void TestDecode() {
-        encoder.encode(message, fileOut);
+        encoder.encode(message, fileIn);
         String out = encoder.decode(fileOut);
         assertEquals(recipeCollection.toJson(), out);
     }

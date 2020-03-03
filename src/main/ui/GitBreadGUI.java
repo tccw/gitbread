@@ -1,8 +1,8 @@
 package ui;
 
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -22,7 +22,7 @@ import persistence.Reader;
 import persistence.steganography.Steganos;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +31,7 @@ import java.util.Map;
 // https://www.youtube.com/watch?v=FLkOX4Eez6o&list=PL6gx4Cwl9DGBzfXLWLSYVy8EbTdpGbUIG
 public class GitBreadGUI extends Application {
     ToggleButton toggle;
-    Button saveButton;
+    Button scaleButton;
     Button loadButton;
     TextField flourFraction;
     TextField waterFraction;
@@ -39,6 +39,7 @@ public class GitBreadGUI extends Application {
     TextField sugarFraction;
     TextField fatFraction;
     TextField yeastFraction;
+    RecipeCollection activeCollection;
     private static final int WIDTH = 800;
     public static final int HEIGHT = 600;
 
@@ -53,53 +54,52 @@ public class GitBreadGUI extends Application {
         fieldAndButtons();
         Label label = new Label("Flour fraction");
 
-        ListView<String> list = new ListView<String>();
+        ListView<String> recipeListView = new ListView<String>();
+        TextArea instructionsListView = new TextArea();
+        instructionsListView.setWrapText(true);
+        ObservableList<String> items = FXCollections.observableArrayList();
+
         final ImageView target = new ImageView();
         target.setFitWidth(64);
         target.setFitHeight(64);
         target.setImage(new Image("file:./data/icons/buttons/breadbakingbyfreepik64.png"));
         // lambda implementation of the event handler. This works because there is only a single method in the
         // EventHandler interface.
-        saveButton.setOnAction(e -> System.out.println("This will save"));
+        scaleButton.setOnAction(e ->
+                System.out.println("This will scale eventually"));
         loadButton.setOnAction(e -> System.out.println("This will load"));
-        target.setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                if (event.getDragboard().hasFiles()) {
-                    event.acceptTransferModes(TransferMode.ANY);
-                }
-                event.consume();
+        target.setOnDragOver(event -> {
+            if (event.getDragboard().hasFiles()) {
+                event.acceptTransferModes(TransferMode.ANY);
             }
+            event.consume();
         });
-//        target.setOnDragDropped(new EventHandler<DragEvent>() {
-//            @Override
-//            public void handle(DragEvent event) {
-//                List<File> files = event.getDragboard().getFiles();
-//                try {
-//                    Image img = new Image(new FileInputStream(files.get(0)));
-//                    target.setImage(img);
-//                } catch (FileNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
-        target.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                List<File> files = event.getDragboard().getFiles();
-                try {
+
+        target.setOnDragDropped(event -> {
+            List<File> files = event.getDragboard().getFiles();
+            try {
+                if (files.get(0).getName().contains(".png") || files.get(0).getName().contains(".PNG")) {
                     Steganos encoder = new Steganos();
-                    RecipeCollection imageShareCol = Reader.loadRecipeCollectionJson(encoder.decode(files.get(0)));
-                    ObservableList<String> items = FXCollections.observableArrayList();
-                    for (Map.Entry<String, RecipeHistory> entry : imageShareCol.getCollection().entrySet()) {
+                    activeCollection = Reader.loadRecipeCollectionJson(encoder.decode(files.get(0)));
+                    for (Map.Entry<String, RecipeHistory> entry : activeCollection.getCollection().entrySet()) {
                         items.add(entry.getKey());
                     }
-                    list.setItems(items);
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
+                    recipeListView.setItems(items);
+                } else {
+                    throw new IOException();
                 }
+            } catch (IOException e) {
+                System.err.println("Problem loading the collection.");
             }
         });
+
+        recipeListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                instructionsListView.setText(activeCollection.get(newValue).getMasterRecipe().toString());
+            }
+        });
+
 
         GridPane gridPane = new GridPane();
         gridPane.setPadding(new Insets(20, 20, 20, 20));
@@ -109,12 +109,13 @@ public class GitBreadGUI extends Application {
         gridPane.add(sugarFraction, 3, 3, 1, 1);
         gridPane.add(fatFraction, 3, 4, 1, 1);
         gridPane.add(yeastFraction, 3, 5, 1, 1);
-        gridPane.add(saveButton, 8, 8, 1, 1);
-        gridPane.add(toggle, 12, 9, 1, 1);
-        gridPane.add(loadButton, 8, 9, 1, 1);
+        gridPane.add(scaleButton, 3, 8, 1, 1);
+        gridPane.add(toggle, 4, 9, 1, 1);
+        gridPane.add(loadButton, 3, 9, 1, 1);
         gridPane.add(label, 4, 0, 1, 1);
         gridPane.add(target, 1, 12, 1, 1);
-        gridPane.add(list, 0, 0, 2, 10);
+        gridPane.add(recipeListView, 0, 0, 2, 10);
+        gridPane.add(instructionsListView, 5, 0, 2, 10);
         gridPane.setHgap(20);
         gridPane.setVgap(20);
         Scene scene = new Scene(gridPane, WIDTH, HEIGHT);
@@ -134,9 +135,9 @@ public class GitBreadGUI extends Application {
         toggleView.setFitHeight(32);
         toggleView.setFitWidth(32);
         toggle.setGraphic(toggleView);
-        saveButton = new Button();
+        scaleButton = new Button();
         loadButton = new Button();
-        saveButton.setText("Save");
+        scaleButton.setText("Save");
         loadButton.setText("Load");
         flourFraction = new TextField();
         flourFraction.setText("100%");
