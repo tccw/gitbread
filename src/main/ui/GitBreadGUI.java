@@ -5,13 +5,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.DragEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
@@ -30,7 +28,7 @@ import java.util.Map;
 // following thenewboston tutorial as reference
 // https://www.youtube.com/watch?v=FLkOX4Eez6o&list=PL6gx4Cwl9DGBzfXLWLSYVy8EbTdpGbUIG
 public class GitBreadGUI extends Application {
-    ToggleButton toggle;
+    ToggleButton darkModeToggle;
     Button scaleButton;
     Button loadButton;
     TextField flourFraction;
@@ -42,6 +40,7 @@ public class GitBreadGUI extends Application {
     RecipeCollection activeCollection;
     private static final int WIDTH = 800;
     public static final int HEIGHT = 600;
+    boolean darkMode = false;
 
     public static void main(String[] args) {
         launch(args);
@@ -59,23 +58,28 @@ public class GitBreadGUI extends Application {
         instructionsListView.setWrapText(true);
         ObservableList<String> items = FXCollections.observableArrayList();
 
-        final ImageView target = new ImageView();
-        target.setFitWidth(64);
-        target.setFitHeight(64);
-        target.setImage(new Image("file:./data/icons/buttons/breadbakingbyfreepik64.png"));
+        final ImageView loadTarget = new ImageView();
+        loadTarget.setFitWidth(64);
+        loadTarget.setFitHeight(64);
+        loadTarget.setImage(new Image(
+                "file:./data/icons/collectionsharing/collectionsharingbynikitagolubevmonochromeplus.png"));
+        //make tooltips
+        Tooltip.install(loadTarget, new Tooltip("Drop recipe books here!"));
+        darkModeToggle.setTooltip(new Tooltip("Toggle DarkMode"));
         // lambda implementation of the event handler. This works because there is only a single method in the
         // EventHandler interface.
         scaleButton.setOnAction(e ->
                 System.out.println("This will scale eventually"));
         loadButton.setOnAction(e -> System.out.println("This will load"));
-        target.setOnDragOver(event -> {
+
+        loadTarget.setOnDragOver(event -> {
             if (event.getDragboard().hasFiles()) {
                 event.acceptTransferModes(TransferMode.ANY);
             }
             event.consume();
         });
 
-        target.setOnDragDropped(event -> {
+        loadTarget.setOnDragDropped(event -> {
             List<File> files = event.getDragboard().getFiles();
             try {
                 if (files.get(0).getName().contains(".png") || files.get(0).getName().contains(".PNG")) {
@@ -110,31 +114,42 @@ public class GitBreadGUI extends Application {
         gridPane.add(fatFraction, 3, 4, 1, 1);
         gridPane.add(yeastFraction, 3, 5, 1, 1);
         gridPane.add(scaleButton, 3, 8, 1, 1);
-        gridPane.add(toggle, 4, 9, 1, 1);
+        gridPane.add(darkModeToggle, 5, 10, 1, 1);
         gridPane.add(loadButton, 3, 9, 1, 1);
         gridPane.add(label, 4, 0, 1, 1);
-        gridPane.add(target, 1, 12, 1, 1);
+        gridPane.add(loadTarget, 1, 10, 1, 1);
         gridPane.add(recipeListView, 0, 0, 2, 10);
-        gridPane.add(instructionsListView, 5, 0, 2, 10);
+        gridPane.add(instructionsListView, 5, 0, 5, 10);
         gridPane.setHgap(20);
         gridPane.setVgap(20);
         Scene scene = new Scene(gridPane, WIDTH, HEIGHT);
-//        scene.getStylesheets().add("./ui/gitbreadstyle.css");
+        scene.getStylesheets().add("./ui/gitbreadlightstyle.css");
         primaryStage.setScene(scene);
         // Image courtesy of Freepik on https://www.flaticon.com/free-icon/agronomy_1188035
         primaryStage.getIcons().add(new Image("file:./data/icons/wheatcolor512.png"));
         primaryStage.show();
+
+        darkModeToggle.setOnAction(e -> {
+            if (!darkMode) {
+                scene.getStylesheets().add("./ui/gitbreaddarkstyle.css");
+                darkMode = true;
+            } else {
+                scene.getStylesheets().remove("./ui/gitbreaddarkstyle.css");
+                scene.getStylesheets().add("./ui/gitbreadlightstyle.css");
+                darkMode = false;
+            }
+        });
 
 
     }
 
     //EFFECTS
     private void fieldAndButtons() {
-        toggle = new ToggleButton();
-        ImageView toggleView = new ImageView(new Image("file:./data/icons/buttons/calculator512.png"));
-        toggleView.setFitHeight(32);
-        toggleView.setFitWidth(32);
-        toggle.setGraphic(toggleView);
+        darkModeToggle = new ToggleButton();
+        ImageView toggleView = new ImageView(new Image("file:./data/icons/buttons/moonbyfreepik24.png"));
+        toggleView.setFitHeight(24);
+        toggleView.setFitWidth(24);
+        darkModeToggle.setGraphic(toggleView);
         scaleButton = new Button();
         loadButton = new Button();
         scaleButton.setText("Save");

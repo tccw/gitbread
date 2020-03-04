@@ -1,3 +1,4 @@
 *.class
 workspace.xml
 !/res/value/api_keys.txt
+/data/icons/collectionsharing/editing/
