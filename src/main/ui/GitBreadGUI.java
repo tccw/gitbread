@@ -50,7 +50,7 @@ public class GitBreadGUI extends Application {
     GridPane gridPane;
 
     private static final int WIDTH = 800;
-    public static final int HEIGHT = 600;
+    public static final int HEIGHT = 550;
     boolean darkMode = false;
 
     public static void main(String[] args) {
@@ -75,8 +75,8 @@ public class GitBreadGUI extends Application {
         setFlowPaneTooltips();
 
         primaryStage.sizeToScene();
-        primaryStage.setMinHeight(600);
-        primaryStage.setMinWidth(800);
+        primaryStage.setMinHeight(HEIGHT);
+        primaryStage.setMinWidth(WIDTH);
 //        gridPane.setGridLinesVisible(true);
         gridPane.setPadding(new Insets(20, 20, 20, 20));
         gridPane.add(flow, 0, 10, 5, 10);
