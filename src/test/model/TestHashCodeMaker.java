@@ -22,8 +22,10 @@ public class TestHashCodeMaker {
                 "2. Knead dough until smooth " +
                 "3. Let rise in oiled bowl for 1 hour " +
                 "4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered " +
-                "5. Bake 30 minutes at 425Fpan1.00.660.020.00.00.006";
-        sha1Expected = "a23257d18ef6a34bb12cac1c1b808b3d912e5e1d";
+                "5. Bake 30 minutes at 425Fpan1.00.660.020.00.00.0061. Mix all ingredients 2. " +
+                "Knead dough until smooth 3. Let rise in oiled bowl for 1 hour 4. Knock back, " +
+                "shape, and let rise for 45 minutes on baking pan lightly covered 5. Bake 30 minutes at 425F";
+        sha1Expected = "fdecd52b9eaacac0ce06d12b374ff9c88d08a2f4";
     }
 
     @Test

@@ -11,18 +11,21 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.TransferMode;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import model.RecipeCollection;
 import model.RecipeHistory;
-import persistence.Reader;
 import persistence.steganography.Steganos;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import static persistence.Reader.*;
 
 
 // following thenewboston tutorial as reference
@@ -37,7 +40,15 @@ public class GitBreadGUI extends Application {
     TextField sugarFraction;
     TextField fatFraction;
     TextField yeastFraction;
+
     RecipeCollection activeCollection;
+    ListView<String> recipeListView;
+    ObservableList<String> items;
+    TextArea instructionsListView;
+
+    FlowPane flow;
+    GridPane gridPane;
+
     private static final int WIDTH = 800;
     public static final int HEIGHT = 600;
     boolean darkMode = false;
@@ -51,44 +62,58 @@ public class GitBreadGUI extends Application {
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("GitBread");
         fieldAndButtons();
-        Label label = new Label("Flour fraction");
+        flow = addFlowPane();
+        gridPane = new GridPane();
 
-        ListView<String> recipeListView = new ListView<String>();
-        TextArea instructionsListView = new TextArea();
+        recipeListView = new ListView<String>();
+        instructionsListView = new TextArea();
         instructionsListView.setWrapText(true);
-        ObservableList<String> items = FXCollections.observableArrayList();
+        items = FXCollections.observableArrayList();
 
-        final ImageView loadTarget = new ImageView();
-        loadTarget.setFitWidth(64);
-        loadTarget.setFitHeight(64);
-        loadTarget.setImage(new Image(
-                "file:./data/icons/collectionsharing/collectionsharingbynikitagolubevmonochromeplus.png"));
         //make tooltips
-        Tooltip.install(loadTarget, new Tooltip("Drop recipe books here!"));
         darkModeToggle.setTooltip(new Tooltip("Toggle DarkMode"));
-        // lambda implementation of the event handler. This works because there is only a single method in the
-        // EventHandler interface.
-        scaleButton.setOnAction(e ->
-                System.out.println("This will scale eventually"));
-        loadButton.setOnAction(e -> System.out.println("This will load"));
+        setFlowPaneTooltips();
 
-        loadTarget.setOnDragOver(event -> {
+        primaryStage.sizeToScene();
+        primaryStage.setMinHeight(600);
+        primaryStage.setMinWidth(800);
+//        gridPane.setGridLinesVisible(true);
+        gridPane.setPadding(new Insets(20, 20, 20, 20));
+        gridPane.add(flow, 0, 10, 5, 10);
+        gridPane.add(darkModeToggle, 0, 19, 1, 1);
+        gridPane.add(recipeListView, 0, 0, 4, 10);
+        gridPane.add(instructionsListView, 4, 0, 5, 10);
+        gridPane.setHgap(20);
+        gridPane.setVgap(10);
+        Scene scene = new Scene(gridPane, WIDTH, HEIGHT);
+        scene.getStylesheets().add("./ui/gitbreadlightstyle.css");
+        primaryStage.setScene(scene);
+        // Image courtesy of Freepik on https://www.flaticon.com/free-icon/agronomy_1188035
+        primaryStage.getIcons().add(new Image("file:./data/icons/wheatcolor512.png"));
+        primaryStage.show();
+        flow.getChildren().get(0).setOnMouseClicked(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setInitialDirectory(new File("./data/recipecollections"));
+            fileChooser.setTitle("Load Recipe Collection");
+            File file = fileChooser.showOpenDialog(primaryStage);
+            if (file != null) {
+                openFile(file);
+            }
+        });
+
+        flow.getChildren().get(0).setOnDragOver(event -> {
             if (event.getDragboard().hasFiles()) {
                 event.acceptTransferModes(TransferMode.ANY);
             }
             event.consume();
         });
-
-        loadTarget.setOnDragDropped(event -> {
+        flow.getChildren().get(0).setOnDragDropped(event -> {
             List<File> files = event.getDragboard().getFiles();
             try {
                 if (files.get(0).getName().contains(".png") || files.get(0).getName().contains(".PNG")) {
                     Steganos encoder = new Steganos();
-                    activeCollection = Reader.loadRecipeCollectionJson(encoder.decode(files.get(0)));
-                    for (Map.Entry<String, RecipeHistory> entry : activeCollection.getCollection().entrySet()) {
-                        items.add(entry.getKey());
-                    }
-                    recipeListView.setItems(items);
+                    activeCollection = loadRecipeCollectionJson(encoder.decode(files.get(0)));
+                    addItemsListView();
                 } else {
                     throw new IOException();
                 }
@@ -96,38 +121,6 @@ public class GitBreadGUI extends Application {
                 System.err.println("Problem loading the collection.");
             }
         });
-
-        recipeListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                instructionsListView.setText(activeCollection.get(newValue).getMasterRecipe().toString());
-            }
-        });
-
-
-        GridPane gridPane = new GridPane();
-        gridPane.setPadding(new Insets(20, 20, 20, 20));
-        gridPane.add(flourFraction, 3, 0, 1, 1);
-        gridPane.add(waterFraction, 3, 1, 1, 1);
-        gridPane.add(saltFraction, 3, 2, 1, 1);
-        gridPane.add(sugarFraction, 3, 3, 1, 1);
-        gridPane.add(fatFraction, 3, 4, 1, 1);
-        gridPane.add(yeastFraction, 3, 5, 1, 1);
-        gridPane.add(scaleButton, 3, 8, 1, 1);
-        gridPane.add(darkModeToggle, 5, 10, 1, 1);
-        gridPane.add(loadButton, 3, 9, 1, 1);
-        gridPane.add(label, 4, 0, 1, 1);
-        gridPane.add(loadTarget, 1, 10, 1, 1);
-        gridPane.add(recipeListView, 0, 0, 2, 10);
-        gridPane.add(instructionsListView, 5, 0, 5, 10);
-        gridPane.setHgap(20);
-        gridPane.setVgap(20);
-        Scene scene = new Scene(gridPane, WIDTH, HEIGHT);
-        scene.getStylesheets().add("./ui/gitbreadlightstyle.css");
-        primaryStage.setScene(scene);
-        // Image courtesy of Freepik on https://www.flaticon.com/free-icon/agronomy_1188035
-        primaryStage.getIcons().add(new Image("file:./data/icons/wheatcolor512.png"));
-        primaryStage.show();
 
         darkModeToggle.setOnAction(e -> {
             if (!darkMode) {
@@ -140,7 +133,58 @@ public class GitBreadGUI extends Application {
             }
         });
 
+        recipeListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                if (newValue != null) {
+                    instructionsListView.setText(activeCollection.get(newValue).getMasterRecipe().toString());
+                }
+            }
+        });
 
+
+    }
+
+    private FlowPane addFlowPane() {
+        int numImages = 4;
+        FlowPane flow = new FlowPane();
+        flow.setPadding(new Insets(5, 0, 5, 0));
+        flow.setVgap(4);
+        flow.setHgap(4);
+        ImageView[] pages = new ImageView[numImages];
+        pages[0] = new ImageView(new Image("file:./data/icons/sharing/recipecollection.png"));
+        pages[1] = new ImageView(new Image("file:./data/icons/sharing/addrecipe.png"));
+        pages[2] = new ImageView(new Image("file:./data/icons/sharing/exportrecipecollectionshare.png"));
+        pages[3] = new ImageView(new Image("file:./data/icons/sharing/exportrecipe.png"));
+        for (int i = 0; i < numImages; i++) {
+            flow.getChildren().add(pages[i]);
+        }
+        return flow;
+    }
+
+    private void setFlowPaneTooltips() {
+        Tooltip.install(flow.getChildren().get(0), new Tooltip("Load recipe books!"));
+        Tooltip.install(flow.getChildren().get(1), new Tooltip("Load recipes!"));
+        Tooltip.install(flow.getChildren().get(2), new Tooltip("Export recipe books!"));
+        Tooltip.install(flow.getChildren().get(3), new Tooltip("Export recipes!"));
+    }
+
+    private void openFile(File file) {
+        try {
+            System.out.println("loadin' up");
+            activeCollection = loadRecipeCollectionFile(file);
+            addItemsListView();
+        } catch (IOException e) {
+            System.err.println("Error loading the file.");
+        }
+    }
+
+    private void addItemsListView() {
+        recipeListView.getItems().clear();
+        for (Map.Entry<String, RecipeHistory> entry : activeCollection.getCollection().entrySet()) {
+            items.add(entry.getKey());
+        }
+        recipeListView.setItems(items);
     }
 
     //EFFECTS
@@ -150,34 +194,27 @@ public class GitBreadGUI extends Application {
         toggleView.setFitHeight(24);
         toggleView.setFitWidth(24);
         darkModeToggle.setGraphic(toggleView);
-        scaleButton = new Button();
-        loadButton = new Button();
-        scaleButton.setText("Save");
-        loadButton.setText("Load");
-        flourFraction = new TextField();
-        flourFraction.setText("100%");
-        flourFraction.setEditable(false);
-        waterFraction = new TextField();
-        saltFraction = new TextField();
-        sugarFraction = new TextField();
-        fatFraction = new TextField();
-        yeastFraction = new TextField();
-        waterFraction.setPromptText("Water weight%");
-        saltFraction.setPromptText("Salt weight%");
-        sugarFraction.setPromptText("Sugar weight%");
-        fatFraction.setPromptText("Fat weight%");
-        yeastFraction.setPromptText("Yeast weight%");
+//        scaleButton = new Button();
+//        loadButton = new Button();
+//        scaleButton.setText("Save");
+//        loadButton.setText("Load");
+//        flourFraction = new TextField();
+//        flourFraction.setText("100%");
+//        flourFraction.setEditable(false);
+//        waterFraction = new TextField();
+//        saltFraction = new TextField();
+//        sugarFraction = new TextField();
+//        fatFraction = new TextField();
+//        yeastFraction = new TextField();
+//        waterFraction.setPromptText("Water weight%");
+//        saltFraction.setPromptText("Salt weight%");
+//        sugarFraction.setPromptText("Sugar weight%");
+//        fatFraction.setPromptText("Fat weight%");
+//        yeastFraction.setPromptText("Yeast weight%");
     }
 
     //EFFECTS: initialize the layout for the primaryStage
     private void setUpGUI() {
         //set up the layout
     }
-
-//    @Override
-//    public void handle(ActionEvent event) {
-//        if(event.getSource()==button) { // the source can be different buttons
-//            System.out.println("Thanks for clicking!");
-//        }
-//    }
 }

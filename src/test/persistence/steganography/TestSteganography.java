@@ -57,8 +57,8 @@ public class TestSteganography {
         recipeCollection.add("Cinnamon Raisin", recipeHistoryCinnamonRaisin);
 
         message = recipeCollection.toJson();
-        fileIn = new File("./data/icons/collectionsharing/collectionsharingbynikitagolubev.png");
-        fileOut = new File("./data/icons/collectionsharing/sharing/testCollection.png");
+        fileIn = new File("./data/icons/sharing/collectionsharingbynikitagolubev.png");
+        fileOut = new File("./data/icons/sharing/exported/testCollection.png");
         encoder = new Steganos();
     }
 

@@ -1,0 +1,241 @@
+{
+  "collection" : {
+    "Heather's rolls" : {
+      "masterRecipe" : {
+        "className" : "model.BreadRecipe",
+        "waterFraction" : 0.66,
+        "ingredientList" : [ {
+          "type" : "flour",
+          "weight" : 474
+        }, {
+          "type" : "water",
+          "weight" : 312
+        }, {
+          "type" : "salt",
+          "weight" : 9
+        }, {
+          "type" : "fat",
+          "weight" : 0
+        }, {
+          "type" : "sugar",
+          "weight" : 0
+        }, {
+          "type" : "yeast",
+          "weight" : 2
+        } ],
+        "instructions" : "1. Mix all ingredients 2. Knead dough until smooth 3. Let rise in oiled bowl for 1 hour 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered 5. Bake 30 minutes at 425F",
+        "attemptHistory" : [ {
+          "resultNotes" : ""
+        }, {
+          "resultNotes" : ""
+        } ],
+        "cookTime" : 30,
+        "prepTime" : 135,
+        "cookTemp" : 425,
+        "flourFraction" : 1.0,
+        "saltFraction" : 0.02,
+        "sugarFraction" : 0.0,
+        "fatFraction" : 0.0,
+        "yeastFraction" : 0.006,
+        "yield" : 1.6860000000000002,
+        "doughWeight" : 800,
+        "cookingVessel" : "pan"
+      },
+      "testingRecipe" : null,
+      "history" : [ {
+        "className" : "model.BreadRecipe",
+        "waterFraction" : 0.66,
+        "ingredientList" : [ {
+          "type" : "flour",
+          "weight" : 474
+        }, {
+          "type" : "water",
+          "weight" : 312
+        }, {
+          "type" : "salt",
+          "weight" : 9
+        }, {
+          "type" : "fat",
+          "weight" : 0
+        }, {
+          "type" : "sugar",
+          "weight" : 0
+        }, {
+          "type" : "yeast",
+          "weight" : 2
+        } ],
+        "instructions" : "1. Mix all ingredients 2. Knead dough until smooth 3. Let rise in oiled bowl for 1 hour 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered 5. Bake 30 minutes at 425F",
+        "attemptHistory" : [ {
+          "resultNotes" : ""
+        }, {
+          "resultNotes" : ""
+        } ],
+        "cookTime" : 30,
+        "prepTime" : 135,
+        "cookTemp" : 425,
+        "flourFraction" : 1.0,
+        "saltFraction" : 0.02,
+        "sugarFraction" : 0.0,
+        "fatFraction" : 0.0,
+        "yeastFraction" : 0.006,
+        "yield" : 1.6860000000000002,
+        "doughWeight" : 800,
+        "cookingVessel" : "pan"
+      } ]
+    },
+    "Biscuits" : {
+      "masterRecipe" : {
+        "className" : "model.BreadRecipe",
+        "waterFraction" : 0.66,
+        "ingredientList" : [ {
+          "type" : "flour",
+          "weight" : 385
+        }, {
+          "type" : "water",
+          "weight" : 254
+        }, {
+          "type" : "salt",
+          "weight" : 7
+        }, {
+          "type" : "fat",
+          "weight" : 0
+        }, {
+          "type" : "sugar",
+          "weight" : 0
+        }, {
+          "type" : "yeast",
+          "weight" : 2
+        } ],
+        "instructions" : "1. Mix all ingredients 2. Knead dough until smooth 3. Let rise in oiled bowl for 1 hour 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered 5. Bake 30 minutes at 425F",
+        "attemptHistory" : [ {
+          "resultNotes" : ""
+        } ],
+        "cookTime" : 30,
+        "prepTime" : 135,
+        "cookTemp" : 425,
+        "flourFraction" : 1.0,
+        "saltFraction" : 0.02,
+        "sugarFraction" : 0.0,
+        "fatFraction" : 0.0,
+        "yeastFraction" : 0.006,
+        "yield" : 1.6860000000000002,
+        "doughWeight" : 650,
+        "cookingVessel" : "pan"
+      },
+      "testingRecipe" : null,
+      "history" : [ {
+        "className" : "model.BreadRecipe",
+        "waterFraction" : 0.66,
+        "ingredientList" : [ {
+          "type" : "flour",
+          "weight" : 385
+        }, {
+          "type" : "water",
+          "weight" : 254
+        }, {
+          "type" : "salt",
+          "weight" : 7
+        }, {
+          "type" : "fat",
+          "weight" : 0
+        }, {
+          "type" : "sugar",
+          "weight" : 0
+        }, {
+          "type" : "yeast",
+          "weight" : 2
+        } ],
+        "instructions" : "1. Mix all ingredients 2. Knead dough until smooth 3. Let rise in oiled bowl for 1 hour 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered 5. Bake 30 minutes at 425F",
+        "attemptHistory" : [ {
+          "resultNotes" : ""
+        } ],
+        "cookTime" : 30,
+        "prepTime" : 135,
+        "cookTemp" : 425,
+        "flourFraction" : 1.0,
+        "saltFraction" : 0.02,
+        "sugarFraction" : 0.0,
+        "fatFraction" : 0.0,
+        "yeastFraction" : 0.006,
+        "yield" : 1.6860000000000002,
+        "doughWeight" : 650,
+        "cookingVessel" : "pan"
+      } ]
+    },
+    "French loaf" : {
+      "masterRecipe" : {
+        "className" : "model.BreadRecipe",
+        "waterFraction" : 0.66,
+        "ingredientList" : [ {
+          "type" : "flour",
+          "weight" : 2965
+        }, {
+          "type" : "water",
+          "weight" : 1956
+        }, {
+          "type" : "salt",
+          "weight" : 59
+        }, {
+          "type" : "fat",
+          "weight" : 0
+        }, {
+          "type" : "sugar",
+          "weight" : 0
+        }, {
+          "type" : "yeast",
+          "weight" : 17
+        } ],
+        "instructions" : "1. Mix all ingredients 2. Knead dough until smooth 3. Let rise in oiled bowl for 1 hour 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered 5. Bake 30 minutes at 425F",
+        "attemptHistory" : [ ],
+        "cookTime" : 30,
+        "prepTime" : 135,
+        "cookTemp" : 425,
+        "flourFraction" : 1.0,
+        "saltFraction" : 0.02,
+        "sugarFraction" : 0.0,
+        "fatFraction" : 0.0,
+        "yeastFraction" : 0.006,
+        "yield" : 1.6860000000000002,
+        "doughWeight" : 5000,
+        "cookingVessel" : "pan"
+      },
+      "testingRecipe" : null,
+      "history" : [ {
+        "className" : "model.BreadRecipe",
+        "waterFraction" : 0.66,
+        "ingredientList" : [ {
+          "type" : "flour",
+          "weight" : 2965
+        }, {
+          "type" : "water",
+          "weight" : 1956
+        }, {
+          "type" : "salt",
+          "weight" : 59
+        }, {
+          "type" : "fat",
+          "weight" : 0
+        }, {
+          "type" : "sugar",
+          "weight" : 0
+        }, {
+          "type" : "yeast",
+          "weight" : 17
+        } ],
+        "instructions" : "1. Mix all ingredients 2. Knead dough until smooth 3. Let rise in oiled bowl for 1 hour 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered 5. Bake 30 minutes at 425F",
+        "attemptHistory" : [ ],
+        "cookTime" : 30,
+        "prepTime" : 135,
+        "cookTemp" : 425,
+        "flourFraction" : 1.0,
+        "saltFraction" : 0.02,
+        "sugarFraction" : 0.0,
+        "fatFraction" : 0.0,
+        "yeastFraction" : 0.006,
+        "yield" : 1.6860000000000002,
+        "doughWeight" : 5000,
+        "cookingVessel" : "pan"
+      } ]
+    }
+  }
+}
