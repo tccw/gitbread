@@ -135,7 +135,7 @@ public class GitBreadApp {
             askToSave();
         }
         try {
-            collection = Reader.loadRecipeCollection(file);
+            collection = Reader.loadRecipeCollectionFile(file);
         } catch (IOException e) {
             System.out.println(String.format("Couldn't load file %s", p.get("-fn")));
         }

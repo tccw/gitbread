@@ -68,7 +68,7 @@ public class TestReader {
                 testWriter.write(collection);
                 testWriter.close();
                 //Try reading them back
-                RecipeCollection loadedCollection = Reader.loadRecipeCollection(new File(TEST_DIRECTORY));
+                RecipeCollection loadedCollection = Reader.loadRecipeCollectionFile(new File(TEST_DIRECTORY));
                 assertEquals(frenchLoaf.toString(), loadedCollection.get("French loaf").getMasterRecipe().toString());
                 assertEquals(frenchLoafTesting.toString(), collection.get("French loaf").getTestingRecipe().toString());
                 assertEquals(hearthLoaf.toString(), loadedCollection.get("Hearth loaf").getMasterRecipe().toString());

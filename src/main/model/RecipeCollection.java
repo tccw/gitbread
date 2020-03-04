@@ -1,6 +1,7 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import persistence.Saveable;
@@ -77,6 +78,11 @@ public class RecipeCollection implements Saveable {
     //EFFECTS: writes the file to disk as a serialized JSON file
     @Override
     public void save(FileWriter fileWriter) throws IOException {
+        fileWriter.write(this.toJson());
+    }
+
+    //EFFECTS: helper for writing file to Json and for the steganography package.
+    public String toJson() {
         ObjectMapper mapper = JsonMapper.builder().build();
         mapper.registerSubtypes(
                 RecipeCollection.class,
@@ -84,8 +90,14 @@ public class RecipeCollection implements Saveable {
                 Recipe.class,
                 BreadRecipe.class,
                 Attempt.class);
-        String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
-        fileWriter.write(json);
+        String json = null;
+        try {
+            json = mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            System.err.println("Problem converting collection to Json.");
+            e.printStackTrace();
+        }
+        return json;
     }
 
     public void setCollection(Map<String, RecipeHistory> collection) {

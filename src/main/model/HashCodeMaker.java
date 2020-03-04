@@ -35,14 +35,14 @@ public class HashCodeMaker {
     }
 
     private static String breadBuilder(BreadRecipe r) {
-        String result = r.getCookingVessel()
+        return r.getCookingVessel()
                 + r.getFlourFraction()
                 + r.getWaterFraction()
                 + r.getSaltFraction()
                 + r.getSugarFraction()
                 + r.getFatFraction()
-                + r.getYeastFraction();
-        return result;
+                + r.getYeastFraction()
+                + r.getInstructions();
     }
 }
 
