@@ -7,10 +7,12 @@ to the 0th index.
 view that version of the recipe
  */
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+// git is a directed acyclic graph
 public class Repository {
     private List<Recipe> branches; //should this be a hashmap so that I can also store the string name of the branch?
     private Recipe activeBranch;
