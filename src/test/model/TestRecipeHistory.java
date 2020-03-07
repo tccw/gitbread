@@ -2,7 +2,6 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import sun.reflect.generics.visitor.Reifier;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -35,23 +34,23 @@ public class TestRecipeHistory {
     @Test
     public void TestConstructor() {
         HelperVerifyConstructor(recipeHistoryNull);
-        assertSame(cinnamonRaisin, recipeHistoryNotNull.getMasterRecipe());
+        assertSame(cinnamonRaisin, recipeHistoryNotNull.getActiveVersion());
         assertSame(cinnamonRaisin, recipeHistoryNotNull.get(0));
     }
 
     @Test
     public void TestAddToHistorySingle() {
         HelperVerifyConstructor(recipeHistoryNull);
-        recipeHistoryNull.setMasterRecipe(pizza);
+        recipeHistoryNull.setActiveVersion(pizza);
         recipeHistoryNull.addToHistory(pizza);
         assertEquals(1, recipeHistoryNull.size());
-        assertEquals(pizza, recipeHistoryNull.getMasterRecipe());
+        assertEquals(pizza, recipeHistoryNull.getActiveVersion());
     }
 
     @Test
     public void TestAddToHistoryModifiedMulti() {
         HelperVerifyConstructor(recipeHistoryNull);
-        recipeHistoryNull.setMasterRecipe(frenchLoaf);
+        recipeHistoryNull.setActiveVersion(frenchLoaf);
         recipeHistoryNull.addToHistory(new BreadRecipe(800, 0.55));
         recipeHistoryNull.addToHistory(new BreadRecipe(1000));
         recipeHistoryNull.addToHistory(new BreadRecipe(3031));
@@ -66,7 +65,7 @@ public class TestRecipeHistory {
         List<Recipe> expectedHistory = new LinkedList<Recipe>(Arrays.asList(pizza,
                 frenchLoaf, cinnamonRaisin));
         List<Recipe> history = recipeHistoryNull.getHistory();
-        recipeHistoryNull.setMasterRecipe(pizza);
+        recipeHistoryNull.setActiveVersion(pizza);
         recipeHistoryNull.addToHistory(pizza);
         recipeHistoryNull.addToHistory(frenchLoaf);
         recipeHistoryNull.addToHistory(cinnamonRaisin);
@@ -82,22 +81,22 @@ public class TestRecipeHistory {
     public void TestMultiAddHistoryMasterTesting() {
         HelperVerifyConstructor(recipeHistoryNull);
 
-        recipeHistoryNull.setMasterRecipe(pizza);
+        recipeHistoryNull.setActiveVersion(pizza);
         recipeHistoryNull.addToHistory(pizza);
         recipeHistoryNull.addToHistory(new BreadRecipe(350, 0.58));
         recipeHistoryNull.addToHistory(new BreadRecipe(350, 0.64));
-        recipeHistoryNull.setMasterRecipe(recipeHistoryNull.get(1));
-        recipeHistoryNull.attempt(recipeHistoryNull.getMasterRecipe(), clock);
+        recipeHistoryNull.setActiveVersion(recipeHistoryNull.get(1));
+        recipeHistoryNull.attempt(recipeHistoryNull.getActiveVersion(), clock);
         recipeHistoryNull.setTestingRecipe(recipeHistoryNull.get(2));
 
         assertEquals(3, recipeHistoryNull.size());
-        assertSame(recipeHistoryNull.getMasterRecipe(), recipeHistoryNull.get(1));
+        assertSame(recipeHistoryNull.getActiveVersion(), recipeHistoryNull.get(1));
         assertSame(recipeHistoryNull.getTestingRecipe(), recipeHistoryNull.get(2));
         assertEquals(1, recipeHistoryNull.countAttempts());
     }
 
     private void HelperVerifyConstructor(RecipeHistory h) {
-        assertSame(null, h.getMasterRecipe());
+        assertSame(null, h.getActiveVersion());
         assertSame(null, h.getTestingRecipe());
         assertEquals(0, h.size());
     }

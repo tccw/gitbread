@@ -46,8 +46,8 @@ public abstract class Recipe {
 
     //MODIFIES: this
     //EFFECTS: adds an attempt to the attempt history
-    protected void addAttempt(Recipe recipe, Clock clock) {
-        this.attemptHistory.add(new Attempt(recipe, clock));
+    protected void addAttempt(Clock clock) {
+        this.attemptHistory.add(new Attempt(this, clock));
     }
 
     //EFFECTS: produce the weight of the selected ingredient in grams

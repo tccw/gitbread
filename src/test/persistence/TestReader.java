@@ -43,17 +43,17 @@ public class TestReader {
             frenchLoafHist = new RecipeHistory(frenchLoaf);
             hearthLoafHist = new RecipeHistory(hearthLoaf);
 
-            frenchLoafHist.setMasterRecipe(frenchLoaf);
+            frenchLoafHist.setActiveVersion(frenchLoaf);
             frenchLoafHist.addToHistory(frenchLoafTesting);
             frenchLoafHist.setTestingRecipe(frenchLoafHist.get(1));
-            hearthLoafHist.setMasterRecipe(hearthLoaf);
+            hearthLoafHist.setActiveVersion(hearthLoaf);
             hearthLoafHist.addToHistory(hearthLoafTesting);
             hearthLoafHist.setTestingRecipe(hearthLoafHist.get(1));
 
             collection = new RecipeCollection();
             collection.add("French loaf", frenchLoafHist);
             collection.add("Hearth loaf", hearthLoafHist);
-            collection.get("French loaf").attempt(collection.get("French loaf").getMasterRecipe(), clock);
+            collection.get("French loaf").attempt(collection.get("French loaf").getActiveVersion(), clock);
             collection.get("French loaf").attempt(collection.get("French loaf").getTestingRecipe(), clock);
         } catch (FileNotFoundException e) {
             System.out.println("Unexpected FileNotFoundException");
@@ -69,9 +69,9 @@ public class TestReader {
                 testWriter.close();
                 //Try reading them back
                 RecipeCollection loadedCollection = Reader.loadRecipeCollectionFile(new File(TEST_DIRECTORY));
-                assertEquals(frenchLoaf.toString(), loadedCollection.get("French loaf").getMasterRecipe().toString());
+                assertEquals(frenchLoaf.toString(), loadedCollection.get("French loaf").getActiveVersion().toString());
                 assertEquals(frenchLoafTesting.toString(), collection.get("French loaf").getTestingRecipe().toString());
-                assertEquals(hearthLoaf.toString(), loadedCollection.get("Hearth loaf").getMasterRecipe().toString());
+                assertEquals(hearthLoaf.toString(), loadedCollection.get("Hearth loaf").getActiveVersion().toString());
                 assertEquals(hearthLoafTesting.toString(), collection.get("Hearth loaf").getTestingRecipe().toString());
                 assertEquals(2, loadedCollection.get("French loaf").countAttempts());
                 assertEquals(1, loadedCollection.get("French loaf").countTimesModified());

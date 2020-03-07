@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 public class RecipeHistory {
 
-    private Recipe masterRecipe;
+    private Recipe activeVersion;
     private Recipe testingRecipe;
     private LinkedList<Recipe> history;
 
@@ -18,14 +18,14 @@ public class RecipeHistory {
     //MODIFIES:
     //EFFECTS: Creates an empty RecipeHistory by initializing an empty RecipeMap.
     public RecipeHistory() {
-        masterRecipe = null;
+        activeVersion = null;
         testingRecipe = null;
         history = new LinkedList<Recipe>();
     }
 
     //EFFECTS: Creates a new RecipeHistory with the recipe passed as the first history entry and master
     public RecipeHistory(Recipe recipe) {
-        masterRecipe = recipe;
+        activeVersion = recipe;
         testingRecipe = null;
         history = new LinkedList<>();
         history.add(recipe);
@@ -60,7 +60,7 @@ public class RecipeHistory {
 
     //EFFECTS: attempts a recipe from the recipe history list
     public void attempt(Recipe recipe, Clock clock) {
-        recipe.addAttempt(recipe, clock);
+        recipe.addAttempt(clock);
     }
 
     //EFFECTS: add a recipe version to the recipe list
@@ -69,8 +69,8 @@ public class RecipeHistory {
     }
 
     // getters
-    public Recipe getMasterRecipe() {
-        return masterRecipe;
+    public Recipe getActiveVersion() {
+        return activeVersion;
     }
 
     public Recipe getTestingRecipe() {
@@ -83,8 +83,8 @@ public class RecipeHistory {
 
 
     // setters
-    public void setMasterRecipe(Recipe master) {
-        this.masterRecipe = master;
+    public void setActiveVersion(Recipe master) {
+        this.activeVersion = master;
     }
 
     public void setTestingRecipe(Recipe testing) {

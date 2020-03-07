@@ -137,7 +137,7 @@ public class GitBreadGUI extends Application {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (newValue != null) {
-                    instructionsListView.setText(activeCollection.get(newValue).getMasterRecipe().toString());
+                    instructionsListView.setText(activeCollection.get(newValue).getActiveVersion().toString());
                 }
             }
         });

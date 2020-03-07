@@ -154,9 +154,9 @@ public class GitBreadApp {
     private void doBreadScale(CommandParser p) {
         BreadRecipe recipe;
         if (p.containsFlag("-t")) {
-            recipe = (BreadRecipe) collection.get(p.get("-t")).getMasterRecipe();
+            recipe = (BreadRecipe) collection.get(p.get("-t")).getActiveVersion();
         } else {
-            recipe = (BreadRecipe) collection.get(p.get("-n")).getMasterRecipe();
+            recipe = (BreadRecipe) collection.get(p.get("-n")).getActiveVersion();
         }
         if (p.containsFlag("-dw")) {
             recipe.scaleByDoughWeight(Integer.parseInt(p.get("-dw")));
@@ -173,7 +173,7 @@ public class GitBreadApp {
     private void doBreadAttempt(CommandParser p) {
         String title = p.get("-n");
         if (p.containsFlag("-m") && !p.containsFlag("-t")) {
-            Recipe master = collection.get(title).getMasterRecipe();
+            Recipe master = collection.get(title).getActiveVersion();
             collection.get(title).attempt(master, clock);
         } else if (p.containsFlag("-t")) {
             Recipe testing = collection.get(title).getTestingRecipe();
@@ -191,12 +191,12 @@ public class GitBreadApp {
                 System.out.println("Use '-m' to view the master, '-t' to view the testing, or -m -t to view both");
             } else if (p.containsFlag("-m") && p.containsFlag("-t")) {
                 System.out.println(String.format("----------%s (master branch)----------\n", key));
-                System.out.println(collection.get(key).getMasterRecipe().toString());
+                System.out.println(collection.get(key).getActiveVersion().toString());
                 System.out.println(String.format("----------%s (testing branch)----------\n", key));
                 System.out.println(collection.get(key).getTestingRecipe().toString());
             } else if (p.containsFlag("-m")) {
                 System.out.println(String.format("----------%s (master branch)----------\n", key));
-                System.out.println(collection.get(key).getMasterRecipe().toString());
+                System.out.println(collection.get(key).getActiveVersion().toString());
             } else if (p.containsFlag("-t")) {
                 if (collection.get(key).getTestingRecipe() == null) {
                     throw new NullPointerException();

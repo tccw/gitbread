@@ -30,13 +30,13 @@ public class TestRecipeCollection {
         recipeHistoryPizza = new RecipeHistory();
         recipeHistoryCinnamonRaisin = new RecipeHistory();
 
-        recipeHistoryFrenchLoaf.setMasterRecipe(frenchLoaf);
+        recipeHistoryFrenchLoaf.setActiveVersion(frenchLoaf);
         recipeHistoryFrenchLoaf.addToHistory(frenchLoaf);
 
-        recipeHistoryCinnamonRaisin.setMasterRecipe(cinnamonRaisin);
+        recipeHistoryCinnamonRaisin.setActiveVersion(cinnamonRaisin);
         recipeHistoryCinnamonRaisin.addToHistory(cinnamonRaisin);
 
-        recipeHistoryPizza.setMasterRecipe(pizza);
+        recipeHistoryPizza.setActiveVersion(pizza);
         recipeHistoryPizza.addToHistory(pizza);
         recipeHistoryPizza.addToHistory(new BreadRecipe(350, 0.58));
         recipeHistoryPizza.addToHistory(new BreadRecipe(350, 0.64));
