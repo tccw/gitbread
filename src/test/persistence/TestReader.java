@@ -65,11 +65,11 @@ public class TestReader {
                 testWriter.close();
                 //Try reading them back
                 RecipeDevCollection loadedCollection = Reader.loadRecipeCollectionFile(new File(TEST_DIRECTORY));
-                assertEquals(frenchLoaf.toString(), loadedCollection.get("French loaf").getActiveCommit()
+                assertEquals(frenchLoaf.toString(), loadedCollection.get("French loaf").getCommits().get(1)
                         .getRecipeVersion().toString());
                 assertEquals(frenchLoafTesting.toString(), collection.get("French loaf").getActiveCommit()
                         .getRecipeVersion().toString());
-                assertEquals(hearthLoaf.toString(), loadedCollection.get("Hearth loaf").getActiveCommit()
+                assertEquals(hearthLoaf.toString(), loadedCollection.get("Hearth loaf").getCommits().get(1)
                         .getRecipeVersion().toString());
                 assertEquals(hearthLoafTesting.toString(), collection.get("Hearth loaf").getActiveCommit()
                         .getRecipeVersion().toString());

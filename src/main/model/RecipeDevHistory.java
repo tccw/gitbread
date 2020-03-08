@@ -1,7 +1,5 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.security.NoSuchAlgorithmException;
@@ -10,8 +8,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-public class RecipeDevHistory {
 
+
+public class RecipeDevHistory {
     private Commit activeCommit;
     private String currentBranch;
     private List<String> branches;

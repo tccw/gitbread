@@ -1,9 +1,6 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -14,6 +11,7 @@ public class Commit {
     private String comment;
     private boolean isMerged;
 
+    //default constructor for Jackson
     public Commit() {
     }
 
