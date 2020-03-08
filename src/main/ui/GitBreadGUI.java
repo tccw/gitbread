@@ -17,6 +17,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import model.RecipeCollection;
+import model.RecipeDevCollection;
+import model.RecipeDevHistory;
 import model.RecipeHistory;
 import persistence.steganography.Steganos;
 
@@ -41,7 +43,7 @@ public class GitBreadGUI extends Application {
     TextField fatFraction;
     TextField yeastFraction;
 
-    RecipeCollection activeCollection;
+    RecipeDevCollection activeCollection;
     ListView<String> recipeListView;
     ObservableList<String> items;
     TextArea instructionsListView;
@@ -137,7 +139,10 @@ public class GitBreadGUI extends Application {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (newValue != null) {
-                    instructionsListView.setText(activeCollection.get(newValue).getActiveVersion().toString());
+                    instructionsListView.setText(activeCollection.get(newValue)
+                            .getActiveCommit()
+                            .getRecipeVersion()
+                            .toString());
                 }
             }
         });
@@ -181,7 +186,7 @@ public class GitBreadGUI extends Application {
 
     private void addItemsListView() {
         recipeListView.getItems().clear();
-        for (Map.Entry<String, RecipeHistory> entry : activeCollection.getCollection().entrySet()) {
+        for (Map.Entry<String, RecipeDevHistory> entry : activeCollection.getCollection().entrySet()) {
             items.add(entry.getKey());
         }
         recipeListView.setItems(items);

@@ -98,6 +98,7 @@ public abstract class Recipe {
         return this.instructions;
     }
 
+    @JsonSerialize
     protected ArrayList<Attempt> getAttemptHistory() {
         return this.attemptHistory;
     }

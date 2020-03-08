@@ -1,5 +1,10 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import jdk.nashorn.internal.objects.annotations.Property;
+
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.util.ArrayList;
@@ -13,7 +18,8 @@ public class RecipeDevHistory {
     private List<String> branches;
     private LinkedList<Commit> commits;
 
-    public RecipeDevHistory(Recipe recipe) throws NoSuchAlgorithmException {
+    @JsonCreator
+    public RecipeDevHistory(@JsonProperty("recipe") Recipe recipe) throws NoSuchAlgorithmException {
         branches = new ArrayList<String>();
         branches.add("master");
         commits = new LinkedList<Commit>();
@@ -98,15 +104,23 @@ public class RecipeDevHistory {
         return this.commits.size();
     }
 
+    @JsonSerialize
     public List<String> getBranches() {
         return branches;
     }
 
+    @JsonSerialize
     public String getCurrentBranch() {
         return currentBranch;
     }
 
+    @JsonSerialize
     public LinkedList<Commit> getCommits() {
         return commits;
+    }
+
+    @JsonSerialize
+    public Commit getActiveCommit() {
+        return activeCommit;
     }
 }

@@ -1,5 +1,6 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +21,7 @@ public class RecipeDevCollection implements Saveable {
     Map<String, RecipeDevHistory> collection;
 
     //EFFECTS: instantiates a new empty collection
+    @JsonCreator
     public RecipeDevCollection() {
         collection = new HashMap<String, RecipeDevHistory>();
     }
@@ -86,9 +88,11 @@ public class RecipeDevCollection implements Saveable {
         mapper.registerSubtypes(
                 RecipeDevCollection.class,
                 RecipeDevHistory.class,
+                Commit.class,
                 Recipe.class,
                 BreadRecipe.class,
-                Attempt.class);
+                Attempt.class,
+                Ingredient.class);
         String json = null;
         try {
             json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);

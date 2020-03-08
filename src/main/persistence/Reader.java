@@ -13,29 +13,31 @@ public class Reader {
 
     //REQUIRES: a properly formatted JSON file
     //EFFECTS: Load the provided collection file as a a RecipeCollection object.
-    public static RecipeCollection loadRecipeCollectionFile(File file) throws IOException {
+    public static RecipeDevCollection loadRecipeCollectionFile(File file) throws IOException {
         ObjectMapper mapper = JsonMapper.builder().build();
         FileReader reader = new FileReader(file);
         mapper.registerSubtypes(
-                RecipeCollection.class,
-                RecipeHistory.class,
+                RecipeDevCollection.class,
+                RecipeDevHistory.class,
+                Commit.class,
                 Recipe.class,
                 BreadRecipe.class,
                 Attempt.class,
                 Ingredient.class);
-        return mapper.readValue(reader, RecipeCollection.class);
+        return mapper.readValue(reader, RecipeDevCollection.class);
     }
 
-    public static RecipeCollection loadRecipeCollectionJson(String json) throws JsonProcessingException {
+    public static RecipeDevCollection loadRecipeCollectionJson(String json) throws JsonProcessingException {
         ObjectMapper mapper = JsonMapper.builder().build();
         mapper.registerSubtypes(
-                RecipeCollection.class,
-                RecipeHistory.class,
+                RecipeDevCollection.class,
+                RecipeDevHistory.class,
+                Commit.class,
                 Recipe.class,
                 BreadRecipe.class,
                 Attempt.class,
                 Ingredient.class);
-        return mapper.readValue(json, RecipeCollection.class);
+        return mapper.readValue(json, RecipeDevCollection.class);
     }
 
 }
