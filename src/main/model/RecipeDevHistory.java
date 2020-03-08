@@ -105,4 +105,8 @@ public class RecipeDevHistory {
     public String getCurrentBranch() {
         return currentBranch;
     }
+
+    public LinkedList<Commit> getCommits() {
+        return commits;
+    }
 }

@@ -1,0 +1,178 @@
+{
+  "collection" : {
+    "Pizza dough" : {
+      "currentBranch" : "master",
+      "branches" : [ "master" ],
+      "commits" : [ {
+        "recipeVersion" : {
+          "className" : "model.BreadRecipe",
+          "waterFraction" : 0.65,
+          "ingredientList" : [ {
+            "type" : "flour",
+            "weight" : 340
+          }, {
+            "type" : "water",
+            "weight" : 221
+          }, {
+            "type" : "salt",
+            "weight" : 6
+          }, {
+            "type" : "fat",
+            "weight" : 0
+          }, {
+            "type" : "sugar",
+            "weight" : 0
+          }, {
+            "type" : "yeast",
+            "weight" : 2
+          } ],
+          "instructions" : "",
+          "attemptHistory" : [ ],
+          "cookTime" : -1,
+          "prepTime" : -1,
+          "cookTemp" : -1,
+          "flourFraction" : 1.0,
+          "saltFraction" : 0.02,
+          "sugarFraction" : 0.0,
+          "fatFraction" : 0.0,
+          "yeastFraction" : 0.006,
+          "yield" : 1.676,
+          "doughWeight" : 569,
+          "cookingVessel" : "none set"
+        },
+        "branchLabel" : "master",
+        "sha1" : "4c888ac63f5da26aacd4a121ed27b77b13e45af9",
+        "comment" : "",
+        "merged" : false
+      }, {
+        "recipeVersion" : {
+          "className" : "model.BreadRecipe",
+          "waterFraction" : 0.68,
+          "ingredientList" : [ {
+            "type" : "flour",
+            "weight" : 350
+          }, {
+            "type" : "water",
+            "weight" : 238
+          }, {
+            "type" : "salt",
+            "weight" : 7
+          }, {
+            "type" : "fat",
+            "weight" : 0
+          }, {
+            "type" : "sugar",
+            "weight" : 0
+          }, {
+            "type" : "yeast",
+            "weight" : 2
+          } ],
+          "instructions" : "",
+          "attemptHistory" : [ ],
+          "cookTime" : -1,
+          "prepTime" : -1,
+          "cookTemp" : -1,
+          "flourFraction" : 1.0,
+          "saltFraction" : 0.02,
+          "sugarFraction" : 0.0,
+          "fatFraction" : 0.0,
+          "yeastFraction" : 0.006,
+          "yield" : 1.7060000000000002,
+          "doughWeight" : 597,
+          "cookingVessel" : "none set"
+        },
+        "branchLabel" : "master",
+        "sha1" : "de4bb470cfa850ba7e416a1818c23419f9865ac6",
+        "comment" : "",
+        "merged" : false
+      } ]
+    },
+    "French loaf" : {
+      "currentBranch" : "master",
+      "branches" : [ "master" ],
+      "commits" : [ {
+        "recipeVersion" : {
+          "className" : "model.BreadRecipe",
+          "waterFraction" : 0.76,
+          "ingredientList" : [ {
+            "type" : "flour",
+            "weight" : 500
+          }, {
+            "type" : "water",
+            "weight" : 380
+          }, {
+            "type" : "salt",
+            "weight" : 10
+          }, {
+            "type" : "fat",
+            "weight" : 0
+          }, {
+            "type" : "sugar",
+            "weight" : 0
+          }, {
+            "type" : "yeast",
+            "weight" : 3
+          } ],
+          "instructions" : "",
+          "attemptHistory" : [ ],
+          "cookTime" : -1,
+          "prepTime" : -1,
+          "cookTemp" : -1,
+          "flourFraction" : 1.0,
+          "saltFraction" : 0.02,
+          "sugarFraction" : 0.0,
+          "fatFraction" : 0.0,
+          "yeastFraction" : 0.006,
+          "yield" : 1.786,
+          "doughWeight" : 893,
+          "cookingVessel" : "none set"
+        },
+        "branchLabel" : "master",
+        "sha1" : "61d24a053332d1c99fcdfd78f743c70441a762b2",
+        "comment" : "",
+        "merged" : false
+      }, {
+        "recipeVersion" : {
+          "className" : "model.BreadRecipe",
+          "waterFraction" : 0.66,
+          "ingredientList" : [ {
+            "type" : "flour",
+            "weight" : 593
+          }, {
+            "type" : "water",
+            "weight" : 391
+          }, {
+            "type" : "salt",
+            "weight" : 11
+          }, {
+            "type" : "fat",
+            "weight" : 0
+          }, {
+            "type" : "sugar",
+            "weight" : 0
+          }, {
+            "type" : "yeast",
+            "weight" : 3
+          } ],
+          "instructions" : "1. Mix all ingredients 2. Knead dough until smooth 3. Let rise in oiled bowl for 1 hour 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered 5. Bake 30 minutes at 425F",
+          "attemptHistory" : [ ],
+          "cookTime" : 30,
+          "prepTime" : 135,
+          "cookTemp" : 425,
+          "flourFraction" : 1.0,
+          "saltFraction" : 0.02,
+          "sugarFraction" : 0.0,
+          "fatFraction" : 0.0,
+          "yeastFraction" : 0.006,
+          "yield" : 1.6860000000000002,
+          "doughWeight" : 1000,
+          "cookingVessel" : "pan"
+        },
+        "branchLabel" : "master",
+        "sha1" : "fdecd52b9eaacac0ce06d12b374ff9c88d08a2f4",
+        "comment" : "",
+        "merged" : false
+      } ]
+    }
+  }
+}

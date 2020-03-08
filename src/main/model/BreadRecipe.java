@@ -58,11 +58,6 @@ public class BreadRecipe extends Recipe {
         super.prepTime = -1; // -1 indicates no prepTime has been set
         super.cookTemp = -1; // -1 indicates no cookTemp has been set
         this.cookingVessel = "none set";
-        try {
-            this.sha1 = HashCodeMaker.sha1(this);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
     }
 
     //EFFECTS: constructs a default bread recipe with a desired wet dough weight
@@ -83,11 +78,6 @@ public class BreadRecipe extends Recipe {
         super.prepTime = 135; //minutes
         super.cookTemp = 425; // in degrees F
         this.cookingVessel = "pan";
-        try {
-            this.sha1 = HashCodeMaker.sha1(this);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
     }
 
     //EFFECTS:
