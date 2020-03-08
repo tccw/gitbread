@@ -34,12 +34,6 @@ public class GitBreadGUI extends Application {
     ToggleButton darkModeToggle;
     Button scaleButton;
     Button loadButton;
-    TextField flourFraction;
-    TextField waterFraction;
-    TextField saltFraction;
-    TextField sugarFraction;
-    TextField fatFraction;
-    TextField yeastFraction;
 
     RecipeDevCollection activeCollection;
     ListView<String> recipeListView;
@@ -50,7 +44,7 @@ public class GitBreadGUI extends Application {
     GridPane gridPane;
 
     private static final int WIDTH = 800;
-    public static final int HEIGHT = 550;
+    public static final int HEIGHT = 600;
     boolean darkMode = false;
 
     public static void main(String[] args) {
@@ -60,6 +54,7 @@ public class GitBreadGUI extends Application {
     // start contains the main JavaFX code for running and handling the application
     @Override
     public void start(Stage primaryStage) throws Exception {
+        activeCollection = new RecipeDevCollection();
         primaryStage.setTitle("GitBread");
         fieldAndButtons();
         flow = addFlowPane();
@@ -78,11 +73,11 @@ public class GitBreadGUI extends Application {
         primaryStage.setMinHeight(HEIGHT);
         primaryStage.setMinWidth(WIDTH);
 //        gridPane.setGridLinesVisible(true);
-        gridPane.setPadding(new Insets(20, 20, 20, 20));
-        gridPane.add(flow, 0, 10, 5, 10);
-        gridPane.add(darkModeToggle, 0, 19, 1, 1);
-        gridPane.add(recipeListView, 0, 0, 4, 10);
-        gridPane.add(instructionsListView, 4, 0, 5, 10);
+        gridPane.setPadding(new Insets(10, 20, 20, 20));
+        gridPane.add(flow, 0, 0, 5, 10);
+        gridPane.add(darkModeToggle, 13, 0, 1, 1);
+        gridPane.add(recipeListView, 0, 2, 4, 10);
+        gridPane.add(instructionsListView, 4, 2, 10, 10);
         gridPane.setHgap(20);
         gridPane.setVgap(10);
         Scene scene = new Scene(gridPane, WIDTH, HEIGHT);
@@ -91,23 +86,20 @@ public class GitBreadGUI extends Application {
         // Image courtesy of Freepik on https://www.flaticon.com/free-icon/agronomy_1188035
         primaryStage.getIcons().add(new Image("file:./data/icons/wheatcolor512.png"));
         primaryStage.show();
-        flow.getChildren().get(0).setOnMouseClicked(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(new File("./data/recipecollections"));
-            fileChooser.setTitle("Load Recipe Collection");
-            File file = fileChooser.showOpenDialog(primaryStage);
-            if (file != null) {
-                openFile(file);
-            }
-        });
 
-        flow.getChildren().get(0).setOnDragOver(event -> {
-            if (event.getDragboard().hasFiles()) {
-                event.acceptTransferModes(TransferMode.ANY);
-            }
-            event.consume();
-        });
-        flow.getChildren().get(0).setOnDragDropped(event -> {
+        ImageView recipeListPlaceHolder = new ImageView(new Image("file:./data/icons/sharing/recipecollection.png"));
+        recipeListPlaceHolder.setOpacity(0.5);
+        recipeListView.setPlaceholder(recipeListPlaceHolder);
+        recipeListView.setMinWidth(204);
+        recipeListView.setMaxWidth(204);
+        recipeListView.setOnDragOver(event -> {
+                    if (event.getDragboard().hasFiles()) {
+                        event.acceptTransferModes(TransferMode.ANY);
+                    }
+                    event.consume();
+                }
+        );
+        recipeListView.setOnDragDropped(event -> {
             List<File> files = event.getDragboard().getFiles();
             try {
                 if (files.get(0).getName().contains(".png") || files.get(0).getName().contains(".PNG")) {
@@ -120,6 +112,23 @@ public class GitBreadGUI extends Application {
             } catch (IOException e) {
                 System.err.println("Problem loading the collection.");
             }
+        });
+
+        flow.getChildren().get(0).setOnMouseClicked(e -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setInitialDirectory(new File("./data/recipecollections"));
+            fileChooser.setTitle("Load Recipe Collection");
+            File file = fileChooser.showOpenDialog(primaryStage);
+            if (file != null) {
+                openFile(file);
+            }
+        });
+
+        flow.getChildren().get(1).setOnMouseClicked(e -> {
+            RecipeStage stage = new RecipeStage();
+            stage.display(activeCollection);
+            addItemsListView();
+            recipeListView.refresh();
         });
 
         darkModeToggle.setOnAction(e -> {
@@ -152,13 +161,17 @@ public class GitBreadGUI extends Application {
         int numImages = 4;
         FlowPane flow = new FlowPane();
         flow.setPadding(new Insets(5, 0, 5, 0));
-        flow.setVgap(4);
+        flow.setVgap(2);
         flow.setHgap(4);
-        ImageView[] pages = new ImageView[numImages];
-        pages[0] = new ImageView(new Image("file:./data/icons/sharing/recipecollection.png"));
-        pages[1] = new ImageView(new Image("file:./data/icons/sharing/addrecipe.png"));
-        pages[2] = new ImageView(new Image("file:./data/icons/sharing/exportrecipecollectionshare.png"));
-        pages[3] = new ImageView(new Image("file:./data/icons/sharing/exportrecipe.png"));
+        Button[] pages = new Button[numImages];
+        String[] urls = new String[]{"file:./data/icons/sharing/recipecollection32.png",
+                "file:./data/icons/sharing/addrecipe32.png",
+                "file:./data/icons/sharing/exportrecipecollectionshare32.png",
+                "file:./data/icons/sharing/exportrecipe32.png"};
+        for (int i = 0; i < numImages; i++) {
+            pages[i] = new Button();
+            pages[i].setGraphic(new ImageView(new Image(urls[i])));
+        }
         for (int i = 0; i < numImages; i++) {
             flow.getChildren().add(pages[i]);
         }
@@ -201,19 +214,6 @@ public class GitBreadGUI extends Application {
 //        loadButton = new Button();
 //        scaleButton.setText("Save");
 //        loadButton.setText("Load");
-//        flourFraction = new TextField();
-//        flourFraction.setText("100%");
-//        flourFraction.setEditable(false);
-//        waterFraction = new TextField();
-//        saltFraction = new TextField();
-//        sugarFraction = new TextField();
-//        fatFraction = new TextField();
-//        yeastFraction = new TextField();
-//        waterFraction.setPromptText("Water weight%");
-//        saltFraction.setPromptText("Salt weight%");
-//        sugarFraction.setPromptText("Sugar weight%");
-//        fatFraction.setPromptText("Fat weight%");
-//        yeastFraction.setPromptText("Yeast weight%");
     }
 
     //EFFECTS: initialize the layout for the primaryStage

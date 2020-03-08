@@ -46,7 +46,7 @@ public class BreadRecipe extends Recipe {
         this.sugarFraction = 0;
         this.fatFraction = 0;
         this.yeastFraction = 0.006;
-        this.yield = flourFraction + this.waterFraction + saltFraction + sugarFraction + fatFraction + yeastFraction;
+        updateYield();
         this.blankIngredientsTemplate();
         this.calcIngredientsFromFlourWeight(flourWeight);
         for (Ingredient i : ingredientList) {
@@ -68,7 +68,7 @@ public class BreadRecipe extends Recipe {
         this.sugarFraction = 0;
         this.fatFraction = 0;
         this.yeastFraction = 0.006;
-        this.yield = flourFraction + waterFraction + saltFraction + sugarFraction + fatFraction + yeastFraction;
+        updateYield();
         this.doughWeight = doughWeight; // grams
         this.blankIngredientsTemplate();
         this.calcIngredientsFromDoughWeight(this.doughWeight);
@@ -94,6 +94,10 @@ public class BreadRecipe extends Recipe {
         }
     }
 
+    public void updateYield() {
+        this.yield = flourFraction + this.waterFraction + saltFraction + sugarFraction + fatFraction + yeastFraction;
+    }
+
     //MODIFIES: this
     //EFFECTS: creates an array list with unset ingredient weights
     private void blankIngredientsTemplate() {
@@ -110,6 +114,7 @@ public class BreadRecipe extends Recipe {
     //MODIFIES: this
     //EFFECTS: calculate the ingredients list from the desired final wet dough weight
     private void calcIngredientsFromDoughWeight(int doughWeight) {
+        updateYield();
         int flourWeight = (int) (doughWeight / this.yield);
         ArrayList<Double> bakersFractions = new ArrayList<Double>(Arrays.asList(
                 this.flourFraction, this.waterFraction,

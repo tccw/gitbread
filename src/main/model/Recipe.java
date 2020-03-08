@@ -75,7 +75,7 @@ public abstract class Recipe {
         this.prepTime = prepTime;
     }
 
-    protected void setCookTemp(int cookTemp) {
+    public void setCookTemp(int cookTemp) {
         this.cookTemp = cookTemp;
     }
 
