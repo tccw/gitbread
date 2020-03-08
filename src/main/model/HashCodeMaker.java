@@ -1,14 +1,16 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalDateTime;
 
 public class HashCodeMaker {
 
     //method take from here: http://oliviertech.com/java/generate-SHA1-hash-from-a-String/
     //EFFECTS: calculates a SHA-1 hashcode for version control
+    @JsonProperty("recipe")
     public static String sha1(Recipe recipe) throws NoSuchAlgorithmException {
         String value = buildString(recipe);
         MessageDigest digest = MessageDigest.getInstance("SHA-1");

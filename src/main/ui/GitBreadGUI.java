@@ -16,10 +16,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-import model.RecipeCollection;
 import model.RecipeDevCollection;
 import model.RecipeDevHistory;
-import model.RecipeHistory;
 import persistence.steganography.Steganos;
 
 import java.io.File;

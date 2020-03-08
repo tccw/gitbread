@@ -60,7 +60,7 @@ class TestWriter {
     void TestWriteExpectedIOException() {
         try {
             Writer writer = new Writer(new File("data/persistence/folderThatDoesntExist/test.json"));
-            writer.write(new RecipeCollection());
+            writer.write(new RecipeDevCollection());
             fail("Should have thrown an exception.");
         } catch (IOException e){
             // do nothing as this is expected

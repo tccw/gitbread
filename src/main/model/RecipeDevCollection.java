@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import persistence.Saveable;
 
@@ -21,7 +22,6 @@ public class RecipeDevCollection implements Saveable {
     Map<String, RecipeDevHistory> collection;
 
     //EFFECTS: instantiates a new empty collection
-    @JsonCreator
     public RecipeDevCollection() {
         collection = new HashMap<String, RecipeDevHistory>();
     }
@@ -29,7 +29,7 @@ public class RecipeDevCollection implements Saveable {
     //EFFECTS: creates and adds a new recipe to the recipe collection
     public void add(String title, RecipeDevHistory collection) {
         this.collection.put(title, collection);
-        // create a new RecipeHistory "repository"
+        // create a new RecipeDevHistory "repository"
     }
 
     //EFFECTS: return the size of the recipe collection
@@ -53,7 +53,7 @@ public class RecipeDevCollection implements Saveable {
         return this.collection.get(key);
     }
 
-    //REQUIRES: non-empty RecipeCollection
+    //REQUIRES: non-empty RecipeDevCollection
     //EFFECTS: return a formatted string with all recipe names, cook time, and prep time
     // foreach with a HashMap https://stackoverflow.com/questions/4234985/how-to-for-each-the-hashmap
     public String toString(boolean verbose) {
@@ -69,10 +69,6 @@ public class RecipeDevCollection implements Saveable {
             }
         }
         return result.toString();
-    }
-
-    public Map<String, RecipeDevHistory> getCollection() {
-        return collection;
     }
 
     //MODIFIES: fileWriter
@@ -106,5 +102,10 @@ public class RecipeDevCollection implements Saveable {
     public void setCollection(Map<String, RecipeDevHistory> collection) {
         this.collection = collection;
     }
+
+    public Map<String, RecipeDevHistory> getCollection() {
+        return collection;
+    }
+
 }
 

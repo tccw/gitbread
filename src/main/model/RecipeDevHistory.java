@@ -3,7 +3,6 @@ package model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import jdk.nashorn.internal.objects.annotations.Property;
 
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
@@ -18,8 +17,10 @@ public class RecipeDevHistory {
     private List<String> branches;
     private LinkedList<Commit> commits;
 
-    @JsonCreator
-    public RecipeDevHistory(@JsonProperty("recipe") Recipe recipe) throws NoSuchAlgorithmException {
+    public RecipeDevHistory() {
+    }
+
+    public RecipeDevHistory(Recipe recipe) throws NoSuchAlgorithmException {
         branches = new ArrayList<String>();
         branches.add("master");
         commits = new LinkedList<Commit>();

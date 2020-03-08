@@ -2,21 +2,22 @@ package persistence.steganography;
 
 import model.BreadRecipe;
 import model.Recipe;
-import model.RecipeCollection;
-import model.RecipeHistory;
+import model.RecipeDevCollection;
+import model.RecipeDevHistory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSteganography {
-    RecipeCollection recipeCollection;
-    RecipeHistory recipeHistoryFrenchLoaf;
-    RecipeHistory recipeHistoryPizza;
-    RecipeHistory recipeHistoryCinnamonRaisin;
+    RecipeDevCollection recipeCollection;
+    RecipeDevHistory recipeHistoryFrenchLoaf;
+    RecipeDevHistory recipeHistoryPizza;
+    RecipeDevHistory recipeHistoryCinnamonRaisin;
     Recipe frenchLoaf;
     Recipe pizza;
     Recipe cinnamonRaisin;
@@ -28,33 +29,29 @@ public class TestSteganography {
 
     @BeforeEach
     void setUp() {
-        frenchLoaf = new BreadRecipe(1000);
-        pizza = new BreadRecipe(350, 0.68);
-        cinnamonRaisin = new BreadRecipe(800);
-        cinnamonRaisin.setInstructions("1. Mix it up 2. Bake it down 3. funky town");
-        recipeCollection = new RecipeCollection();
-        recipeHistoryFrenchLoaf = new RecipeHistory();
-        recipeHistoryPizza = new RecipeHistory();
-        recipeHistoryCinnamonRaisin = new RecipeHistory();
 
-        recipeHistoryFrenchLoaf.setActiveVersion(frenchLoaf);
-        recipeHistoryFrenchLoaf.addToHistory(frenchLoaf);
+        try {
+            frenchLoaf = new BreadRecipe(1000);
+            pizza = new BreadRecipe(350, 0.68);
+            cinnamonRaisin = new BreadRecipe(800);
+            cinnamonRaisin.setInstructions("1. Mix it up 2. Bake it down 3. funky town");
+            recipeCollection = new RecipeDevCollection();
+            recipeHistoryFrenchLoaf = new RecipeDevHistory(frenchLoaf);
+            recipeHistoryPizza = new RecipeDevHistory(pizza);
+            recipeHistoryCinnamonRaisin = new RecipeDevHistory(cinnamonRaisin);
+            recipeHistoryPizza.commit(new BreadRecipe(350, 0.58));
+            recipeHistoryPizza.commit(new BreadRecipe(350, 0.64));
+            recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
+            recipeCollection.add("Pizza", recipeHistoryPizza);
+            recipeCollection.add("Cinnamon Raisin", recipeHistoryCinnamonRaisin);
+            message = recipeCollection.toJson();
+            fileIn = new File("./data/icons/sharing/collectionsharingbynikitagolubev.png");
+            fileOut = new File("./data/icons/sharing/exported/testCollection.png");
+            encoder = new Steganos();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
-        recipeHistoryCinnamonRaisin.setActiveVersion(cinnamonRaisin);
-        recipeHistoryCinnamonRaisin.addToHistory(cinnamonRaisin);
-
-        recipeHistoryPizza.setActiveVersion(pizza);
-        recipeHistoryPizza.addToHistory(pizza);
-        recipeHistoryPizza.addToHistory(new BreadRecipe(350, 0.58));
-        recipeHistoryPizza.addToHistory(new BreadRecipe(350, 0.64));
-        recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
-        recipeCollection.add("Pizza", recipeHistoryPizza);
-        recipeCollection.add("Cinnamon Raisin", recipeHistoryCinnamonRaisin);
-
-        message = recipeCollection.toJson();
-        fileIn = new File("./data/icons/sharing/collectionsharingbynikitagolubev.png");
-        fileOut = new File("./data/icons/sharing/exported/testCollection.png");
-        encoder = new Steganos();
     }
 
     @Test
