@@ -67,7 +67,7 @@ public class TestRecipeDevHistory {
     void TestCreateNewBranchNoCommit() {
         repo.newBranch("high-hydration-test");
         assertEquals("high-hydration-test", repo.getCurrentBranch());
-        assertEquals(2, repo.getBranches().size());
+        assertEquals(1, repo.getBranches().size());
         assertEquals(1, repo.size());
     }
 

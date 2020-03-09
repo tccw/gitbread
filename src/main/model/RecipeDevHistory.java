@@ -1,5 +1,6 @@
 package model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.security.NoSuchAlgorithmException;
@@ -13,15 +14,12 @@ import java.util.List;
 public class RecipeDevHistory {
     private Commit activeCommit;
     private String currentBranch;
-    private List<String> branches;
     private LinkedList<Commit> commits;
 
     public RecipeDevHistory() {
     }
 
     public RecipeDevHistory(Recipe recipe) throws NoSuchAlgorithmException {
-        branches = new ArrayList<String>();
-        branches.add("master");
         commits = new LinkedList<Commit>();
         commits.add(new Commit(recipe, "master"));
         activeCommit = commits.get(0);
@@ -45,6 +43,7 @@ public class RecipeDevHistory {
     //MODIFIES: this
     //EFFECTS: checks out the most recent commit with the given branch label.
     public void checkout(String branch) {
+        List<String> branches = this.getBranches();
         if (branches.contains(branch)) {
             for (Commit c : commits) {
                 if (c.getBranchLabel().equals(branch)) {
@@ -58,6 +57,7 @@ public class RecipeDevHistory {
     //MODIFIES: this
     //EFFECTS: create a new branch with the given name if one does not exist
     public void newBranch(String branch) {
+        List<String> branches = this.getBranches();
         if (branches.contains(branch)) {
             System.out.println("A branch with that name already exists.");
         } else {
@@ -67,6 +67,7 @@ public class RecipeDevHistory {
     }
 
     public boolean merge(String branch) {
+        List<String> branches = this.getBranches();
         try {
             if (branch.equals(currentBranch)) {
                 System.out.println("Cannot merge a branch with itself.");
@@ -104,9 +105,15 @@ public class RecipeDevHistory {
         return this.commits.size();
     }
 
-    @JsonSerialize
+    @JsonIgnore
     public List<String> getBranches() {
-        return branches;
+        List<String> result = new ArrayList<>();
+        for (Commit c : commits) {
+            if (!result.contains(c.getBranchLabel())) {
+                result.add(c.getBranchLabel());
+            }
+        }
+        return result;
     }
 
     @JsonSerialize

@@ -44,7 +44,6 @@
         "merged" : false
       },
       "currentBranch" : "master",
-      "branches" : [ "master" ],
       "commits" : [ {
         "recipeVersion" : {
           "className" : "model.BreadRecipe",
@@ -177,7 +176,6 @@
         "merged" : false
       },
       "currentBranch" : "master",
-      "branches" : [ "master" ],
       "commits" : [ {
         "recipeVersion" : {
           "className" : "model.BreadRecipe",
