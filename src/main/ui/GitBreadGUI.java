@@ -115,12 +115,11 @@ public class GitBreadGUI extends Application {
         });
 
         flow.getChildren().get(0).setOnMouseClicked(e -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setInitialDirectory(new File("./data/recipecollections"));
-            fileChooser.setTitle("Load Recipe Collection");
-            File file = fileChooser.showOpenDialog(primaryStage);
-            if (file != null) {
-                openFile(file);
+            File fileIn = fileChooserHelper("./data/recipecollections",
+                    "json",
+                    "load", primaryStage);
+            if (fileIn != null) {
+                openFile(fileIn);
             }
         });
 
@@ -129,6 +128,23 @@ public class GitBreadGUI extends Application {
             stage.display(activeCollection);
             addItemsListView();
             recipeListView.refresh();
+        });
+
+        flow.getChildren().get(2).setOnMouseClicked(e -> {
+            String message = activeCollection.toJson();
+            File fileIn = new File("data/icons/sharing/collectionsharingbynikitagolubev.png");
+            Steganos encoder = new Steganos();
+            encoder.encode(message, fileIn);
+            File fileOut = fileChooserHelper("./data/icons/sharing/exported",
+                    "png",
+                    "save", primaryStage);
+            if (fileOut != null) {
+                try {
+                    encoder.save(fileOut);
+                } catch (IOException ex) {
+                    System.err.println("Error while saving.");
+                }
+            }
         });
 
         darkModeToggle.setOnAction(e -> {
@@ -153,6 +169,8 @@ public class GitBreadGUI extends Application {
                 }
             }
         });
+
+        //TODO: right-click menu to switch branches
 
 
     }
@@ -216,8 +234,25 @@ public class GitBreadGUI extends Application {
 //        loadButton.setText("Load");
     }
 
-    //EFFECTS: initialize the layout for the primaryStage
-    private void setUpGUI() {
-        //set up the layout
+    //EFFECTS: Opens a file chooser window for loading or saving. Returns null if
+    private File fileChooserHelper(String initialDirectory, String fileFilter, String dialogOption, Stage stage) {
+        File file = null;
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(initialDirectory));
+        if (fileFilter.toLowerCase().equals("json")) {
+            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("JSON files (*.json)",
+                    "*.json");
+            fileChooser.getExtensionFilters().add(extensionFilter);
+        } else if (fileFilter.toLowerCase().equals("png")) {
+            FileChooser.ExtensionFilter extensionFilter = new FileChooser.ExtensionFilter("PNG files (*.png)",
+                    "*.png");
+            fileChooser.getExtensionFilters().add(extensionFilter);
+        }
+        if (dialogOption.toLowerCase().equals("save")) {
+            file = fileChooser.showSaveDialog(stage);
+        } else if (dialogOption.toLowerCase().equals("load")) {
+            file = fileChooser.showOpenDialog(stage);
+        }
+        return file;
     }
 }

@@ -13,19 +13,29 @@ public class HistoryGraphTest {
     private RecipeDevHistory repo;
     private HistoryGraph plot;
 
+    /*
+            4--5--7
+           /       \
+    1--2--3--6------8--9
+
+
+     */
     @BeforeEach
     void setUp() {
         try {
             repo = new RecipeDevHistory(new BreadRecipe(1000));
+            repo.commit(new BreadRecipe(1000, 0.60));
+            repo.commit(new BreadRecipe(1000, 0.59));
             repo.newBranch("high-hydration-test");
-            repo.commit(new BreadRecipe(360, 0.48));
-            repo.newBranch("higher-temp-test");
-            BreadRecipe highTemp = new BreadRecipe(360, 0.47);
-            highTemp.setCookTemp(550);
-            repo.commit(highTemp);
+            repo.commit(new BreadRecipe(360, 0.78));
+            repo.commit(new BreadRecipe(360, 0.78));
+            repo.checkout("master");
+            repo.commit(new BreadRecipe(1000,0.58));
+            repo.checkout("high-hydration-test");
+            repo.commit(new BreadRecipe(1000, 0.81));
             repo.commit(new BreadRecipe(600, 0.51));
-            repo.merge("high-hydration-test");
             repo.merge("master");
+            repo.commit(new BreadRecipe(650, 0.45));
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
