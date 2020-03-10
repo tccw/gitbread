@@ -22,14 +22,6 @@ public class Commit {
         this.isMerged = false;
     }
 
-    public Commit(Recipe version, String branchLabel, String comment) throws NoSuchAlgorithmException {
-        this.recipeVersion = version;
-        this.branchLabel = branchLabel;
-        this.sha1 = HashCodeMaker.sha1(this.recipeVersion);
-        this.comment = comment;
-        this.isMerged = false;
-    }
-
     public Recipe getRecipeVersion() {
         return recipeVersion;
     }
