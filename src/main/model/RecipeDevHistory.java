@@ -76,7 +76,7 @@ public class RecipeDevHistory {
             if (branches.contains(branch)) {
                 this.currentBranch = branch;
                 this.commit(this.activeCommit.getRecipeVersion());// add the commit
-                commits.get(commits.size() - 2).setMerged(true);  // set the previous commit as merged.
+                commits.get(1).setMerged(true);  // set the previous commit as merged.
                 return true;
             } else {
                 return false;
@@ -108,9 +108,9 @@ public class RecipeDevHistory {
     @JsonIgnore
     public List<String> getBranches() {
         List<String> result = new ArrayList<>();
-        for (Commit c : commits) {
-            if (!result.contains(c.getBranchLabel())) {
-                result.add(c.getBranchLabel());
+        for (int i = commits.size() - 1; i >= 0; i--) {
+            if (!result.contains(commits.get(i).getBranchLabel())) {
+                result.add(commits.get(i).getBranchLabel());
             }
         }
         return result;

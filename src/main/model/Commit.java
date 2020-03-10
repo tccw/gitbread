@@ -1,7 +1,5 @@
 package model;
 
-import com.fasterxml.jackson.annotation.*;
-
 import java.security.NoSuchAlgorithmException;
 
 public class Commit {

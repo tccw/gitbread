@@ -28,7 +28,7 @@ public class HistoryGraphTest {
             repo.commit(new BreadRecipe(1000, 0.59));
             repo.newBranch("high-hydration-test");
             repo.commit(new BreadRecipe(360, 0.78));
-            repo.commit(new BreadRecipe(360, 0.78));
+            repo.commit(new BreadRecipe(360, 0.79));
             repo.checkout("master");
             repo.commit(new BreadRecipe(1000,0.58));
             repo.checkout("high-hydration-test");
@@ -36,7 +36,7 @@ public class HistoryGraphTest {
             repo.commit(new BreadRecipe(600, 0.51));
             repo.merge("master");
             repo.commit(new BreadRecipe(650, 0.45));
-
+            System.out.println("wait");
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

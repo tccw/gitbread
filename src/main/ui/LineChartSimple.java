@@ -17,6 +17,7 @@ import java.util.Map;
 //https://stackoverflow.com/questions/14615590/javafx-linechart-hover-values/14623439#14623439
 //https://docs.oracle.com/javafx/2/charts/line-chart.htm
 public class LineChartSimple extends Application {
+    RecipeDevHistory repo;
 
     public static void main(String[] args) {
         launch(args);
@@ -47,12 +48,6 @@ public class LineChartSimple extends Application {
             int y = data.get("master").get(i)[1];
             master.getData().add(new XYChart.Data(x, y));
         }
-//        master.getData().add(new XYChart.Data(1, 1));
-//        master.getData().add(new XYChart.Data(2, 1));
-//        master.getData().add(new XYChart.Data(3, 1));
-//        master.getData().add(new XYChart.Data(4, 1));
-//        master.getData().add(new XYChart.Data(10, 1));
-//        master.getData().add(new XYChart.Data(11, 1));
 
         XYChart.Series highHydrationTest = new XYChart.Series();
         highHydrationTest.setName("high-hydration-test");
@@ -62,22 +57,15 @@ public class LineChartSimple extends Application {
             int y = data.get("high-hydration-test").get(i)[1];
             highHydrationTest.getData().add(new XYChart.Data(x, y));
         }
-//        highHydrationTest.getData().add(new XYChart.Data(4, 1));
-//        highHydrationTest.getData().add(new XYChart.Data(5, 1.1));
-//        highHydrationTest.getData().add(new XYChart.Data(6, 1.1));
-//        highHydrationTest.getData().add(new XYChart.Data(7, 1.1));
-//        highHydrationTest.getData().add(new XYChart.Data(8, 1.1));
-//        highHydrationTest.getData().add(new XYChart.Data(9, 1.1));
-//        highHydrationTest.getData().add(new XYChart.Data(10, 1));
-
 
         XYChart.Series highTemp = new XYChart.Series();
-        highTemp.setName("My portfolio");
+        highTemp.setName("high-temp");
         //populating the series with data
-        highTemp.getData().add(new XYChart.Data(6, 1.1));
-        highTemp.getData().add(new XYChart.Data(7, 1.2));
-        highTemp.getData().add(new XYChart.Data(8, 1.2));
-
+//        for (int i = 0; i < data.get("high-temp").size(); i++) {
+//            int x = data.get("high-temp").get(i)[0];
+//            int y = data.get("high-temp").get(i)[1];
+//            highTemp.getData().add(new XYChart.Data(x, y));
+//        }
 
         Scene scene = new Scene(lineChart, 800, 400);
         lineChart.getData().addAll(master, highHydrationTest);
@@ -88,25 +76,27 @@ public class LineChartSimple extends Application {
 
     private Map<String, List<int[]>> setUp() {
         try {
-            RecipeDevHistory repo;
             HistoryGraph plot;
             repo = new RecipeDevHistory(new BreadRecipe(1000));
             repo.commit(new BreadRecipe(1000, 0.60));
             repo.commit(new BreadRecipe(1000, 0.59));
             repo.newBranch("high-hydration-test");
             repo.commit(new BreadRecipe(360, 0.78));
-            repo.commit(new BreadRecipe(360, 0.78));
+            repo.commit(new BreadRecipe(360, 0.79));
             repo.checkout("master");
             repo.commit(new BreadRecipe(1000, 0.58));
             repo.checkout("high-hydration-test");
             repo.commit(new BreadRecipe(1000, 0.81));
             repo.commit(new BreadRecipe(600, 0.51));
+//            repo.newBranch("high-temp");
+//            repo.commit(new BreadRecipe(1000,0.76));
+//            repo.commit(new BreadRecipe(1000,0.72));
+//            repo.checkout("high-hydration-test");
             repo.merge("master");
             repo.commit(new BreadRecipe(650, 0.45));
 
             plot = new HistoryGraph(repo);
-            Map<String, List<int[]>> data = plot.getData();
-            return data;
+            return plot.getData();
 
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();

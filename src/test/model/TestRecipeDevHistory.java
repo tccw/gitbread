@@ -3,11 +3,14 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Array;
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,7 +57,7 @@ public class TestRecipeDevHistory {
         try {
             assertTrue(repo.commit(new BreadRecipe(550, 0.67)));
             assertTrue(repo.commit(new BreadRecipe(550, 0.43)));
-            assertTrue(repo.commit(new BreadRecipe(550, 072)));
+            assertTrue(repo.commit(new BreadRecipe(550, 0.72)));
             assertEquals(4, repo.size());
             assertEquals(1, repo.getBranches().size());
             assertEquals("master", repo.getCurrentBranch());
@@ -118,6 +121,39 @@ public class TestRecipeDevHistory {
     @Test
     void SingleAttemptAndCount() {
         repo.attempt(clock);
+    }
+
+    @Test
+    void GetBranchesOrderTest() {
+        try {
+            repo = new RecipeDevHistory(new BreadRecipe(1000));
+            repo.commit(new BreadRecipe(1000, 0.60));
+            repo.commit(new BreadRecipe(1000, 0.59));
+            repo.newBranch("high-hydration-test");
+            repo.commit(new BreadRecipe(360, 0.78));
+            repo.commit(new BreadRecipe(360, 0.79));
+            repo.checkout("master");
+            repo.commit(new BreadRecipe(1000, 0.58));
+            repo.checkout("high-hydration-test");
+            repo.commit(new BreadRecipe(1000, 0.81));
+            repo.commit(new BreadRecipe(600, 0.51));
+            repo.newBranch("high-temp");
+            repo.commit(new BreadRecipe(1000,0.76));
+            repo.commit(new BreadRecipe(1000,0.72));
+            repo.checkout("high-hydration-test");
+            repo.merge("master");
+            repo.commit(new BreadRecipe(650, 0.45));
+            List<String> expected = new ArrayList<>();
+            expected.add("master");
+            expected.add("high-hydration-test");
+            expected.add("high-temp");
+            List<String> actual = repo.getBranches();
+            for (int i = 0; i < 3; i++) {
+                assertEquals(expected.get(i), actual.get(i));
+            }
+        } catch (Exception e) {
+            fail();
+        }
     }
 
 }

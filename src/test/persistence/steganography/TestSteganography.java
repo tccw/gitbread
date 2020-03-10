@@ -74,6 +74,7 @@ public class TestSteganography {
         assertNotNull(encoder.getEncodedPixels());
     }
 
+    //TODO: determine why this test changes every time I run it.
     @Test
     void TestDecode() {
         encoder.encode(message, fileIn);
