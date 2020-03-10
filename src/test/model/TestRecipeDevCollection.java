@@ -6,6 +6,7 @@ import persistence.Writer;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,34 +14,29 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestRecipeCollection {
+public class TestRecipeDevCollection {
 
-    RecipeCollection recipeCollection;
-    RecipeHistory recipeHistoryFrenchLoaf;
-    RecipeHistory recipeHistoryPizza;
-    RecipeHistory recipeHistoryCinnamonRaisin;
+    RecipeDevCollection recipeCollection;
+    RecipeDevHistory recipeHistoryFrenchLoaf;
+    RecipeDevHistory recipeHistoryPizza;
+    RecipeDevHistory recipeHistoryCinnamonRaisin;
     Recipe frenchLoaf = new BreadRecipe(1000);
     Recipe pizza = new BreadRecipe(350, 0.68);
     Recipe cinnamonRaisin = new BreadRecipe(800);
 
     @BeforeEach
     void setUp() {
-        recipeCollection = new RecipeCollection();
-        recipeHistoryFrenchLoaf = new RecipeHistory();
-        recipeHistoryPizza = new RecipeHistory();
-        recipeHistoryCinnamonRaisin = new RecipeHistory();
-
-        recipeHistoryFrenchLoaf.setMasterRecipe(frenchLoaf);
-        recipeHistoryFrenchLoaf.addToHistory(frenchLoaf);
-
-        recipeHistoryCinnamonRaisin.setMasterRecipe(cinnamonRaisin);
-        recipeHistoryCinnamonRaisin.addToHistory(cinnamonRaisin);
-
-        recipeHistoryPizza.setMasterRecipe(pizza);
-        recipeHistoryPizza.addToHistory(pizza);
-        recipeHistoryPizza.addToHistory(new BreadRecipe(350, 0.58));
-        recipeHistoryPizza.addToHistory(new BreadRecipe(350, 0.64));
-
+        try {
+            recipeCollection = new RecipeDevCollection();
+            recipeHistoryFrenchLoaf = new RecipeDevHistory(frenchLoaf);
+            recipeHistoryPizza = new RecipeDevHistory(pizza);
+            recipeHistoryCinnamonRaisin = new RecipeDevHistory(cinnamonRaisin);
+            recipeHistoryFrenchLoaf.commit(new BreadRecipe(500,0.76));
+            recipeHistoryPizza.commit(new BreadRecipe(340, 0.65));
+            //should have 3 historys, with 2,2, & 1 commits in their history all on the master branches
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("Unexpected NoSuchAlgorithmException");
+        }
     }
 
     @Test
@@ -98,8 +94,8 @@ public class TestRecipeCollection {
         assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza dough", recipeHistoryPizza);
-        String expected = "Pizza dough : 0 attempts, 2 changes\n"
-                + "French loaf : 0 attempts, 0 changes\n";
+        String expected = "Pizza dough : 0 attempts, 1 changes\n"
+                + "French loaf : 0 attempts, 1 changes\n";
         assertEquals(expected, recipeCollection.toString(true));
     }
 
@@ -115,10 +111,17 @@ public class TestRecipeCollection {
 
     @Test
     void TestRecipeHistory() {
-        assertEquals(1, recipeHistoryCinnamonRaisin.size());
-        List<Recipe> expected = new LinkedList<>();
-        expected.add(cinnamonRaisin);
-        assertEquals(expected, recipeHistoryCinnamonRaisin.getHistory());
+        try {
+            assertEquals(1, recipeHistoryCinnamonRaisin.size());
+            List<Commit> expected = new LinkedList<>();
+            expected.add(new Commit(cinnamonRaisin, "master"));
+            List<Commit> actual = recipeHistoryCinnamonRaisin.getCommits();
+            assertEquals(expected.get(0).getBranchLabel(), actual.get(0).getBranchLabel());
+            assertEquals(expected.get(0).getRecipeVersion().toString(), actual.get(0).getRecipeVersion().toString());
+        } catch (NoSuchAlgorithmException e) {
+            fail();
+        }
+
     }
 
     @Test
@@ -126,7 +129,7 @@ public class TestRecipeCollection {
         assertTrue(recipeCollection.isEmpty());
         recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);
         recipeCollection.add("Pizza dough", recipeHistoryPizza);
-        Map<String, RecipeHistory> testCollection = recipeCollection.getCollection();
+        Map<String, RecipeDevHistory> testCollection = recipeCollection.getCollection();
         assertEquals(testCollection.get("French loaf"), recipeHistoryFrenchLoaf);
         assertEquals(testCollection.get("Pizza dough"), recipeHistoryPizza);
     }
@@ -140,6 +143,7 @@ public class TestRecipeCollection {
         try {
             Writer writer = new Writer(new File("./data/recipecollections/recipeCollectionTest.json"));
             writer.write(recipeCollection);
+            writer.close();
         } catch (IOException e) {
             fail("Unexpected IOException.");
         }
@@ -148,7 +152,7 @@ public class TestRecipeCollection {
     @Test
     void setRecipeCollection() {
         assertTrue(recipeCollection.isEmpty());
-        Map<String, RecipeHistory> testCollection = new HashMap<>();
+        Map<String, RecipeDevHistory> testCollection = new HashMap<>();
         testCollection.put("French loaf", recipeHistoryFrenchLoaf);
         testCollection.put("Pizza dough", recipeHistoryPizza);
         recipeCollection.setCollection(testCollection);

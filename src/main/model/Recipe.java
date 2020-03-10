@@ -3,6 +3,7 @@ package model;
 import com.fasterxml.jackson.annotation.*;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.util.ArrayList;
 
@@ -44,8 +45,8 @@ public abstract class Recipe {
 
     //MODIFIES: this
     //EFFECTS: adds an attempt to the attempt history
-    protected void addAttempt(Recipe recipe, Clock clock) {
-        this.attemptHistory.add(new Attempt(recipe, clock));
+    protected void addAttempt(Clock clock) {
+        this.attemptHistory.add(new Attempt(this, clock));
     }
 
     //EFFECTS: produce the weight of the selected ingredient in grams
@@ -74,7 +75,7 @@ public abstract class Recipe {
         this.prepTime = prepTime;
     }
 
-    protected void setCookTemp(int cookTemp) {
+    public void setCookTemp(int cookTemp) {
         this.cookTemp = cookTemp;
     }
 
@@ -83,7 +84,7 @@ public abstract class Recipe {
     }
 
     public void setAttemptHistory(ArrayList<Attempt> attemptHistory) {
-        this.attemptHistory = attemptHistory;
+        this.attemptHistory = attemptHistory;;
     }
 
     // getters
@@ -97,6 +98,7 @@ public abstract class Recipe {
         return this.instructions;
     }
 
+    @JsonSerialize
     protected ArrayList<Attempt> getAttemptHistory() {
         return this.attemptHistory;
     }
