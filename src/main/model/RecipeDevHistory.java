@@ -48,6 +48,7 @@ public class RecipeDevHistory {
             for (Commit c : commits) {
                 if (c.getBranchLabel().equals(branch)) {
                     activeCommit = c;
+                    currentBranch = branch;
                     return;
                 }
             }
