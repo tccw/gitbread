@@ -38,13 +38,13 @@ public class GitBreadGUI extends Application {
     RecipeDevCollection activeCollection;
     ListView<String> recipeListView;
     ObservableList<String> items;
-    TextArea instructionsListView;
+    TextArea instructionsTextArea;
 
     FlowPane flow;
     GridPane gridPane;
 
     private static final int WIDTH = 800;
-    public static final int HEIGHT = 600;
+    public static final int HEIGHT = 550;
     boolean darkMode = false;
 
     public static void main(String[] args) {
@@ -61,8 +61,8 @@ public class GitBreadGUI extends Application {
         gridPane = new GridPane();
 
         recipeListView = new ListView<String>();
-        instructionsListView = new TextArea();
-        instructionsListView.setWrapText(true);
+        instructionsTextArea = new TextArea();
+        instructionsTextArea.setWrapText(true);
         items = FXCollections.observableArrayList();
 
         //make tooltips
@@ -74,10 +74,10 @@ public class GitBreadGUI extends Application {
         primaryStage.setMinWidth(WIDTH);
 //        gridPane.setGridLinesVisible(true);
         gridPane.setPadding(new Insets(10, 20, 20, 20));
-        gridPane.add(flow, 0, 0, 5, 10);
-        gridPane.add(darkModeToggle, 13, 0, 1, 1);
+        gridPane.add(flow, 0, 0, 5, 2);
+        gridPane.add(darkModeToggle, 0, 13, 1, 5);
         gridPane.add(recipeListView, 0, 2, 4, 10);
-        gridPane.add(instructionsListView, 4, 2, 10, 10);
+        gridPane.add(instructionsTextArea, 4, 2, 10, 10);
         gridPane.setHgap(20);
         gridPane.setVgap(10);
         Scene scene = new Scene(gridPane, WIDTH, HEIGHT);
@@ -162,7 +162,7 @@ public class GitBreadGUI extends Application {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (newValue != null) {
-                    instructionsListView.setText(activeCollection.get(newValue)
+                    instructionsTextArea.setText(activeCollection.get(newValue)
                             .getActiveCommit()
                             .getRecipeVersion()
                             .toString());

@@ -5,10 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class Node {
-    private Recipe recipeVersion;
-    private String branchLabel;
-    private String sha1;
-    private List<Node> parents;
+
 
     /*
     Each node points to its parent node. Nodes can have multiple parents (branches that merge).
@@ -16,15 +13,53 @@ public class Node {
     root<---node1<---node2<---node3
      */
 
-    public Node(Recipe recipeVersion) throws NoSuchAlgorithmException {
-        this.recipeVersion = recipeVersion;
-        this.branchLabel = "master";
-        this.sha1 = HashCodeMaker.sha1(this.recipeVersion);
-        this.parents = new LinkedList<Node>(); // root pointer list is always empty
+    private Recipe recipeVersion;
+    private String branchLabel;
+    private String sha1;
+    private List<Commit> parents;
+
+    //default constructor for Jackson
+    public Node() {
     }
 
-    public void commit(Node node) {
-        // stub
+    // a commit object containing the given recipe and branch label
+    public Node(Recipe version, String branchLabel) throws NoSuchAlgorithmException {
+        this.recipeVersion = version;
+        this.branchLabel = branchLabel;
+        this.sha1 = HashCodeMaker.sha1(this.recipeVersion);
+        this.parents = new LinkedList<>(); // root is the only node with no parents (only empty node)
+    }
+
+    public boolean isRoot() {
+        return this.parents.isEmpty();
+    }
+
+    public void setParents(List<Commit> parents) {
+        this.parents = parents;
+    }
+
+    public Recipe getRecipeVersion() {
+        return recipeVersion;
+    }
+
+    public String getBranchLabel() {
+        return branchLabel;
+    }
+
+    public String getSha1() {
+        return sha1;
+    }
+
+    public void setBranchLabel(String branchLabel) {
+        this.branchLabel = branchLabel;
+    }
+
+    public void setRecipeVersion(Recipe recipeVersion) {
+        this.recipeVersion = recipeVersion;
+    }
+
+    public void setSha1(String sha1) {
+        this.sha1 = sha1;
     }
 
 }
