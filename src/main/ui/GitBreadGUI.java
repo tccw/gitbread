@@ -1,6 +1,7 @@
 package ui;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -16,12 +17,14 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+import model.BreadRecipe;
 import model.RecipeDevCollection;
 import model.RecipeDevHistory;
 import persistence.steganography.Steganos;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Clock;
 import java.util.List;
 import java.util.Map;
 
@@ -31,16 +34,24 @@ import static persistence.Reader.*;
 // following thenewboston tutorial as reference
 // https://www.youtube.com/watch?v=FLkOX4Eez6o&list=PL6gx4Cwl9DGBzfXLWLSYVy8EbTdpGbUIG
 public class GitBreadGUI extends Application {
+    private Clock clock = Clock.systemDefaultZone();
+    private static final String[] topRecipeBarIcons = new String[]{"file:./data/icons/sharing/recipecollection32.png",
+            "file:./data/icons/sharing/addrecipe32.png",
+            "file:./data/icons/sharing/exportrecipecollectionshare32.png",
+            "file:./data/icons/sharing/exportrecipe32.png"};
+    private static final String[] bottomRecipeBarIcons = new String[]{
+            "file:./data/icons/buttons/mixingbyfreepik.png",
+            "file:./data/icons/buttons/scalebysmashicons.png"};
     ToggleButton darkModeToggle;
-    Button scaleButton;
-    Button loadButton;
 
     RecipeDevCollection activeCollection;
+    RecipeDevHistory activeRecipeHistory;
     ListView<String> recipeListView;
     ObservableList<String> items;
     TextArea instructionsTextArea;
 
-    FlowPane flow;
+    FlowPane flowTopRow;
+    FlowPane flowBottomRow;
     GridPane gridPane;
 
     private static final int WIDTH = 800;
@@ -57,7 +68,9 @@ public class GitBreadGUI extends Application {
         activeCollection = new RecipeDevCollection();
         primaryStage.setTitle("GitBread");
         fieldAndButtons();
-        flow = addFlowPane();
+        flowTopRow = makeFlowPaneButtons(topRecipeBarIcons);
+        flowBottomRow = makeFlowPaneButtons(bottomRecipeBarIcons);
+
         gridPane = new GridPane();
 
         recipeListView = new ListView<String>();
@@ -74,8 +87,9 @@ public class GitBreadGUI extends Application {
         primaryStage.setMinWidth(WIDTH);
 //        gridPane.setGridLinesVisible(true);
         gridPane.setPadding(new Insets(10, 20, 20, 20));
-        gridPane.add(flow, 0, 0, 5, 2);
-        gridPane.add(darkModeToggle, 0, 13, 1, 5);
+        gridPane.add(flowTopRow, 0, 0, 5, 2);
+        gridPane.add(flowBottomRow, 0, 12, 5, 2);
+        gridPane.add(darkModeToggle, 10, 12, 1, 5);
         gridPane.add(recipeListView, 0, 2, 4, 10);
         gridPane.add(instructionsTextArea, 4, 2, 10, 10);
         gridPane.setHgap(20);
@@ -99,6 +113,8 @@ public class GitBreadGUI extends Application {
                     event.consume();
                 }
         );
+
+        // Accept and load PNG files of recipe collections.
         recipeListView.setOnDragDropped(event -> {
             List<File> files = event.getDragboard().getFiles();
             try {
@@ -114,7 +130,20 @@ public class GitBreadGUI extends Application {
             }
         });
 
-        flow.getChildren().get(0).setOnMouseClicked(e -> {
+        // Right-click context menu to switch branches or export recipes
+        // https://stackoverflow.com/questions/28264907/javafx-listview-contextmenu
+        //TODO: Complete this implementation
+        recipeListView.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<>();
+            ContextMenu contextMenu = new ContextMenu();
+            MenuItem switchBranch = new MenuItem();
+            switchBranch.textProperty().bind(Bindings.format("branches", cell.itemProperty()));
+            cell.setContextMenu(contextMenu);
+            return cell;
+        });
+
+        // Open a file browser to load a JSON text file of a recipe collection
+        flowTopRow.getChildren().get(0).setOnMouseClicked(e -> {
             File fileIn = fileChooserHelper("./data/recipecollections",
                     "json",
                     "load", primaryStage);
@@ -123,14 +152,16 @@ public class GitBreadGUI extends Application {
             }
         });
 
-        flow.getChildren().get(1).setOnMouseClicked(e -> {
+        // Open the add recipe stage
+        flowTopRow.getChildren().get(1).setOnMouseClicked(e -> {
             RecipeStage stage = new RecipeStage();
             stage.display(activeCollection);
             addItemsListView();
             recipeListView.refresh();
         });
 
-        flow.getChildren().get(2).setOnMouseClicked(e -> {
+        // save the recipe collection as a sharable PNG.
+        flowTopRow.getChildren().get(2).setOnMouseClicked(e -> {
             String message = activeCollection.toJson();
             File fileIn = new File("data/icons/sharing/collectionsharingbynikitagolubev.png");
             Steganos encoder = new Steganos();
@@ -145,6 +176,20 @@ public class GitBreadGUI extends Application {
                     System.err.println("Error while saving.");
                 }
             }
+        });
+
+        // log an attempt with the active recipe version
+        flowBottomRow.getChildren().get(0).setOnMouseClicked(e -> {
+            activeRecipeHistory.attempt(clock);
+        });
+
+        // scale and re-display the active recipe in the instructions TextArea
+        flowBottomRow.getChildren().get(1).setOnMouseClicked(e -> {
+            ScaleByStage scale = new ScaleByStage();
+            scale.display();
+            BreadRecipe toScale = (BreadRecipe) (activeRecipeHistory.getActiveCommit().getRecipeVersion());
+            toScale.scaleByDoughWeight(3000);
+            instructionsTextArea.setText(toScale.toString());
         });
 
         darkModeToggle.setOnAction(e -> {
@@ -162,7 +207,8 @@ public class GitBreadGUI extends Application {
             @Override
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (newValue != null) {
-                    instructionsTextArea.setText(activeCollection.get(newValue)
+                    activeRecipeHistory = activeCollection.get(newValue);
+                    instructionsTextArea.setText(activeRecipeHistory
                             .getActiveCommit()
                             .getRecipeVersion()
                             .toString());
@@ -196,11 +242,31 @@ public class GitBreadGUI extends Application {
         return flow;
     }
 
+    private FlowPane makeFlowPaneButtons(String[] urls) {
+        int numImages = urls.length;
+        FlowPane flow = new FlowPane();
+        flow.setPadding(new Insets(5, 0, 5, 0));
+        flow.setVgap(2);
+        flow.setHgap(4);
+        Button[] pages = new Button[numImages];
+        for (int i = 0; i < numImages; i++) {
+            pages[i] = new Button();
+            pages[i].setGraphic(new ImageView(new Image(urls[i])));
+        }
+        for (int i = 0; i < numImages; i++) {
+            flow.getChildren().add(pages[i]);
+        }
+        return flow;
+
+    }
+
     private void setFlowPaneTooltips() {
-        Tooltip.install(flow.getChildren().get(0), new Tooltip("Load recipe books!"));
-        Tooltip.install(flow.getChildren().get(1), new Tooltip("Load recipes!"));
-        Tooltip.install(flow.getChildren().get(2), new Tooltip("Export recipe books!"));
-        Tooltip.install(flow.getChildren().get(3), new Tooltip("Export recipes!"));
+        Tooltip.install(flowTopRow.getChildren().get(0), new Tooltip("Load recipe book"));
+        Tooltip.install(flowTopRow.getChildren().get(1), new Tooltip("Add recipe"));
+        Tooltip.install(flowTopRow.getChildren().get(2), new Tooltip("Export recipe book"));
+        Tooltip.install(flowTopRow.getChildren().get(3), new Tooltip("Export recipe"));
+        Tooltip.install(flowBottomRow.getChildren().get(0), new Tooltip("Log attempt"));
+        Tooltip.install(flowBottomRow.getChildren().get(1), new Tooltip("Scale"));
     }
 
     private void openFile(File file) {
