@@ -90,4 +90,35 @@ class TestWriter {
             fail("Unexpected IOException");
         }
     }
+
+    @Test
+    void TestWriteComplex() {
+        try {
+            RecipeDevCollection repo = new RecipeDevCollection();
+            RecipeDevHistory recipeVersionHistory;
+            recipeVersionHistory = new RecipeDevHistory(new BreadRecipe(1000));
+            recipeVersionHistory.commit(new BreadRecipe(1000, 0.60));
+            recipeVersionHistory.commit(new BreadRecipe(1000, 0.59));
+            recipeVersionHistory.newBranch("high-hydration-test");
+            recipeVersionHistory.commit(new BreadRecipe(360, 0.78));
+            recipeVersionHistory.commit(new BreadRecipe(360, 0.79));
+            recipeVersionHistory.checkout("master");
+            recipeVersionHistory.commit(new BreadRecipe(1000, 0.58));
+            recipeVersionHistory.checkout("high-hydration-test");
+            recipeVersionHistory.commit(new BreadRecipe(1000, 0.81));
+            recipeVersionHistory.commit(new BreadRecipe(600, 0.51));
+            recipeVersionHistory.newBranch("high-temp");
+            recipeVersionHistory.commit(new BreadRecipe(1000,0.76));
+            recipeVersionHistory.commit(new BreadRecipe(1000,0.72));
+            recipeVersionHistory.checkout("high-hydration-test");
+            recipeVersionHistory.merge("master");
+            recipeVersionHistory.commit(new BreadRecipe(650, 0.45));
+            repo.add("Saved Test Recipe", recipeVersionHistory);
+            Writer writer = new Writer(new File("./data/recipecollections/complexHistory.json"));
+            writer.write(repo);
+            writer.close();
+        } catch (Exception e) {
+            fail();
+        }
+    }
 }

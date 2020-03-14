@@ -66,6 +66,7 @@ public class GitBreadGUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         activeCollection = new RecipeDevCollection();
+        activeRecipeHistory = null;
         primaryStage.setTitle("GitBread");
         fieldAndButtons();
         flowTopRow = makeFlowPaneButtons(topRecipeBarIcons);
@@ -76,6 +77,7 @@ public class GitBreadGUI extends Application {
         recipeListView = new ListView<String>();
         instructionsTextArea = new TextArea();
         instructionsTextArea.setWrapText(true);
+        instructionsTextArea.setEditable(false);
         items = FXCollections.observableArrayList();
 
         //make tooltips
@@ -89,7 +91,7 @@ public class GitBreadGUI extends Application {
         gridPane.setPadding(new Insets(10, 20, 20, 20));
         gridPane.add(flowTopRow, 0, 0, 5, 2);
         gridPane.add(flowBottomRow, 0, 12, 5, 2);
-        gridPane.add(darkModeToggle, 10, 12, 1, 5);
+        gridPane.add(darkModeToggle, 14, 12, 1, 1);
         gridPane.add(recipeListView, 0, 2, 4, 10);
         gridPane.add(instructionsTextArea, 4, 2, 10, 10);
         gridPane.setHgap(20);
@@ -136,11 +138,33 @@ public class GitBreadGUI extends Application {
         recipeListView.setCellFactory(lv -> {
             ListCell<String> cell = new ListCell<>();
             ContextMenu contextMenu = new ContextMenu();
-            MenuItem switchBranch = new MenuItem();
+            Menu switchBranch = new Menu();
             switchBranch.textProperty().bind(Bindings.format("branches", cell.itemProperty()));
-            cell.setContextMenu(contextMenu);
+            contextMenu.getItems().add(switchBranch);
+            cell.textProperty().bindBidirectional(cell.itemProperty());
+            cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+                if (isNowEmpty) {
+                    cell.setContextMenu(null);
+                } else {
+                    List<String> branches = activeCollection.get(cell.getItem()).getBranches();
+                    for (String s : branches) {
+                        MenuItem child = new MenuItem();
+                        child.setOnAction(e -> {
+                            activeCollection.get(cell.getItem()).checkout(s);
+                            activeRecipeHistory = activeCollection.get(cell.getItem());
+                            updateTextArea();
+                        });
+                        switchBranch.getItems().add(child);
+                        child.textProperty().bind(Bindings.format(s, cell.itemProperty()));
+                    }
+
+                    cell.textProperty().bindBidirectional(cell.itemProperty());
+                    cell.setContextMenu(contextMenu);
+                }
+            });
             return cell;
         });
+
 
         // Open a file browser to load a JSON text file of a recipe collection
         flowTopRow.getChildren().get(0).setOnMouseClicked(e -> {
@@ -180,16 +204,22 @@ public class GitBreadGUI extends Application {
 
         // log an attempt with the active recipe version
         flowBottomRow.getChildren().get(0).setOnMouseClicked(e -> {
-            activeRecipeHistory.attempt(clock);
+            if (activeRecipeHistory != null) {
+                activeRecipeHistory.attempt(clock);
+            }
+
         });
 
         // scale and re-display the active recipe in the instructions TextArea
         flowBottomRow.getChildren().get(1).setOnMouseClicked(e -> {
-            ScaleByStage scale = new ScaleByStage();
-            scale.display();
-            BreadRecipe toScale = (BreadRecipe) (activeRecipeHistory.getActiveCommit().getRecipeVersion());
-            toScale.scaleByDoughWeight(3000);
-            instructionsTextArea.setText(toScale.toString());
+            if (activeRecipeHistory != null) {
+                ScaleByStage scale = new ScaleByStage();
+                scale.display();
+                BreadRecipe toScale = (BreadRecipe) (activeRecipeHistory.getActiveCommit().getRecipeVersion());
+                toScale.scaleByDoughWeight(3000);
+                instructionsTextArea.setText(toScale.toString());
+            }
+
         });
 
         darkModeToggle.setOnAction(e -> {
@@ -208,17 +238,23 @@ public class GitBreadGUI extends Application {
             public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
                 if (newValue != null) {
                     activeRecipeHistory = activeCollection.get(newValue);
-                    instructionsTextArea.setText(activeRecipeHistory
-                            .getActiveCommit()
-                            .getRecipeVersion()
-                            .toString());
+                    updateTextArea();
                 }
             }
         });
 
+
         //TODO: right-click menu to switch branches
 
 
+    }
+
+
+    private void updateTextArea() {
+        instructionsTextArea.setText(activeRecipeHistory
+                .getActiveCommit()
+                .getRecipeVersion()
+                .toString());
     }
 
     private FlowPane addFlowPane() {
