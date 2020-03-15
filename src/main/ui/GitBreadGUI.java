@@ -7,14 +7,18 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import model.BreadRecipe;
@@ -22,6 +26,7 @@ import model.RecipeDevCollection;
 import model.RecipeDevHistory;
 import persistence.steganography.Steganos;
 
+import javax.xml.soap.Text;
 import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
@@ -41,7 +46,8 @@ public class GitBreadGUI extends Application {
             "file:./data/icons/sharing/exportrecipe32.png"};
     private static final String[] bottomRecipeBarIcons = new String[]{
             "file:./data/icons/buttons/mixingbyfreepik.png",
-            "file:./data/icons/buttons/scalebysmashicons.png"};
+            "file:./data/icons/buttons/scalebysmashicons.png",
+            "file:./data/icons/buttons/versionbysmashicons.png"};
     ToggleButton darkModeToggle;
 
     RecipeDevCollection activeCollection;
@@ -55,7 +61,7 @@ public class GitBreadGUI extends Application {
     GridPane gridPane;
 
     private static final int WIDTH = 800;
-    public static final int HEIGHT = 550;
+    public static final int HEIGHT = 600;
     boolean darkMode = false;
 
     public static void main(String[] args) {
@@ -87,6 +93,8 @@ public class GitBreadGUI extends Application {
         primaryStage.sizeToScene();
         primaryStage.setMinHeight(HEIGHT);
         primaryStage.setMinWidth(WIDTH);
+        primaryStage.setMaxHeight(HEIGHT);
+        primaryStage.setMaxWidth(WIDTH);
 //        gridPane.setGridLinesVisible(true);
         gridPane.setPadding(new Insets(10, 20, 20, 20));
         gridPane.add(flowTopRow, 0, 0, 5, 2);
@@ -138,25 +146,35 @@ public class GitBreadGUI extends Application {
         recipeListView.setCellFactory(lv -> {
             ListCell<String> cell = new ListCell<>();
             ContextMenu contextMenu = new ContextMenu();
-            Menu switchBranch = new Menu();
-            switchBranch.textProperty().bind(Bindings.format("branches", cell.itemProperty()));
-            contextMenu.getItems().add(switchBranch);
+
             cell.textProperty().bindBidirectional(cell.itemProperty());
             cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
                 if (isNowEmpty) {
                     cell.setContextMenu(null);
                 } else {
                     List<String> branches = activeCollection.get(cell.getItem()).getBranches();
+                    Menu switchBranch = new Menu();
+                    MenuItem removeRecipe = new MenuItem();
+                    removeRecipe.textProperty().bind(Bindings.format("remove", cell.itemProperty()));
+                    removeRecipe.setOnAction(e -> {
+                        activeCollection.remove(cell.getItem());
+                        addItemsListView();
+                        recipeListView.refresh();
+                    });
                     for (String s : branches) {
-                        MenuItem child = new MenuItem();
+                        MenuItem child = new MenuItem(s);
+                        switchBranch.getItems().add(child);
+                        child.textProperty().bind(Bindings.format(s, cell.itemProperty()));
                         child.setOnAction(e -> {
                             activeCollection.get(cell.getItem()).checkout(s);
                             activeRecipeHistory = activeCollection.get(cell.getItem());
                             updateTextArea();
                         });
-                        switchBranch.getItems().add(child);
-                        child.textProperty().bind(Bindings.format(s, cell.itemProperty()));
                     }
+                    switchBranch.textProperty().bind(Bindings.format("branches", cell.itemProperty()));
+                    contextMenu.getItems().clear();
+                    contextMenu.getItems().add(switchBranch);
+                    contextMenu.getItems().add(removeRecipe);
 
                     cell.textProperty().bindBidirectional(cell.itemProperty());
                     cell.setContextMenu(contextMenu);
@@ -179,7 +197,7 @@ public class GitBreadGUI extends Application {
         // Open the add recipe stage
         flowTopRow.getChildren().get(1).setOnMouseClicked(e -> {
             RecipeStage stage = new RecipeStage();
-            stage.display(activeCollection);
+            stage.display(activeCollection, activeRecipeHistory, true);
             addItemsListView();
             recipeListView.refresh();
         });
@@ -222,6 +240,39 @@ public class GitBreadGUI extends Application {
 
         });
 
+        // make a new branch
+        flowBottomRow.getChildren().get(2).setOnMouseClicked(e -> {
+            if (activeRecipeHistory != null) {
+                Stage nameBranch = new Stage();
+                nameBranch.setTitle("New branch name");
+                TextField branchName = new TextField();
+                nameBranch.initModality(Modality.APPLICATION_MODAL);
+                branchName.setPromptText("branch name");
+                VBox vbox = new VBox();
+                vbox.setPadding(new Insets(10));
+                vbox.setAlignment(Pos.CENTER_RIGHT);
+                vbox.getChildren().add(branchName);
+                Scene layout = new Scene(vbox);
+                nameBranch.setScene(layout);
+                branchName.setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER) {
+                        activeRecipeHistory.newBranch(branchName.getText());
+                        addItemsListView();
+                        recipeListView.refresh();
+                        nameBranch.close();
+                        RecipeStage recipeStage = new RecipeStage();
+                        recipeStage.display(activeCollection, activeRecipeHistory, false);
+                        addItemsListView();
+                        recipeListView.refresh();
+                        //TODO: openModification 'commit' window here
+                    } else if (event.getCode() == KeyCode.ESCAPE) {
+                        nameBranch.close();
+                    }
+                });
+                nameBranch.showAndWait();
+            }
+        });
+
         darkModeToggle.setOnAction(e -> {
             if (!darkMode) {
                 scene.getStylesheets().add("./ui/gitbreaddarkstyle.css");
@@ -243,10 +294,6 @@ public class GitBreadGUI extends Application {
             }
         });
 
-
-        //TODO: right-click menu to switch branches
-
-
     }
 
 
@@ -255,27 +302,6 @@ public class GitBreadGUI extends Application {
                 .getActiveCommit()
                 .getRecipeVersion()
                 .toString());
-    }
-
-    private FlowPane addFlowPane() {
-        int numImages = 4;
-        FlowPane flow = new FlowPane();
-        flow.setPadding(new Insets(5, 0, 5, 0));
-        flow.setVgap(2);
-        flow.setHgap(4);
-        Button[] pages = new Button[numImages];
-        String[] urls = new String[]{"file:./data/icons/sharing/recipecollection32.png",
-                "file:./data/icons/sharing/addrecipe32.png",
-                "file:./data/icons/sharing/exportrecipecollectionshare32.png",
-                "file:./data/icons/sharing/exportrecipe32.png"};
-        for (int i = 0; i < numImages; i++) {
-            pages[i] = new Button();
-            pages[i].setGraphic(new ImageView(new Image(urls[i])));
-        }
-        for (int i = 0; i < numImages; i++) {
-            flow.getChildren().add(pages[i]);
-        }
-        return flow;
     }
 
     private FlowPane makeFlowPaneButtons(String[] urls) {
@@ -303,6 +329,7 @@ public class GitBreadGUI extends Application {
         Tooltip.install(flowTopRow.getChildren().get(3), new Tooltip("Export recipe"));
         Tooltip.install(flowBottomRow.getChildren().get(0), new Tooltip("Log attempt"));
         Tooltip.install(flowBottomRow.getChildren().get(1), new Tooltip("Scale"));
+        Tooltip.install(flowBottomRow.getChildren().get(2), new Tooltip("New branch"));
     }
 
     private void openFile(File file) {
@@ -330,10 +357,6 @@ public class GitBreadGUI extends Application {
         toggleView.setFitHeight(24);
         toggleView.setFitWidth(24);
         darkModeToggle.setGraphic(toggleView);
-//        scaleButton = new Button();
-//        loadButton = new Button();
-//        scaleButton.setText("Save");
-//        loadButton.setText("Load");
     }
 
     //EFFECTS: Opens a file chooser window for loading or saving. Returns null if

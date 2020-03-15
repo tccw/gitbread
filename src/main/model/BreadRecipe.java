@@ -173,7 +173,7 @@ public class BreadRecipe extends Recipe {
     //EFFECTS: format the instructions for toString
     private String toStringHelperInstructions() {
         StringBuilder result = new StringBuilder();
-        String[] splitList = this.instructions.split("\\d\\.");
+        String[] splitList = this.instructions.split("\\d\\d?\\.");
         result.append("\nInstructions:\n");
         for (int i = 1; i < splitList.length; i++) {
             result.append(String.format("    %d." + splitList[i] + "\n", i));
