@@ -88,10 +88,10 @@ public class LineChartSimple extends Application {
             repo.checkout("high-hydration-test");
             repo.commit(new BreadRecipe(1000, 0.81));
             repo.commit(new BreadRecipe(600, 0.51));
-//            repo.newBranch("high-temp");
-//            repo.commit(new BreadRecipe(1000,0.76));
-//            repo.commit(new BreadRecipe(1000,0.72));
-//            repo.checkout("high-hydration-test");
+            repo.newBranch("high-temp");
+            repo.commit(new BreadRecipe(1000,0.76));
+            repo.commit(new BreadRecipe(1000,0.72));
+            repo.checkout("high-hydration-test");
             repo.merge("master");
             repo.commit(new BreadRecipe(650, 0.45));
 

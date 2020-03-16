@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -21,12 +22,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import model.BreadRecipe;
 import model.RecipeDevCollection;
 import model.RecipeDevHistory;
 import persistence.steganography.Steganos;
 
-import javax.xml.soap.Text;
 import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
@@ -47,7 +46,8 @@ public class GitBreadGUI extends Application {
     private static final String[] bottomRecipeBarIcons = new String[]{
             "file:./data/icons/buttons/mixingbyfreepik.png",
             "file:./data/icons/buttons/scalebysmashicons.png",
-            "file:./data/icons/buttons/versionbysmashicons.png"};
+            "file:./data/icons/buttons/versionbysmashicons.png",
+            "file:./data/icons/buttons/agronomy.png"};
     ToggleButton darkModeToggle;
 
     RecipeDevCollection activeCollection;
@@ -55,6 +55,7 @@ public class GitBreadGUI extends Application {
     ListView<String> recipeListView;
     ObservableList<String> items;
     TextArea instructionsTextArea;
+    Label infoLabel;
 
     FlowPane flowTopRow;
     FlowPane flowBottomRow;
@@ -84,6 +85,7 @@ public class GitBreadGUI extends Application {
         instructionsTextArea = new TextArea();
         instructionsTextArea.setWrapText(true);
         instructionsTextArea.setEditable(false);
+        infoLabel = new Label();
         items = FXCollections.observableArrayList();
 
         //make tooltips
@@ -96,12 +98,14 @@ public class GitBreadGUI extends Application {
         primaryStage.setMaxHeight(HEIGHT);
         primaryStage.setMaxWidth(WIDTH);
 //        gridPane.setGridLinesVisible(true);
+//        GridPane.setValignment(infoLabel, VPos.CENTER);
         gridPane.setPadding(new Insets(10, 20, 20, 20));
         gridPane.add(flowTopRow, 0, 0, 5, 2);
         gridPane.add(flowBottomRow, 0, 12, 5, 2);
         gridPane.add(darkModeToggle, 14, 12, 1, 1);
         gridPane.add(recipeListView, 0, 2, 4, 10);
         gridPane.add(instructionsTextArea, 4, 2, 10, 10);
+        gridPane.add(infoLabel, 5,12,10,1);
         gridPane.setHgap(20);
         gridPane.setVgap(10);
         Scene scene = new Scene(gridPane, WIDTH, HEIGHT);
@@ -221,21 +225,24 @@ public class GitBreadGUI extends Application {
         });
 
         // log an attempt with the active recipe version
+        //TODO: fix or deal with loading issue where active commit is loaded as a separate object. Attempts don't work
+        //      properly until the branch is reselected.
         flowBottomRow.getChildren().get(0).setOnMouseClicked(e -> {
             if (activeRecipeHistory != null) {
                 activeRecipeHistory.attempt(clock);
+                infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
+                        activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
             }
-
         });
 
         // scale and re-display the active recipe in the instructions TextArea
         flowBottomRow.getChildren().get(1).setOnMouseClicked(e -> {
             if (activeRecipeHistory != null) {
                 ScaleByStage scale = new ScaleByStage();
-                scale.display();
-                BreadRecipe toScale = (BreadRecipe) (activeRecipeHistory.getActiveCommit().getRecipeVersion());
-                toScale.scaleByDoughWeight(3000);
-                instructionsTextArea.setText(toScale.toString());
+                scale.display(activeRecipeHistory);
+                addItemsListView();
+                recipeListView.refresh();
+                instructionsTextArea.setText(activeRecipeHistory.getActiveCommit().getRecipeVersion().toString());
             }
 
         });
@@ -257,19 +264,27 @@ public class GitBreadGUI extends Application {
                 branchName.setOnKeyPressed(event -> {
                     if (event.getCode() == KeyCode.ENTER) {
                         activeRecipeHistory.newBranch(branchName.getText());
-                        addItemsListView();
-                        recipeListView.refresh();
-                        nameBranch.close();
                         RecipeStage recipeStage = new RecipeStage();
                         recipeStage.display(activeCollection, activeRecipeHistory, false);
                         addItemsListView();
                         recipeListView.refresh();
+                        nameBranch.close();
                         //TODO: openModification 'commit' window here
                     } else if (event.getCode() == KeyCode.ESCAPE) {
                         nameBranch.close();
                     }
                 });
                 nameBranch.showAndWait();
+            }
+        });
+
+        //make a new commit to the current recipe and branch
+        flowBottomRow.getChildren().get(3).setOnMouseClicked(e -> {
+            if (activeRecipeHistory != null) {
+                RecipeStage recipeStage = new RecipeStage();
+                recipeStage.display(activeCollection, activeRecipeHistory, false);
+                addItemsListView();
+                recipeListView.refresh();
             }
         });
 
@@ -290,6 +305,8 @@ public class GitBreadGUI extends Application {
                 if (newValue != null) {
                     activeRecipeHistory = activeCollection.get(newValue);
                     updateTextArea();
+                    infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
+                            activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
                 }
             }
         });
@@ -325,11 +342,12 @@ public class GitBreadGUI extends Application {
     private void setFlowPaneTooltips() {
         Tooltip.install(flowTopRow.getChildren().get(0), new Tooltip("Load recipe book"));
         Tooltip.install(flowTopRow.getChildren().get(1), new Tooltip("Add recipe"));
-        Tooltip.install(flowTopRow.getChildren().get(2), new Tooltip("Export recipe book"));
+        Tooltip.install(flowTopRow.getChildren().get(2), new Tooltip("Export recipe book as image"));
         Tooltip.install(flowTopRow.getChildren().get(3), new Tooltip("Export recipe"));
         Tooltip.install(flowBottomRow.getChildren().get(0), new Tooltip("Log attempt"));
         Tooltip.install(flowBottomRow.getChildren().get(1), new Tooltip("Scale"));
         Tooltip.install(flowBottomRow.getChildren().get(2), new Tooltip("New branch"));
+        Tooltip.install(flowBottomRow.getChildren().get(3), new Tooltip("Update recipe"));
     }
 
     private void openFile(File file) {

@@ -40,7 +40,7 @@ public class BreadRecipe extends Recipe {
     @JsonCreator
     public BreadRecipe(@JsonProperty("flourWeight") int flourWeight,
                        @JsonProperty("waterFraction") double waterFraction) {
-        this.flourFraction = flourConst; // flour baker's percentage is always 1
+        this.flourFraction = flourConst; // flour baker's percentage is always 100 (i.e. 1)
         this.waterFraction = waterFraction;
         this.saltFraction = 0.02;
         this.sugarFraction = 0;
@@ -62,7 +62,7 @@ public class BreadRecipe extends Recipe {
 
     //EFFECTS: constructs a default bread recipe with a desired wet dough weight
     public BreadRecipe(int doughWeight) {
-        this.flourFraction = flourConst; // flour baker's percentage is always 1
+        this.flourFraction = flourConst; // flour baker's percentage is always 100 (i.e. 1)
         this.waterFraction = .66;
         this.saltFraction = 0.02;
         this.sugarFraction = 0;

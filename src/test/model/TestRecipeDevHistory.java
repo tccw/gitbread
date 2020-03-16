@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestRecipeDevHistory {
 
-    private Clock clock = Clock.fixed(LocalDateTime.of(2020, 2,14,12,10)
+    private Clock clock = Clock.fixed(LocalDateTime.of(2020, 2, 14, 12, 10)
             .toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
     private Recipe testRecipe;
     private RecipeDevHistory repo;
@@ -138,8 +138,8 @@ public class TestRecipeDevHistory {
             repo.commit(new BreadRecipe(1000, 0.81));
             repo.commit(new BreadRecipe(600, 0.51));
             repo.newBranch("high-temp");
-            repo.commit(new BreadRecipe(1000,0.76));
-            repo.commit(new BreadRecipe(1000,0.72));
+            repo.commit(new BreadRecipe(1000, 0.76));
+            repo.commit(new BreadRecipe(1000, 0.72));
             repo.checkout("high-hydration-test");
             repo.merge("master");
             repo.commit(new BreadRecipe(650, 0.45));
@@ -151,6 +151,23 @@ public class TestRecipeDevHistory {
             for (int i = 0; i < 3; i++) {
                 assertEquals(expected.get(i), actual.get(i));
             }
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void TestTotalAttempts() {
+        try {
+            repo = new RecipeDevHistory(new BreadRecipe(1000));
+            repo.commit(new BreadRecipe(1000, 0.60));
+            repo.commit(new BreadRecipe(1000, 0.59));
+            repo.newBranch("high-hydration-test");
+            repo.commit(new BreadRecipe(360, 0.78));
+            repo.attempt(clock);
+            repo.attempt(clock);
+            repo.checkout("master");
+            assertEquals(2, repo.totalAttempts());
         } catch (Exception e) {
             fail();
         }

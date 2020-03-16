@@ -37,7 +37,7 @@ public class RecipeStage {
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Add Recipe");
         window.setMinWidth(400);
-        elementSetup();
+        elementSetup(isNewRecipe);
         if (!isNewRecipe) {
             setFieldsToCurrentCommit();
         }
@@ -56,24 +56,24 @@ public class RecipeStage {
         instructions.setWrapText(true);
     }
 
-    private void elementSetup() {
+    private void elementSetup(boolean isNewRecipe) {
         makeFields();
-        makeButtons();
+        makeButtons(isNewRecipe);
         placeUIElements();
     }
 
     private void setFieldsToCurrentCommit() {
         BreadRecipe recipeToEdit = (BreadRecipe) (this.activeHistory.getActiveCommit().getRecipeVersion());
         fields[0].setEditable(false);
-        fields[0].setText(); //TODO: set the title as the key of the recipe
-        fields[1].setText(String.valueOf(recipeToEdit.getWaterFraction() * 100));
-        fields[2].setText(String.valueOf(recipeToEdit.getSaltFraction() * 100));
-        fields[3].setText(String.valueOf(recipeToEdit.getSugarFraction() * 100));
-        fields[4].setText(String.valueOf(recipeToEdit.getFatFraction() * 100));
-        fields[5].setText(String.valueOf(recipeToEdit.getYeastFraction() * 100));
-        fields[6].setText(String.valueOf(recipeToEdit.getCookTemp() * 100));
-        fields[7].setText(String.valueOf(recipeToEdit.getCookTime() * 100));
-        fields[8].setText(String.valueOf(recipeToEdit.getPrepTime() * 100));
+        fields[0].setText("Title"); //TODO: set the title as the key of the recipe
+        fields[2].setText(String.valueOf(recipeToEdit.getWaterFraction() * 100));
+        fields[3].setText(String.valueOf(recipeToEdit.getSaltFraction() * 100));
+        fields[4].setText(String.valueOf(recipeToEdit.getSugarFraction() * 100));
+        fields[5].setText(String.valueOf(recipeToEdit.getFatFraction() * 100));
+        fields[6].setText(String.valueOf(recipeToEdit.getYeastFraction() * 100));
+        fields[7].setText(String.valueOf(recipeToEdit.getCookTemp()));
+        fields[8].setText(String.valueOf(recipeToEdit.getCookTime()));
+        fields[9].setText(String.valueOf(recipeToEdit.getPrepTime()));
         this.instructions.setText(recipeToEdit.getInstructions());
     }
 
@@ -81,6 +81,7 @@ public class RecipeStage {
         String[] promptText = new String[]{"Recipe name", "", "Water weight%", "Salt weight%", "Sugar weight%",
                 "Fat weight%", "Yeast weight%", "Bake temp [deg. F]", "Bake time [mins]", "Prep time [mins]"};
         fields = new TextField[promptText.length];
+//        PercentageStringConverter percent = new PercentageStringConverter(new DecimalFormat("##%"));
         for (int i = 0; i < promptText.length; i++) {
             fields[i] = new TextField();
             fields[i].setPromptText(promptText[i]);
@@ -97,27 +98,50 @@ public class RecipeStage {
         buttonArea.setSpacing(10);
     }
 
-    private void makeButtons() {
+    private void makeButtons(boolean isNewRecipe) {
         add = new Button("Add Recipe");
+
         add.setOnAction(e -> {
-            BreadRecipe firstVersion = new BreadRecipe(1000);
-            firstVersion.setWaterFraction(Double.parseDouble(fields[2].getText()) / 100);
-            firstVersion.setSaltFraction(Double.parseDouble(fields[3].getText()) / 100);
-            firstVersion.setSugarFraction(Double.parseDouble(fields[4].getText()) / 100);
-            firstVersion.setFatFraction(Double.parseDouble(fields[5].getText()) / 100);
-            firstVersion.setYeastFraction(Double.parseDouble(fields[6].getText()) / 100);
-            firstVersion.setCookTemp(Integer.parseInt(fields[7].getText()));
-            firstVersion.setCookTime(Integer.parseInt(fields[8].getText()));
-            firstVersion.setPrepTime(Integer.parseInt(fields[9].getText()));
-            firstVersion.setInstructions(instructions.getText());
-//            firstVersion.scaleByDoughWeight(900);
-            try {
-                this.collection.add(fields[0].getText(), new RecipeDevHistory(firstVersion));
-                window.close();
-            } catch (NoSuchAlgorithmException ex) {
-                ex.printStackTrace();
+            boolean notDouble = false;
+            for (int i = 2; i < fields.length; i++) {
+                if (!isDouble(fields[i])) {
+                    AlertMessage.display("Please check that all fields are numbers.", "NumberFormatException");
+                    notDouble = true;
+                    break;
+                }
+            }
+            if (!notDouble) {
+                BreadRecipe recipe = new BreadRecipe(1000);
+                recipe.setWaterFraction(Double.parseDouble(fields[2].getText()) / 100);
+                recipe.setSaltFraction(Double.parseDouble(fields[3].getText()) / 100);
+                recipe.setSugarFraction(Double.parseDouble(fields[4].getText()) / 100);
+                recipe.setFatFraction(Double.parseDouble(fields[5].getText()) / 100);
+                recipe.setYeastFraction(Double.parseDouble(fields[6].getText()) / 100);
+                recipe.setCookTemp(Integer.parseInt(fields[7].getText()));
+                recipe.setCookTime(Integer.parseInt(fields[8].getText()));
+                recipe.setPrepTime(Integer.parseInt(fields[9].getText()));
+                recipe.setInstructions(instructions.getText());
+                try {
+                    if (!isNewRecipe) {
+                        this.activeHistory.commit(recipe);
+                    } else {
+                        this.collection.add(fields[0].getText(), new RecipeDevHistory(recipe));
+                    }
+                    window.close();
+                } catch (NoSuchAlgorithmException event) {
+                    event.printStackTrace();
+                }
             }
         });
+    }
+
+    private boolean isDouble(TextField input) {
+        try {
+            double field = Double.parseDouble(input.getText());
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
 }
