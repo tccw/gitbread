@@ -1,10 +1,10 @@
 package model;
 
-import com.fasterxml.jackson.databind.ObjectReader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,5 +52,10 @@ public class TestGraphHistory {
         } catch (NoSuchAlgorithmException e) {
             fail();
         }
+    }
+
+    @Test
+    void dummyConstructorTest() {
+        GraphHistory dummy = new GraphHistory();
     }
 }

@@ -17,8 +17,8 @@ and allows the user to enter in some notes about the results of the attempt.
 public class Attempt {
     /*
     @JsonBackReference tells Jackson to not serialize this field but to reconstruct using the @JasonManagedReference
-    annotated field on the other side of the circular reference/bidirectional relationship. In this case that reference is
-    attemptHistory which is ArrayList<Attempt> within Recipe (of which recipeVersion is type Recipe).
+    annotated field on the other side of the circular reference/bidirectional relationship. In this case that reference
+    is attemptHistory which is ArrayList<Attempt> within Recipe (of which recipeVersion is type Recipe).
     More here: https://www.baeldung.com/jackson-bidirectional-relationships-and-infinite-recursion
      */
     @JsonBackReference
@@ -85,9 +85,9 @@ public class Attempt {
 
     // setters
 
-    public void setRecipeVersion(Recipe recipeVersion) {
-        this.recipeVersion = recipeVersion;
-    }
+//    public void setRecipeVersion(Recipe recipeVersion) {
+//        this.recipeVersion = recipeVersion;
+//    }
 
 //    public void setDateTime(LocalDateTime dateTime) {
 //        this.dateTime = dateTime;

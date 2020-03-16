@@ -60,7 +60,7 @@ public class RecipeDevHistory {
     public void newBranch(String branch) {
         List<String> branches = this.getBranches();
         if (branches.contains(branch)) {
-            System.out.println("A branch with that name already exists.");
+            System.err.println("A branch with that name already exists.");
         } else {
             branches.add(branch);
             currentBranch = branch;
@@ -71,7 +71,7 @@ public class RecipeDevHistory {
         List<String> branches = this.getBranches();
         try {
             if (branch.equals(currentBranch)) {
-                System.out.println("Cannot merge a branch with itself.");
+                System.err.println("Cannot merge a branch with itself.");
                 return false;
             }
             if (branches.contains(branch)) {

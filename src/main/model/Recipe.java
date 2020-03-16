@@ -79,13 +79,13 @@ public abstract class Recipe {
         this.cookTemp = cookTemp;
     }
 
-    public void setIngredientList(ArrayList<Ingredient> ingredientList) {
-        this.ingredientList = ingredientList;
-    }
-
-    public void setAttemptHistory(ArrayList<Attempt> attemptHistory) {
-        this.attemptHistory = attemptHistory;;
-    }
+//    public void setIngredientList(ArrayList<Ingredient> ingredientList) {
+//        this.ingredientList = ingredientList;
+//    }
+//
+//    public void setAttemptHistory(ArrayList<Attempt> attemptHistory) {
+//        this.attemptHistory = attemptHistory;;
+//    }
 
     // getters
     @JsonSerialize

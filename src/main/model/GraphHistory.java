@@ -19,6 +19,7 @@ public class GraphHistory {
         this.nodes.put(root, new LinkedList<Node>()); // only the root commit has an empty parents list
     }
 
+    //EFFECT: creates a new commit with the given recipe, pointing to the
     public void commit(Recipe recipe) throws NoSuchAlgorithmException {
         Node node = new Node(recipe, this.currentBranch);
         LinkedList<Node> parents = new LinkedList<>();
@@ -31,6 +32,7 @@ public class GraphHistory {
         return this.nodes.get(node); //may need to override equals and hashcode
     }
 
+    //EFFECT: takes a brute force bath back to the first commit, or the root of the graph.
     public Node getRoot() throws NoSuchAlgorithmException {
         Node root = activeNode;
         while (!this.nodes.get(root).isEmpty()) {
@@ -44,7 +46,7 @@ public class GraphHistory {
     }
 
     public int size() {
-        return this.nodes.size();
+        return this.nodes.keySet().size();
     }
 
 

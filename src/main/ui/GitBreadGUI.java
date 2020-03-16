@@ -2,13 +2,10 @@ package ui;
 
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.VPos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -71,7 +68,7 @@ public class GitBreadGUI extends Application {
 
     // start contains the main JavaFX code for running and handling the application
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage primaryStage) {
         activeCollection = new RecipeDevCollection();
         activeRecipeHistory = null;
         primaryStage.setTitle("GitBread");
@@ -299,15 +296,12 @@ public class GitBreadGUI extends Application {
             }
         });
 
-        recipeListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                if (newValue != null) {
-                    activeRecipeHistory = activeCollection.get(newValue);
-                    updateTextArea();
-                    infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
-                            activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
-                }
+        recipeListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                activeRecipeHistory = activeCollection.get(newValue);
+                updateTextArea();
+                infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
+                        activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
             }
         });
 
