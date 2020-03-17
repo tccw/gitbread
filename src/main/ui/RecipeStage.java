@@ -111,28 +111,32 @@ public class RecipeStage {
                 }
             }
             if (!notDouble) {
-                BreadRecipe recipe = new BreadRecipe(1000);
-                recipe.setWaterFraction(Double.parseDouble(fields[2].getText()) / 100);
-                recipe.setSaltFraction(Double.parseDouble(fields[3].getText()) / 100);
-                recipe.setSugarFraction(Double.parseDouble(fields[4].getText()) / 100);
-                recipe.setFatFraction(Double.parseDouble(fields[5].getText()) / 100);
-                recipe.setYeastFraction(Double.parseDouble(fields[6].getText()) / 100);
-                recipe.setCookTemp(Integer.parseInt(fields[7].getText()));
-                recipe.setCookTime(Integer.parseInt(fields[8].getText()));
-                recipe.setPrepTime(Integer.parseInt(fields[9].getText()));
-                recipe.setInstructions(instructions.getText());
-                try {
-                    if (!isNewRecipe) {
-                        this.activeHistory.commit(recipe);
-                    } else {
-                        this.collection.add(fields[0].getText(), new RecipeDevHistory(recipe));
-                    }
-                    window.close();
-                } catch (NoSuchAlgorithmException event) {
-                    event.printStackTrace();
-                }
+                makeCommit(isNewRecipe);
             }
         });
+    }
+
+    private void makeCommit(boolean isNewRecipe) {
+        BreadRecipe recipe = new BreadRecipe(1000);
+        recipe.setWaterFraction(Double.parseDouble(fields[2].getText()) / 100);
+        recipe.setSaltFraction(Double.parseDouble(fields[3].getText()) / 100);
+        recipe.setSugarFraction(Double.parseDouble(fields[4].getText()) / 100);
+        recipe.setFatFraction(Double.parseDouble(fields[5].getText()) / 100);
+        recipe.setYeastFraction(Double.parseDouble(fields[6].getText()) / 100);
+        recipe.setCookTemp(Integer.parseInt(fields[7].getText()));
+        recipe.setCookTime(Integer.parseInt(fields[8].getText()));
+        recipe.setPrepTime(Integer.parseInt(fields[9].getText()));
+        recipe.setInstructions(instructions.getText());
+        try {
+            if (!isNewRecipe) {
+                this.activeHistory.commit(recipe);
+            } else {
+                this.collection.add(fields[0].getText(), new RecipeDevHistory(recipe));
+            }
+            window.close();
+        } catch (NoSuchAlgorithmException event) {
+            event.printStackTrace();
+        }
     }
 
     private boolean isDouble(TextField input) {
