@@ -155,19 +155,23 @@ public class GitBreadGUI extends Application {
                 vbox.getChildren().add(branchName);
                 Scene layout = new Scene(vbox);
                 stage.setScene(layout);
-                branchName.setOnKeyPressed(event -> {
-                    if (event.getCode() == KeyCode.ENTER) {
-                        activeRecipeHistory.newBranch(branchName.getText());
-                        RecipeStage recipeStage = new RecipeStage();
-                        recipeStage.display(activeCollection, activeRecipeHistory, false);
-                        addItemsListView();
-                        recipeListView.refresh();
-                        stage.close();
-                    } else if (event.getCode() == KeyCode.ESCAPE) {
-                        stage.close();
-                    }
-                });
+                branchNameOnKeypressed(stage, branchName);
                 stage.showAndWait();
+            }
+        });
+    }
+
+    private void branchNameOnKeypressed(Stage stage, TextField branchName) {
+        branchName.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                activeRecipeHistory.newBranch(branchName.getText());
+                RecipeStage recipeStage = new RecipeStage();
+                recipeStage.display(activeCollection, activeRecipeHistory, false);
+                addItemsListView();
+                recipeListView.refresh();
+                stage.close();
+            } else if (event.getCode() == KeyCode.ESCAPE) {
+                stage.close();
             }
         });
     }
@@ -261,7 +265,7 @@ public class GitBreadGUI extends Application {
             recipeListView.refresh();
         });
         buildBranchList(cell, branches, switchBranch);
-        
+
         switchBranch.textProperty().bind(Bindings.format("branches", cell.itemProperty()));
         contextMenu.getItems().clear();
         contextMenu.getItems().add(switchBranch);
@@ -355,7 +359,7 @@ public class GitBreadGUI extends Application {
         fieldAndButtons();
         flowTopRow = makeFlowPaneButtons(topRecipeBarIcons);
         flowBottomRow = makeFlowPaneButtons(bottomRecipeBarIcons);
-        recipeListView = new ListView<String>();
+        recipeListView = new ListView<>();
         instructionsTextArea = new TextArea();
         instructionsTextArea.setWrapText(true);
         instructionsTextArea.setEditable(false);
