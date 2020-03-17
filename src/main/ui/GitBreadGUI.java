@@ -57,6 +57,7 @@ public class GitBreadGUI extends Application {
     FlowPane flowTopRow;
     FlowPane flowBottomRow;
     GridPane gridPane;
+    Scene scene;
 
     private static final int WIDTH = 800;
     public static final int HEIGHT = 600;
@@ -69,141 +70,132 @@ public class GitBreadGUI extends Application {
     // start contains the main JavaFX code for running and handling the application
     @Override
     public void start(Stage primaryStage) {
-        activeCollection = new RecipeDevCollection();
-        activeRecipeHistory = null;
-        primaryStage.setTitle("GitBread");
-        fieldAndButtons();
-        flowTopRow = makeFlowPaneButtons(topRecipeBarIcons);
-        flowBottomRow = makeFlowPaneButtons(bottomRecipeBarIcons);
+        initialize(primaryStage);
+        setTooltips();
+        gridPaneLayoutSetup(primaryStage);
+        recipeListViewSetup();
+        setUpButtonActions(primaryStage);
+    }
 
-        gridPane = new GridPane();
-
-        recipeListView = new ListView<String>();
-        instructionsTextArea = new TextArea();
-        instructionsTextArea.setWrapText(true);
-        instructionsTextArea.setEditable(false);
-        infoLabel = new Label();
-        items = FXCollections.observableArrayList();
-
-        //make tooltips
-        darkModeToggle.setTooltip(new Tooltip("Toggle DarkMode"));
-        setFlowPaneTooltips();
-
-        primaryStage.sizeToScene();
-        primaryStage.setMinHeight(HEIGHT);
-        primaryStage.setMinWidth(WIDTH);
-        primaryStage.setMaxHeight(HEIGHT);
-        primaryStage.setMaxWidth(WIDTH);
-//        gridPane.setGridLinesVisible(true);
-//        GridPane.setValignment(infoLabel, VPos.CENTER);
-        gridPane.setPadding(new Insets(10, 20, 20, 20));
-        gridPane.add(flowTopRow, 0, 0, 5, 2);
-        gridPane.add(flowBottomRow, 0, 12, 5, 2);
-        gridPane.add(darkModeToggle, 14, 12, 1, 1);
-        gridPane.add(recipeListView, 0, 2, 4, 10);
-        gridPane.add(instructionsTextArea, 4, 2, 10, 10);
-        gridPane.add(infoLabel, 5,12,10,1);
-        gridPane.setHgap(20);
-        gridPane.setVgap(10);
-        Scene scene = new Scene(gridPane, WIDTH, HEIGHT);
-        scene.getStylesheets().add("./ui/gitbreadlightstyle.css");
-        primaryStage.setScene(scene);
-        // Image courtesy of Freepik on https://www.flaticon.com/free-icon/agronomy_1188035
-        primaryStage.getIcons().add(new Image("file:./data/icons/wheatcolor512.png"));
-        primaryStage.show();
-
-        ImageView recipeListPlaceHolder = new ImageView(new Image("file:./data/icons/sharing/recipecollection.png"));
-        recipeListPlaceHolder.setOpacity(0.5);
-        recipeListView.setPlaceholder(recipeListPlaceHolder);
-        recipeListView.setMinWidth(204);
-        recipeListView.setMaxWidth(204);
-        recipeListView.setOnDragOver(event -> {
-                    if (event.getDragboard().hasFiles()) {
-                        event.acceptTransferModes(TransferMode.ANY);
-                    }
-                    event.consume();
-                }
-        );
-
-        // Accept and load PNG files of recipe collections.
-        recipeListView.setOnDragDropped(event -> {
-            List<File> files = event.getDragboard().getFiles();
-            try {
-                if (files.get(0).getName().contains(".png") || files.get(0).getName().contains(".PNG")) {
-                    Steganos encoder = new Steganos();
-                    activeCollection = loadRecipeCollectionJson(encoder.decode(files.get(0)));
-                    addItemsListView();
-                } else {
-                    throw new IOException();
-                }
-            } catch (IOException e) {
-                System.err.println("Problem loading the collection.");
-            }
-        });
-
-        // Right-click context menu to switch branches or export recipes
-        // https://stackoverflow.com/questions/28264907/javafx-listview-contextmenu
-        //TODO: Complete this implementation
-        recipeListView.setCellFactory(lv -> {
-            ListCell<String> cell = new ListCell<>();
-            ContextMenu contextMenu = new ContextMenu();
-
-            cell.textProperty().bindBidirectional(cell.itemProperty());
-            cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
-                if (isNowEmpty) {
-                    cell.setContextMenu(null);
-                } else {
-                    List<String> branches = activeCollection.get(cell.getItem()).getBranches();
-                    Menu switchBranch = new Menu();
-                    MenuItem removeRecipe = new MenuItem();
-                    removeRecipe.textProperty().bind(Bindings.format("remove", cell.itemProperty()));
-                    removeRecipe.setOnAction(e -> {
-                        activeCollection.remove(cell.getItem());
-                        addItemsListView();
-                        recipeListView.refresh();
-                    });
-                    for (String s : branches) {
-                        MenuItem child = new MenuItem(s);
-                        switchBranch.getItems().add(child);
-                        child.textProperty().bind(Bindings.format(s, cell.itemProperty()));
-                        child.setOnAction(e -> {
-                            activeCollection.get(cell.getItem()).checkout(s);
-                            activeRecipeHistory = activeCollection.get(cell.getItem());
-                            updateTextArea();
-                        });
-                    }
-                    switchBranch.textProperty().bind(Bindings.format("branches", cell.itemProperty()));
-                    contextMenu.getItems().clear();
-                    contextMenu.getItems().add(switchBranch);
-                    contextMenu.getItems().add(removeRecipe);
-
-                    cell.textProperty().bindBidirectional(cell.itemProperty());
-                    cell.setContextMenu(contextMenu);
-                }
-            });
-            return cell;
-        });
-
-
+    private void setUpButtonActions(Stage primaryStage) {
         // Open a file browser to load a JSON text file of a recipe collection
-        flowTopRow.getChildren().get(0).setOnMouseClicked(e -> {
-            File fileIn = fileChooserHelper("./data/recipecollections",
-                    "json",
-                    "load", primaryStage);
-            if (fileIn != null) {
-                openFile(fileIn);
-            }
-        });
+        loadJsonButton(primaryStage);
 
         // Open the add recipe stage
-        flowTopRow.getChildren().get(1).setOnMouseClicked(e -> {
-            RecipeStage stage = new RecipeStage();
-            stage.display(activeCollection, activeRecipeHistory, true);
-            addItemsListView();
-            recipeListView.refresh();
-        });
+        newRecipeButton();
 
         // save the recipe collection as a sharable PNG.
+        saveAsImageButton(primaryStage);
+
+        // log an attempt with the active recipe version
+        //TODO: fix or deal with loading issue where active commit is loaded as a separate object. Attempts don't work
+        //      properly until the branch is reselected.
+        logAttemptButton();
+
+        // scale and re-display the active recipe in the instructions TextArea
+        scaleRecipeButton();
+
+        // make a new branch
+        newBranchButton();
+
+        //make a new commit to the current recipe and branch
+        newCommitToCurrentBranchButton();
+
+        darkModeToggle();
+
+        recipeListViewListener();
+    }
+
+    private void recipeListViewListener() {
+        recipeListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                activeRecipeHistory = activeCollection.get(newValue);
+                updateTextArea();
+                infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
+                        activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
+            }
+        });
+    }
+
+    private void darkModeToggle() {
+        darkModeToggle.setOnAction(e -> {
+            if (!darkMode) {
+                scene.getStylesheets().add("./ui/gitbreaddarkstyle.css");
+                darkMode = true;
+            } else {
+                scene.getStylesheets().remove("./ui/gitbreaddarkstyle.css");
+                scene.getStylesheets().add("./ui/gitbreadlightstyle.css");
+                darkMode = false;
+            }
+        });
+    }
+
+    private void newCommitToCurrentBranchButton() {
+        flowBottomRow.getChildren().get(3).setOnMouseClicked(e -> {
+            if (activeRecipeHistory != null) {
+                RecipeStage recipeStage = new RecipeStage();
+                recipeStage.display(activeCollection, activeRecipeHistory, false);
+                addItemsListView();
+                recipeListView.refresh();
+            }
+        });
+    }
+
+    private void newBranchButton() {
+        flowBottomRow.getChildren().get(2).setOnMouseClicked(e -> {
+            if (activeRecipeHistory != null) {
+                Stage stage = new Stage();
+                stage.setTitle("New branch name");
+                TextField branchName = new TextField();
+                stage.initModality(Modality.APPLICATION_MODAL);
+                branchName.setPromptText("branch name");
+                VBox vbox = new VBox();
+                vbox.setPadding(new Insets(10));
+                vbox.setAlignment(Pos.CENTER_RIGHT);
+                vbox.getChildren().add(branchName);
+                Scene layout = new Scene(vbox);
+                stage.setScene(layout);
+                branchName.setOnKeyPressed(event -> {
+                    if (event.getCode() == KeyCode.ENTER) {
+                        activeRecipeHistory.newBranch(branchName.getText());
+                        RecipeStage recipeStage = new RecipeStage();
+                        recipeStage.display(activeCollection, activeRecipeHistory, false);
+                        addItemsListView();
+                        recipeListView.refresh();
+                        stage.close();
+                    } else if (event.getCode() == KeyCode.ESCAPE) {
+                        stage.close();
+                    }
+                });
+                stage.showAndWait();
+            }
+        });
+    }
+
+    private void scaleRecipeButton() {
+        flowBottomRow.getChildren().get(1).setOnMouseClicked(e -> {
+            if (activeRecipeHistory != null) {
+                ScaleByStage scale = new ScaleByStage();
+                scale.display(activeRecipeHistory);
+                addItemsListView();
+                recipeListView.refresh();
+                instructionsTextArea.setText(activeRecipeHistory.getActiveCommit().getRecipeVersion().toString());
+            }
+
+        });
+    }
+
+    private void logAttemptButton() {
+        flowBottomRow.getChildren().get(0).setOnMouseClicked(e -> {
+            if (activeRecipeHistory != null) {
+                activeRecipeHistory.attempt(clock);
+                infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
+                        activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
+            }
+        });
+    }
+
+    private void saveAsImageButton(Stage primaryStage) {
         flowTopRow.getChildren().get(2).setOnMouseClicked(e -> {
             String message = activeCollection.toJson();
             File fileIn = new File("data/icons/sharing/collectionsharingbynikitagolubev.png");
@@ -216,95 +208,164 @@ public class GitBreadGUI extends Application {
                 try {
                     encoder.save(fileOut);
                 } catch (IOException ex) {
-                    System.err.println("Error while saving.");
+                    AlertMessage.display("Error while saving.", "IOException");
                 }
             }
         });
+    }
 
-        // log an attempt with the active recipe version
-        //TODO: fix or deal with loading issue where active commit is loaded as a separate object. Attempts don't work
-        //      properly until the branch is reselected.
-        flowBottomRow.getChildren().get(0).setOnMouseClicked(e -> {
-            if (activeRecipeHistory != null) {
-                activeRecipeHistory.attempt(clock);
-                infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
-                        activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
+    private void newRecipeButton() {
+        flowTopRow.getChildren().get(1).setOnMouseClicked(e -> {
+            RecipeStage stage = new RecipeStage();
+            stage.display(activeCollection, activeRecipeHistory, true);
+            addItemsListView();
+            recipeListView.refresh();
+        });
+    }
+
+    private void loadJsonButton(Stage primaryStage) {
+        flowTopRow.getChildren().get(0).setOnMouseClicked(e -> {
+            File fileIn = fileChooserHelper("./data/recipecollections",
+                    "json",
+                    "load", primaryStage);
+            if (fileIn != null) {
+                openFile(fileIn);
             }
         });
+    }
 
-        // scale and re-display the active recipe in the instructions TextArea
-        flowBottomRow.getChildren().get(1).setOnMouseClicked(e -> {
-            if (activeRecipeHistory != null) {
-                ScaleByStage scale = new ScaleByStage();
-                scale.display(activeRecipeHistory);
-                addItemsListView();
-                recipeListView.refresh();
-                instructionsTextArea.setText(activeRecipeHistory.getActiveCommit().getRecipeVersion().toString());
-            }
-
+    private void recipeListViewRightClickMenu() {
+        recipeListView.setCellFactory(lv -> {
+            ListCell<String> cell = new ListCell<>();
+            ContextMenu contextMenu = new ContextMenu();
+            cell.textProperty().bindBidirectional(cell.itemProperty());
+            cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+                if (isNowEmpty) {
+                    cell.setContextMenu(null);
+                } else {
+                    buildContextMenu(cell, contextMenu);
+                }
+            });
+            return cell;
         });
+    }
 
-        // make a new branch
-        flowBottomRow.getChildren().get(2).setOnMouseClicked(e -> {
-            if (activeRecipeHistory != null) {
-                Stage nameBranch = new Stage();
-                nameBranch.setTitle("New branch name");
-                TextField branchName = new TextField();
-                nameBranch.initModality(Modality.APPLICATION_MODAL);
-                branchName.setPromptText("branch name");
-                VBox vbox = new VBox();
-                vbox.setPadding(new Insets(10));
-                vbox.setAlignment(Pos.CENTER_RIGHT);
-                vbox.getChildren().add(branchName);
-                Scene layout = new Scene(vbox);
-                nameBranch.setScene(layout);
-                branchName.setOnKeyPressed(event -> {
-                    if (event.getCode() == KeyCode.ENTER) {
-                        activeRecipeHistory.newBranch(branchName.getText());
-                        RecipeStage recipeStage = new RecipeStage();
-                        recipeStage.display(activeCollection, activeRecipeHistory, false);
-                        addItemsListView();
-                        recipeListView.refresh();
-                        nameBranch.close();
-                        //TODO: openModification 'commit' window here
-                    } else if (event.getCode() == KeyCode.ESCAPE) {
-                        nameBranch.close();
-                    }
-                });
-                nameBranch.showAndWait();
-            }
+    private void buildContextMenu(ListCell<String> cell, ContextMenu contextMenu) {
+        List<String> branches = activeCollection.get(cell.getItem()).getBranches();
+        Menu switchBranch = new Menu();
+        MenuItem removeRecipe = new MenuItem();
+        removeRecipe.textProperty().bind(Bindings.format("remove", cell.itemProperty()));
+        removeRecipe.setOnAction(e -> {
+            activeCollection.remove(cell.getItem());
+            addItemsListView();
+            recipeListView.refresh();
         });
+        buildBranchList(cell, branches, switchBranch);
+        
+        switchBranch.textProperty().bind(Bindings.format("branches", cell.itemProperty()));
+        contextMenu.getItems().clear();
+        contextMenu.getItems().add(switchBranch);
+        contextMenu.getItems().add(removeRecipe);
 
-        //make a new commit to the current recipe and branch
-        flowBottomRow.getChildren().get(3).setOnMouseClicked(e -> {
-            if (activeRecipeHistory != null) {
-                RecipeStage recipeStage = new RecipeStage();
-                recipeStage.display(activeCollection, activeRecipeHistory, false);
-                addItemsListView();
-                recipeListView.refresh();
-            }
-        });
+        cell.textProperty().bindBidirectional(cell.itemProperty());
+        cell.setContextMenu(contextMenu);
+    }
 
-        darkModeToggle.setOnAction(e -> {
-            if (!darkMode) {
-                scene.getStylesheets().add("./ui/gitbreaddarkstyle.css");
-                darkMode = true;
-            } else {
-                scene.getStylesheets().remove("./ui/gitbreaddarkstyle.css");
-                scene.getStylesheets().add("./ui/gitbreadlightstyle.css");
-                darkMode = false;
-            }
-        });
-
-        recipeListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                activeRecipeHistory = activeCollection.get(newValue);
+    private void buildBranchList(ListCell<String> cell, List<String> branches, Menu switchBranch) {
+        for (String s : branches) {
+            MenuItem child = new MenuItem(s);
+            switchBranch.getItems().add(child);
+            child.textProperty().bind(Bindings.format(s, cell.itemProperty()));
+            child.setOnAction(e -> {
+                activeCollection.get(cell.getItem()).checkout(s);
+                activeRecipeHistory = activeCollection.get(cell.getItem());
                 updateTextArea();
-                infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
-                        activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
+            });
+        }
+    }
+
+    private void recipeListViewOnDragDrop() {
+        recipeListView.setOnDragDropped(event -> {
+            List<File> files = event.getDragboard().getFiles();
+            try {
+                if (files.get(0).getName().contains(".png") || files.get(0).getName().contains(".PNG")) {
+                    Steganos encoder = new Steganos();
+                    activeCollection = loadRecipeCollectionJson(encoder.decode(files.get(0)));
+                    addItemsListView();
+                } else {
+                    throw new IOException();
+                }
+            } catch (IOException e) {
+                AlertMessage.display("Problem loading the collection.", "IOException");
             }
         });
+    }
 
+    private void recipeListViewSetup() {
+        recipeListViewDefaultIcon();
+
+        // Accept and load PNG files of recipe collections.
+        recipeListViewOnDragDrop();
+
+        // Right-click context menu to switch branches or export recipes
+        // https://stackoverflow.com/questions/28264907/javafx-listview-contextmenu
+        //TODO: Complete this implementation
+        recipeListViewRightClickMenu();
+    }
+
+    private void recipeListViewDefaultIcon() {
+        ImageView recipeListPlaceHolder = new ImageView(new Image("file:./data/icons/sharing/recipecollection.png"));
+        recipeListPlaceHolder.setOpacity(0.5);
+        recipeListView.setPlaceholder(recipeListPlaceHolder);
+        recipeListView.setMinWidth(204);
+        recipeListView.setMaxWidth(204);
+        recipeListView.setOnDragOver(event -> {
+                    if (event.getDragboard().hasFiles()) {
+                        event.acceptTransferModes(TransferMode.ANY);
+                    }
+                    event.consume();
+                }
+        );
+    }
+
+    private void gridPaneLayoutSetup(Stage primaryStage) {
+//        gridPane.setGridLinesVisible(true);
+        gridPane.setPadding(new Insets(10, 20, 20, 20));
+        gridPane.add(flowTopRow, 0, 0, 5, 2);
+        gridPane.add(flowBottomRow, 0, 12, 5, 2);
+        gridPane.add(darkModeToggle, 14, 12, 1, 1);
+        gridPane.add(recipeListView, 0, 2, 4, 10);
+        gridPane.add(instructionsTextArea, 4, 2, 10, 10);
+        gridPane.add(infoLabel, 5, 12, 10, 1);
+        gridPane.setHgap(20);
+        gridPane.setVgap(10);
+        scene = new Scene(gridPane, WIDTH, HEIGHT);
+        scene.getStylesheets().add("./ui/gitbreadlightstyle.css");
+        primaryStage.setScene(scene);
+        // Image courtesy of Freepik on https://www.flaticon.com/free-icon/agronomy_1188035
+        primaryStage.getIcons().add(new Image("file:./data/icons/wheatcolor512.png"));
+        primaryStage.show();
+    }
+
+    private void initialize(Stage primaryStage) {
+        activeCollection = new RecipeDevCollection();
+        activeRecipeHistory = null;
+        primaryStage.setTitle("GitBread");
+        gridPane = new GridPane();
+        fieldAndButtons();
+        flowTopRow = makeFlowPaneButtons(topRecipeBarIcons);
+        flowBottomRow = makeFlowPaneButtons(bottomRecipeBarIcons);
+        recipeListView = new ListView<String>();
+        instructionsTextArea = new TextArea();
+        instructionsTextArea.setWrapText(true);
+        instructionsTextArea.setEditable(false);
+        infoLabel = new Label();
+        items = FXCollections.observableArrayList();
+        primaryStage.sizeToScene();
+        primaryStage.setMinHeight(HEIGHT);
+        primaryStage.setMinWidth(WIDTH);
+        primaryStage.setMaxHeight(HEIGHT);
+        primaryStage.setMaxWidth(WIDTH);
     }
 
 
@@ -333,7 +394,8 @@ public class GitBreadGUI extends Application {
 
     }
 
-    private void setFlowPaneTooltips() {
+    private void setTooltips() {
+        darkModeToggle.setTooltip(new Tooltip("Toggle DarkMode"));
         Tooltip.install(flowTopRow.getChildren().get(0), new Tooltip("Load recipe book"));
         Tooltip.install(flowTopRow.getChildren().get(1), new Tooltip("Add recipe"));
         Tooltip.install(flowTopRow.getChildren().get(2), new Tooltip("Export recipe book as image"));
@@ -346,11 +408,10 @@ public class GitBreadGUI extends Application {
 
     private void openFile(File file) {
         try {
-            System.out.println("loadin' up");
             activeCollection = loadRecipeCollectionFile(file);
             addItemsListView();
         } catch (IOException e) {
-            System.err.println("Error loading the file.");
+            AlertMessage.display("Error loading the file.", "IOException");
         }
     }
 
