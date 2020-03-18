@@ -24,7 +24,6 @@ import model.RecipeDevHistory;
 import persistence.Writer;
 import persistence.steganography.Steganos;
 
-import javax.tools.Tool;
 import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
@@ -54,7 +53,11 @@ public class GitBreadGUI extends Application {
     RecipeDevHistory activeRecipeHistory;
     ListView<String> recipeListView;
     ObservableList<String> items;
+    TabPane infoDisplay;
+    Tab instructions;
+    Tab attempts;
     TextArea instructionsTextArea;
+    TextArea attemptsTextArea;
     Label infoLabel;
 
     FlowPane flowTopRow;
@@ -189,7 +192,8 @@ public class GitBreadGUI extends Application {
                 scale.display(activeRecipeHistory);
                 addItemsListView();
                 recipeListView.refresh();
-                instructionsTextArea.setText(activeRecipeHistory.getActiveCommit().getRecipeVersion().toString());
+                updateTextArea();
+//                instructionsTextArea.setText(activeRecipeHistory.getActiveCommit().getRecipeVersion().toString());
             }
 
         });
@@ -373,7 +377,7 @@ public class GitBreadGUI extends Application {
         gridPane.add(flowBottomRow, 0, 12, 5, 2);
         gridPane.add(darkModeToggle, 14, 12, 1, 1);
         gridPane.add(recipeListView, 0, 2, 4, 10);
-        gridPane.add(instructionsTextArea, 4, 2, 10, 10);
+        gridPane.add(infoDisplay, 4, 2, 10, 10);
         gridPane.add(infoLabel, 5, 12, 10, 1);
         gridPane.setHgap(20);
         gridPane.setVgap(10);
@@ -394,9 +398,23 @@ public class GitBreadGUI extends Application {
         flowTopRow = makeFlowPaneButtons(topRecipeBarIcons);
         flowBottomRow = makeFlowPaneButtons(bottomRecipeBarIcons);
         recipeListView = new ListView<>();
+
         instructionsTextArea = new TextArea();
         instructionsTextArea.setWrapText(true);
         instructionsTextArea.setEditable(false);
+        attemptsTextArea = new TextArea();
+        attemptsTextArea.setWrapText(true);
+        attemptsTextArea.setEditable(false);
+        infoDisplay = new TabPane();
+        instructions = new Tab("Instructions");
+        instructions.setClosable(false);
+        instructions.setContent(instructionsTextArea);
+        attempts = new Tab("Attempt Record");
+        attempts.setClosable(false);
+        attempts.setContent(attemptsTextArea);
+        infoDisplay.getTabs().addAll(instructions, attempts);
+
+
         infoLabel = new Label();
         items = FXCollections.observableArrayList();
         primaryStage.sizeToScene();
