@@ -399,7 +399,17 @@ public class GitBreadGUI extends Application {
         flowTopRow = makeFlowPaneButtons(topRecipeBarIcons);
         flowBottomRow = makeFlowPaneButtons(bottomRecipeBarIcons);
         recipeListView = new ListView<>();
+        tabSetup();
+        infoLabel = new Label();
+        items = FXCollections.observableArrayList();
+        primaryStage.sizeToScene();
+        primaryStage.setMinHeight(HEIGHT);
+        primaryStage.setMinWidth(WIDTH);
+        primaryStage.setMaxHeight(HEIGHT);
+        primaryStage.setMaxWidth(WIDTH);
+    }
 
+    private void tabSetup() {
         instructionsTextArea = new TextArea();
         instructionsTextArea.setWrapText(true);
         instructionsTextArea.setEditable(false);
@@ -414,15 +424,6 @@ public class GitBreadGUI extends Application {
         attempts.setClosable(false);
         attempts.setContent(attemptsTextArea);
         infoDisplay.getTabs().addAll(instructions, attempts);
-
-
-        infoLabel = new Label();
-        items = FXCollections.observableArrayList();
-        primaryStage.sizeToScene();
-        primaryStage.setMinHeight(HEIGHT);
-        primaryStage.setMinWidth(WIDTH);
-        primaryStage.setMaxHeight(HEIGHT);
-        primaryStage.setMaxWidth(WIDTH);
     }
 
 
