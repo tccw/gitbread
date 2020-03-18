@@ -4,7 +4,6 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import sun.security.jgss.wrapper.GSSCredElement;
 
 import java.awt.*;
 import java.util.List;
