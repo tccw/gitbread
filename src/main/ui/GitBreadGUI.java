@@ -202,8 +202,8 @@ public class GitBreadGUI extends Application {
     private void logAttemptButton() {
         flowBottomRow.getChildren().get(0).setOnMouseClicked(e -> {
             if (activeRecipeHistory != null) {
-                logAttemptNotes();
                 activeRecipeHistory.attempt(clock);
+                logAttemptNotes();
                 infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
                         activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
             }
@@ -212,6 +212,7 @@ public class GitBreadGUI extends Application {
 
     private void logAttemptNotes() {
         //TODO stub
+
     }
 
     private void saveAsImageButton(Stage primaryStage) {

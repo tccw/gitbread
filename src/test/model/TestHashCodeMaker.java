@@ -57,4 +57,9 @@ public class TestHashCodeMaker {
         digest.update(value.getBytes());
         return String.format("%040x", new BigInteger(1, digest.digest()));
     }
+
+    @Test
+    void TestDummyConstructor() {
+        HashCodeMaker hashCodeMaker = new HashCodeMaker();
+    }
 }

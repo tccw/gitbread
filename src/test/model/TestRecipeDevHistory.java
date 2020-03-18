@@ -173,4 +173,23 @@ public class TestRecipeDevHistory {
         }
     }
 
+    @Test
+    void TestCheckoutBranchNotInHistory() {
+        repo.checkout("nonexistent-branch");
+        assertEquals(1, repo.getBranches().size());
+    }
+
+    @Test
+    void TestMergeWithSelf() {
+       assertFalse(repo.merge("master"));
+       assertFalse(repo.merge("nonexistent-branch"));
+       repo.newBranch("master");
+    }
+
+    @Test
+    void TestNotBreadRecipe() {
+        Recipe testRecipe = new BreadRecipe(1000);
+        HashCodeMaker.buildString(testRecipe);
+    }
+
 }
