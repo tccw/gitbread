@@ -36,7 +36,7 @@ public class Steganos {
 
     //MODIFIES: this
     //EFFECTS: encode the PNG byte array.
-    public void encode(String message, File image) {
+    public void encode(String message, File image) throws IOException {
         toByteMessage(message);
         toByteImageOriginal(image);
         writeMessageToImage();
@@ -46,15 +46,10 @@ public class Steganos {
     //https://stackoverflow.com/questions/36407866/converting-byte-array-to-png
     //https://stackoverflow.com/questions/27389249/what-type-of-array-required-in-writableraster-method-setpixels
     //https://stackoverflow.com/questions/6524196/java-get-pixel-array-from-image
-    private void toByteImageOriginal(File f) {
-        try {
-            this.image = ImageIO.read(f.toURI().toURL());
-            ImageIO.write(image, "png", outputStream);
-//            originalPixels = outputStream.toByteArray();
-            originalPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-        } catch (IOException e) {
-            System.out.println("IOException for " + "'" + f.toString() + "'");
-        }
+    private void toByteImageOriginal(File f) throws IOException {
+        this.image = ImageIO.read(f.toURI().toURL());
+        ImageIO.write(image, "png", outputStream);
+        this.originalPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
     }
 
     //EFFECTS: convert the message to a byte array

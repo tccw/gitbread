@@ -21,8 +21,10 @@ import javafx.stage.Stage;
 
 import model.RecipeDevCollection;
 import model.RecipeDevHistory;
+import persistence.Writer;
 import persistence.steganography.Steganos;
 
+import javax.tools.Tool;
 import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
@@ -39,7 +41,8 @@ public class GitBreadGUI extends Application {
     private static final String[] topRecipeBarIcons = new String[]{"file:./data/icons/sharing/recipecollection32.png",
             "file:./data/icons/sharing/addrecipe32.png",
             "file:./data/icons/sharing/exportrecipecollectionshare32.png",
-            "file:./data/icons/sharing/exportrecipe32.png"};
+            "file:./data/icons/sharing/exportrecipe32.png",
+            "file:./data/icons/buttons/savebysmashicons.png"};
     private static final String[] bottomRecipeBarIcons = new String[]{
             "file:./data/icons/buttons/mixingbyfreepik.png",
             "file:./data/icons/buttons/scalebysmashicons.png",
@@ -86,6 +89,9 @@ public class GitBreadGUI extends Application {
 
         // save the recipe collection as a sharable PNG.
         saveAsImageButton(primaryStage);
+
+        // save the recipe collection as a JSON file
+        saveAsJsonFile(primaryStage);
 
         // log an attempt with the active recipe version
         //TODO: fix or deal with loading issue where active commit is loaded as a separate object. Attempts don't work
@@ -155,13 +161,13 @@ public class GitBreadGUI extends Application {
                 vbox.getChildren().add(branchName);
                 Scene layout = new Scene(vbox);
                 stage.setScene(layout);
-                branchNameOnKeypressed(stage, branchName);
+                branchNameOnKeyPressed(stage, branchName);
                 stage.showAndWait();
             }
         });
     }
 
-    private void branchNameOnKeypressed(Stage stage, TextField branchName) {
+    private void branchNameOnKeyPressed(Stage stage, TextField branchName) {
         branchName.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 activeRecipeHistory.newBranch(branchName.getText());
@@ -192,6 +198,7 @@ public class GitBreadGUI extends Application {
     private void logAttemptButton() {
         flowBottomRow.getChildren().get(0).setOnMouseClicked(e -> {
             if (activeRecipeHistory != null) {
+                logAttemptNotes();
                 activeRecipeHistory.attempt(clock);
                 infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
                         activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
@@ -199,23 +206,50 @@ public class GitBreadGUI extends Application {
         });
     }
 
+    private void logAttemptNotes() {
+        //TODO stub
+    }
+
     private void saveAsImageButton(Stage primaryStage) {
         flowTopRow.getChildren().get(2).setOnMouseClicked(e -> {
-            String message = activeCollection.toJson();
-            File fileIn = new File("data/icons/sharing/collectionsharingbynikitagolubev.png");
-            Steganos encoder = new Steganos();
-            encoder.encode(message, fileIn);
-            File fileOut = fileChooserHelper("./data/icons/sharing/exported",
-                    "png",
-                    "save", primaryStage);
-            if (fileOut != null) {
-                try {
+            try {
+                String message = activeCollection.toJson();
+                File fileIn = new File("data/icons/sharing/collectionsharingbynikitagolubev.png");
+                Steganos encoder = new Steganos();
+                encoder.encode(message, fileIn);
+                File fileOut = fileChooserHelper("./data/icons/sharing/exported",
+                        "png",
+                        "save", primaryStage);
+                if (fileOut != null) {
                     encoder.save(fileOut);
-                } catch (IOException ex) {
-                    AlertMessage.display("Error while saving.", "IOException");
                 }
+
+            } catch (IOException ex) {
+                AlertMessage.display("Error while saving.", "IOException");
             }
         });
+    }
+
+    private void saveAsJsonFile(Stage primaryStage) {
+        flowTopRow.getChildren().get(4).setOnMouseClicked(e -> {
+            if (!activeCollection.isEmpty()) {
+                try {
+                    File file = fileChooserHelper(
+                            "./data/recipecollections",
+                            "json",
+                            "save",
+                            primaryStage);
+                    Writer writer = new Writer(file);
+                    writer.write(activeCollection);
+                    writer.close();
+                } catch (IOException ex) {
+                    AlertMessage.display("Error saving file.", "IOException");
+                }
+            } else {
+                AlertMessage.display("No recipes to save!", "Empty Collection");
+            }
+        });
+
     }
 
     private void newRecipeButton() {
@@ -404,6 +438,7 @@ public class GitBreadGUI extends Application {
         Tooltip.install(flowTopRow.getChildren().get(1), new Tooltip("Add recipe"));
         Tooltip.install(flowTopRow.getChildren().get(2), new Tooltip("Export recipe book as image"));
         Tooltip.install(flowTopRow.getChildren().get(3), new Tooltip("Export recipe"));
+        Tooltip.install(flowTopRow.getChildren().get(4), new Tooltip("Save"));
         Tooltip.install(flowBottomRow.getChildren().get(0), new Tooltip("Log attempt"));
         Tooltip.install(flowBottomRow.getChildren().get(1), new Tooltip("Scale"));
         Tooltip.install(flowBottomRow.getChildren().get(2), new Tooltip("New branch"));

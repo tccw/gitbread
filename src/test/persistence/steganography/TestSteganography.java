@@ -6,6 +6,7 @@ import model.RecipeDevCollection;
 import model.RecipeDevHistory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ui.AlertMessage;
 
 import java.io.File;
 import java.io.IOException;
@@ -65,8 +66,9 @@ public class TestSteganography {
 
     @Test
     void TestEncode() {
-        encoder.encode(message, fileIn);
+
         try {
+            encoder.encode(message, fileIn);
             encoder.save(fileOut);
         } catch (IOException e) {
             fail("Unexpected IOException.");
@@ -77,8 +79,12 @@ public class TestSteganography {
     //TODO: determine why this test changes every time I run it.
     @Test
     void TestDecode() {
-        encoder.encode(message, fileIn);
-        String out = encoder.decode(fileOut);
-        assertEquals(recipeCollection.toJson(), out);
+        try {
+            encoder.encode(message, fileIn);
+            String out = encoder.decode(fileOut);
+            assertEquals(recipeCollection.toJson(), out);
+        } catch (IOException e) {
+            fail();
+        }
     }
 }

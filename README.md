@@ -41,7 +41,10 @@ GitBread allows for things like:
 ### Phase 2 User Stories
 - As a user, I want to to be asked if I want to save my collection when I quit the application.
 - As a user, I want to be able to reload my collection to continue working on it. 
-------
+---
+## Instructions for Grader
+![image](./data/instructions/LabeledScreenshot.PNG)
+---
 ### Future User stories
 - As a user, I want to be able to view the testing version of a recipe.
 - As a user, I want to be able to make notes about the results of my attempt, and view these results later.
