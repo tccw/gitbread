@@ -23,7 +23,6 @@ public class Attempt {
      */
     @JsonBackReference
     private Recipe recipeVersion;
-    @JsonIgnore
     private LocalDateTime dateTime;
     private String resultNotes;
     private String weatherNow;
@@ -61,14 +60,13 @@ public class Attempt {
                 + otherNotes + '\n';
     }
 
-    //EFFECTS: returns the LocalDateTime field to an easy to read string
-//    private String datePretty() {
-//        String result = getDateTime()
-//                .format(DateTimeFormatter.RFC_1123_DATE_TIME
-//                        .ofLocalizedDate(FormatStyle.FULL)
-//                        .withLocale(Locale.CANADA));
-//        return result;
-//    }
+    //    EFFECTS: returns the LocalDateTime field to an easy to read string
+    private String datePretty() {
+        return getDateTime()
+                .format(DateTimeFormatter
+                        .ofLocalizedDate(FormatStyle.FULL)
+                        .withLocale(Locale.CANADA));
+    }
 
     // getters
     public LocalDateTime getDateTime() {
@@ -93,9 +91,15 @@ public class Attempt {
 //        this.dateTime = dateTime;
 //    }
 
-//    public String getWeather() {
+    //    public String getWeather() {
 //        return weatherNow;
 //    }
+    public String print() {
+        return "\n----------- " + datePretty() + "-----------\n"
+                + "ATTEMPT NOTES :\n"
+                + resultNotes
+                + "\n"
+                + this.recipeVersion.toString();
+    }
 
-    // setters
 }

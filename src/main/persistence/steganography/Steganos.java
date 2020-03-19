@@ -79,36 +79,28 @@ public class Steganos {
     /*
     put the byte array length in the first 4 bytes of the message so decode() can know how long the message is.
      */
-    public String decode(File file) {
+    public String decode(File file) throws IOException {
         byte[] byteImage = imageToByteArray(file);
         int offset = OFFSET;
         byte[] byteLength = new byte[4];
         System.arraycopy(byteImage, 0, byteLength, 0, offset / 8);
         int length = byteArrayToInt(byteLength);
         byte[] result = new byte[length];
-        try {
-            for (int b = 0; b < length; ++b) {
-                for (int i = 0; i < 8; ++i, ++offset) {
-                    result[b] = (byte) ((result[b] << 1) | (byteImage[offset] & 1));
-                }
+        for (int b = 0; b < length; ++b) {
+            for (int i = 0; i < 8; ++i, ++offset) {
+                result[b] = (byte) ((result[b] << 1) | (byteImage[offset] & 1));
             }
-        } catch (RuntimeException e) {
-            System.out.println("Unexpected RuntimeException");
         }
+
         return new String(result);
     }
 
     //EFFECTS: convert the image linked in the given file to a byte array.
-    private byte[] imageToByteArray(File file) {
+    private byte[] imageToByteArray(File file) throws IOException {
         BufferedImage image;
-        try {
-            URL path = file.toURI().toURL();
-            image = ImageIO.read(path);
-            return ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
-        } catch (IOException e) {
-            System.err.println("Problem reading file.");
-        }
-        return null;
+        URL path = file.toURI().toURL();
+        image = ImageIO.read(path);
+        return ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
     }
 
     //https://stackoverflow.com/questions/8996105/best-method-for-saving-a-java-image-object-with-a-custom-palette-to-a-gif-file

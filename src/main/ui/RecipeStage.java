@@ -3,6 +3,7 @@ package ui;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -17,9 +18,10 @@ import java.security.NoSuchAlgorithmException;
 
 public class RecipeStage {
     private static final int WIDTH = 600;
-    private static final int HEIGHT = 400;
+    private static final int HEIGHT = 700;
     private Button add;
     private TextField[] fields;
+    private Label[] labels;
     private Stage window;
     private BorderPane borderPane;
     private Scene scene;
@@ -33,7 +35,7 @@ public class RecipeStage {
         this.collection = collection;
         this.activeHistory = activeHistory;
         initializeWindows();
-        borderPane.setPadding(new Insets(15));
+        borderPane.setPadding(new Insets(5));
         window.initModality(Modality.APPLICATION_MODAL);
         window.setTitle("Add Recipe");
         window.setMinWidth(400);
@@ -78,21 +80,25 @@ public class RecipeStage {
     }
 
     private void makeFields() {
-        String[] promptText = new String[]{"Recipe name", "", "Water weight%", "Salt weight%", "Sugar weight%",
-                "Fat weight%", "Yeast weight%", "Bake temp [deg. F]", "Bake time [mins]", "Prep time [mins]"};
+        String[] promptText = new String[]{"Recipe name", "Flour weight%", "Water weight%", "Salt weight%",
+                "Sugar weight%", "Fat weight%", "Yeast weight%", "Bake temp [deg. F]", "Bake time [mins]",
+                "Prep time [mins]"};
         fields = new TextField[promptText.length];
+        labels = new Label[promptText.length];
 //        PercentageStringConverter percent = new PercentageStringConverter(new DecimalFormat("##%"));
         for (int i = 0; i < promptText.length; i++) {
             fields[i] = new TextField();
             fields[i].setPromptText(promptText[i]);
+            labels[i] = new Label(promptText[i]);
         }
         fields[1].setText("100%");
         fields[1].setEditable(false);
     }
 
     private void placeUIElements() {
-        for (TextField field : fields) {
-            buttonArea.getChildren().add(field);
+        for (int i = 0; i < labels.length; i++) {
+            buttonArea.getChildren().add(labels[i]);
+            buttonArea.getChildren().add(fields[i]);
         }
         buttonArea.getChildren().add(add);
         buttonArea.setSpacing(10);
@@ -141,7 +147,7 @@ public class RecipeStage {
 
     private boolean isDouble(TextField input) {
         try {
-            double field = Double.parseDouble(input.getText());
+            double field = Double.parseDouble(input.getText()); // if this line executes return true
             return true;
         } catch (NumberFormatException e) {
             return false;

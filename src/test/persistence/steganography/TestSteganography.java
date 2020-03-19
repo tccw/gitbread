@@ -1,5 +1,6 @@
 package persistence.steganography;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import model.BreadRecipe;
 import model.Recipe;
 import model.RecipeDevCollection;
@@ -49,7 +50,7 @@ public class TestSteganography {
             fileIn = new File("./data/icons/sharing/collectionsharingbynikitagolubev.png");
             fileOut = new File("./data/icons/sharing/exported/testCollection.png");
             encoder = new Steganos();
-        } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException | JsonProcessingException e) {
             e.printStackTrace();
         }
 
