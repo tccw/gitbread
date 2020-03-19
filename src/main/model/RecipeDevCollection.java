@@ -81,16 +81,11 @@ public class RecipeDevCollection implements Saveable {
     }
 
     //EFFECTS: helper for writing file to Json and for the steganography package.
-    public String toJson() {
+    public String toJson() throws JsonProcessingException {
         ObjectMapper mapper = JsonMapper.builder().build();
         registerObjectMapper(mapper);
         String json = null;
-        try {
-            json = mapper.writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            System.err.println("Problem converting collection to Json.");
-            e.printStackTrace();
-        }
+        json = mapper.writeValueAsString(this);
         return json;
     }
 

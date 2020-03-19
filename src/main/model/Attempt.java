@@ -96,7 +96,7 @@ public class Attempt {
 //    }
     public String print() {
         return "\n----------- " + datePretty() + "-----------\n"
-                + "ATTEMPT NOTES:\n"
+                + "ATTEMPT NOTES :\n"
                 + resultNotes
                 + "\n"
                 + this.recipeVersion.toString();

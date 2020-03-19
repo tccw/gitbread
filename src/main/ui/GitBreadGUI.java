@@ -15,6 +15,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -26,6 +27,7 @@ import persistence.steganography.Steganos;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.time.Clock;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +49,7 @@ public class GitBreadGUI extends Application {
             "file:./data/icons/buttons/scalebysmashicons.png",
             "file:./data/icons/buttons/versionbysmashicons.png",
             "file:./data/icons/buttons/agronomy.png"};
+    private static final File attemptsImageDir = new File("./data/icons/sharing/exported");
     ToggleButton darkModeToggle;
 
     RecipeDevCollection activeCollection;
@@ -54,8 +57,11 @@ public class GitBreadGUI extends Application {
     ListView<String> recipeListView;
     ObservableList<String> items;
     TabPane infoDisplay;
+    TilePane tilePane;
+    ScrollPane scrollPane;
     Tab instructions;
     Tab attempts;
+    Tab images;
     TextArea instructionsTextArea;
     TextArea attemptsTextArea;
     Label infoLabel;
@@ -91,7 +97,10 @@ public class GitBreadGUI extends Application {
         newRecipeButton();
 
         // save the recipe collection as a sharable PNG.
-        saveAsImageButton(primaryStage);
+        saveCollectionAsImageButton(primaryStage);
+
+        // save a single recipe as a sharable PNG
+        saveRecipeAsImageButton(primaryStage);
 
         // save the recipe collection as a JSON file
         saveAsJsonFile(primaryStage);
@@ -120,7 +129,7 @@ public class GitBreadGUI extends Application {
             if (newValue != null) {
                 activeRecipeHistory = activeCollection.get(newValue);
                 updateTextArea();
-                infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
+                infoLabel.setText(String.format("Attempts: %1$d :: Modifications: %2$d",
                         activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
             }
         });
@@ -218,7 +227,7 @@ public class GitBreadGUI extends Application {
         notes.display(attempt);
     }
 
-    private void saveAsImageButton(Stage primaryStage) {
+    private void saveCollectionAsImageButton(Stage primaryStage) {
         flowTopRow.getChildren().get(2).setOnMouseClicked(e -> {
             try {
                 String message = activeCollection.toJson();
@@ -234,6 +243,30 @@ public class GitBreadGUI extends Application {
 
             } catch (IOException ex) {
                 AlertMessage.display("Error while saving.", "IOException");
+            }
+        });
+    }
+
+    private void saveRecipeAsImageButton(Stage primaryStage) {
+        flowTopRow.getChildren().get(3).setOnMouseClicked(e -> {
+            try {
+                String message = activeRecipeHistory.toJson();
+                File fileIn = fileChooserHelper(
+                        "./data/recipephotos",
+                        "png",
+                        "load", primaryStage);
+                File fileOut = fileChooserHelper("./data/icons/sharing/exported",
+                        "png",
+                        "save", primaryStage);
+                Steganos encoder = new Steganos();
+                encoder.encode(message, fileIn);
+                if (fileOut != null) {
+                    encoder.save(fileOut);
+                }
+            } catch (JsonProcessingException ex) {
+                AlertMessage.display("Error converting to JSON.", "JsonProcessingException");
+            } catch (IOException ex) {
+                AlertMessage.display("Error saving image.", "IOException");
             }
         });
     }
@@ -330,6 +363,7 @@ public class GitBreadGUI extends Application {
         }
     }
 
+    // TODO: modify so that it can also read single recipes.
     private void recipeListViewOnDragDrop() {
         recipeListView.setOnDragDropped(event -> {
             List<File> files = event.getDragboard().getFiles();
@@ -379,7 +413,7 @@ public class GitBreadGUI extends Application {
         gridPane.setPadding(new Insets(10, 20, 20, 20));
         gridPane.add(flowTopRow, 0, 0, 5, 2);
         gridPane.add(flowBottomRow, 0, 12, 5, 2);
-        gridPane.add(darkModeToggle, 14, 12, 1, 1);
+        gridPane.add(darkModeToggle, 14, 0, 1, 1);
         gridPane.add(recipeListView, 0, 2, 4, 10);
         gridPane.add(infoDisplay, 4, 2, 10, 10);
         gridPane.add(infoLabel, 5, 12, 10, 1);
@@ -412,6 +446,7 @@ public class GitBreadGUI extends Application {
         primaryStage.setMaxWidth(WIDTH);
     }
 
+    //https://stackoverflow.com/questions/4917326/how-to-iterate-over-the-files-of-a-certain-directory-in-java/4917347
     private void tabSetup() {
         instructionsTextArea = new TextArea();
         instructionsTextArea.setWrapText(true);
@@ -420,13 +455,47 @@ public class GitBreadGUI extends Application {
         attemptsTextArea.setWrapText(true);
         attemptsTextArea.setEditable(false);
         infoDisplay = new TabPane();
+        infoDisplay.setMaxHeight(HEIGHT * 0.7);
         instructions = new Tab("Instructions");
         instructions.setClosable(false);
         instructions.setContent(instructionsTextArea);
         attempts = new Tab("Attempt Record");
         attempts.setClosable(false);
         attempts.setContent(attemptsTextArea);
-        infoDisplay.getTabs().addAll(instructions, attempts);
+        tilePane = new TilePane();
+        tilePane.setHgap(10);
+        tilePane.setVgap(10);
+        scrollPane = new ScrollPane();
+        scrollPane.setFitToWidth(true);
+        scrollPane.setContent(tilePane);
+        images = new Tab("Attempt Lookbook");
+        images.setClosable(false);
+        images.setContent(scrollPane);
+        updateAttemptLookBook(attemptsImageDir);
+
+        infoDisplay.getTabs().addAll(instructions, attempts, images);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: update the attempts look book tab with images
+    private void updateAttemptLookBook(File dir) {
+        File[] directoryListing = dir.listFiles();
+        if (directoryListing != null) {
+            for (File child : directoryListing) {
+                if (String.valueOf(child).toLowerCase().contains(".png")) {
+                    try {
+                        ImageView imageView = new ImageView(new Image(String.valueOf(child.toURI().toURL())));
+                        imageView.setFitWidth(100);
+                        imageView.setFitHeight(100);
+                        Tooltip.install(imageView, new Tooltip("baller"));
+                        tilePane.getChildren().add(imageView);
+
+                    } catch (MalformedURLException e) {
+                        AlertMessage.display("Problem displaying images in Look Book", "MalformedURLException");
+                    }
+                }
+            }
+        }
     }
 
 

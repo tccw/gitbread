@@ -1,8 +1,16 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import persistence.Saveable;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.util.ArrayList;
@@ -10,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-public class RecipeDevHistory {
+public class RecipeDevHistory implements Saveable {
     private Commit activeCommit;
     private String currentBranch;
     private LinkedList<Commit> commits;
@@ -125,5 +133,31 @@ public class RecipeDevHistory {
     @JsonSerialize
     public Commit getActiveCommit() {
         return activeCommit;
+    }
+
+    @Override
+    public void save(FileWriter fileWriter) throws IOException {
+        fileWriter.write(this.toJson());
+    }
+
+    public String toJson() throws JsonProcessingException {
+        ObjectMapper mapper = JsonMapper.builder().build();
+        registerObjectMapper(mapper);
+        String json = null;
+        json = mapper.writeValueAsString(this);
+        return json;
+    }
+
+    private static void registerObjectMapper(ObjectMapper mapper) {
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, false);
+        mapper.registerSubtypes(
+                RecipeDevCollection.class,
+                RecipeDevHistory.class,
+                Commit.class,
+                Recipe.class,
+                BreadRecipe.class,
+                Attempt.class,
+                Ingredient.class);
     }
 }
