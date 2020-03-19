@@ -10,7 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 
-
 public class RecipeDevHistory {
     private Commit activeCommit;
     private String currentBranch;
@@ -67,22 +66,18 @@ public class RecipeDevHistory {
         }
     }
 
-    public boolean merge(String branch) {
+    public boolean merge(String branch) throws NoSuchAlgorithmException {
         List<String> branches = this.getBranches();
-        try {
-            if (branch.equals(currentBranch)) {
-                System.err.println("Cannot merge a branch with itself.");
-                return false;
-            }
-            if (branches.contains(branch)) {
-                this.currentBranch = branch;
-                this.commit(this.activeCommit.getRecipeVersion());// add the commit
-                commits.get(1).setMerged(true);  // set the previous commit as merged.
-                return true;
-            } else {
-                return false;
-            }
-        } catch (NoSuchAlgorithmException e) {
+        if (branch.equals(currentBranch)) {
+            System.err.println("Cannot merge a branch with itself.");
+            return false;
+        }
+        if (branches.contains(branch)) {
+            this.currentBranch = branch;
+            this.commit(this.activeCommit.getRecipeVersion());// add the commit
+            commits.get(1).setMerged(true);  // set the previous commit as merged.
+            return true;
+        } else {
             return false;
         }
     }

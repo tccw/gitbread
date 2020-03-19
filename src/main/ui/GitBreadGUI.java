@@ -1,5 +1,6 @@
 package ui;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -19,8 +20,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-import model.RecipeDevCollection;
-import model.RecipeDevHistory;
+import model.*;
 import persistence.Writer;
 import persistence.steganography.Steganos;
 
@@ -193,7 +193,6 @@ public class GitBreadGUI extends Application {
                 addItemsListView();
                 recipeListView.refresh();
                 updateTextArea();
-//                instructionsTextArea.setText(activeRecipeHistory.getActiveCommit().getRecipeVersion().toString());
             }
 
         });
@@ -203,16 +202,20 @@ public class GitBreadGUI extends Application {
         flowBottomRow.getChildren().get(0).setOnMouseClicked(e -> {
             if (activeRecipeHistory != null) {
                 activeRecipeHistory.attempt(clock);
-                logAttemptNotes();
+                int size = activeRecipeHistory.getActiveCommit().getRecipeVersion().getAttemptHistory().size();
+                Attempt attempt = activeRecipeHistory.getActiveCommit().getRecipeVersion()
+                        .getAttemptHistory().get(size - 1);
+                logAttemptNotes(attempt);
                 infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
                         activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
+                updateTextArea();
             }
         });
     }
 
-    private void logAttemptNotes() {
-        //TODO stub
-
+    private void logAttemptNotes(Attempt attempt) {
+        AttemptNotesStage notes = new AttemptNotesStage();
+        notes.display(attempt);
     }
 
     private void saveAsImageButton(Stage primaryStage) {
@@ -432,6 +435,12 @@ public class GitBreadGUI extends Application {
                 .getActiveCommit()
                 .getRecipeVersion()
                 .toString());
+        StringBuilder attemptsString = new StringBuilder();
+        List<Attempt> attempts = activeRecipeHistory.getActiveCommit().getRecipeVersion().getAttemptHistory();
+        for (Attempt attempt : attempts) {
+            attemptsString.append(attempt.print());
+        }
+        attemptsTextArea.setText(attemptsString.toString());
     }
 
     private FlowPane makeFlowPaneButtons(String[] urls) {

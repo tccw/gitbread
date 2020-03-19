@@ -181,15 +181,13 @@ public class TestRecipeDevHistory {
 
     @Test
     void TestMergeWithSelf() {
-       assertFalse(repo.merge("master"));
-       assertFalse(repo.merge("nonexistent-branch"));
-       repo.newBranch("master");
-    }
-
-    @Test
-    void TestNotBreadRecipe() {
-        Recipe testRecipe = new BreadRecipe(1000);
-        HashCodeMaker.buildString(testRecipe);
+       try{
+           assertFalse(repo.merge("master"));
+           assertFalse(repo.merge("nonexistent-branch"));
+           repo.newBranch("master");
+       } catch (NoSuchAlgorithmException e) {
+           fail();
+       }
     }
 
 }

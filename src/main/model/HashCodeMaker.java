@@ -25,7 +25,7 @@ public class HashCodeMaker {
     //EFFECTS: generates a string from a recipe to be used to calculate an SHA-1 hashcode for version control. For the
     // purposes of a breadRecipe, only changes in the Baker's Percentages, the instructions, cooking vessel,
     // or cook/prep time and cooking temperature are considered version changes.
-    public static String buildString(Recipe recipe) {
+    private static String buildString(Recipe recipe) {
         StringBuilder string = new StringBuilder();
         string.append(recipe.getCookTemp());
         string.append(recipe.getCookTime());

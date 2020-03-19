@@ -40,11 +40,6 @@ public class TestHashCodeMaker {
         }
     }
 
-    @Test
-    void TestBuildString() {
-        assertEquals(stringExpected, HashCodeMaker.buildString(testRecipe));
-    }
-
     private String sha1Helper(String value) {
         MessageDigest digest = null;
         try {
