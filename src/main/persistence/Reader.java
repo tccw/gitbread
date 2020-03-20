@@ -14,6 +14,7 @@ import java.io.IOException;
 public class Reader {
 
 
+    //TODO: use the singleton pattern to make sure there is only ever a single instance of ObjectMapper running.
     //REQUIRES: a properly formatted JSON file
     //EFFECTS: Load the provided collection file as a a RecipeDevCollection object.
     public static RecipeDevCollection loadRecipeCollectionFile(File file) throws IOException {
