@@ -76,6 +76,7 @@ public class AttemptNotesStage {
 
         });
 
+        //TODO: make path relative.
         selectPhoto.setOnMouseClicked(e -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setInitialDirectory(INITIAL_DIRECTORY);

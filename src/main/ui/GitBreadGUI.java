@@ -25,6 +25,8 @@ import model.*;
 import persistence.Writer;
 import persistence.steganography.Steganos;
 
+import javax.swing.*;
+import javax.tools.Tool;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -47,7 +49,8 @@ public class GitBreadGUI extends Application {
     private static final String[] bottomRecipeBarIcons = new String[]{
             "file:./data/icons/buttons/mixingbyfreepik.png",
             "file:./data/icons/buttons/scalebysmashicons.png",
-            "file:./data/icons/buttons/versionbysmashicons.png",
+            "file:./data/icons/buttons/branchbysmashicons.png",
+            "file:./data/icons/buttons/mergebysmashicons.png",
             "file:./data/icons/buttons/agronomy.png"};
     private static final File attemptsImageDir = new File("./data/icons/sharing/exported");
     ToggleButton darkModeToggle;
@@ -118,7 +121,8 @@ public class GitBreadGUI extends Application {
         Tooltip.install(flowBottomRow.getChildren().get(0), new Tooltip("Log attempt"));
         Tooltip.install(flowBottomRow.getChildren().get(1), new Tooltip("Scale"));
         Tooltip.install(flowBottomRow.getChildren().get(2), new Tooltip("New branch"));
-        Tooltip.install(flowBottomRow.getChildren().get(3), new Tooltip("Update recipe"));
+        Tooltip.install(flowBottomRow.getChildren().get(3), new Tooltip("Merge"));
+        Tooltip.install(flowBottomRow.getChildren().get(4), new Tooltip("Update recipe"));
     }
 
     private void gridPaneLayoutSetup(Stage primaryStage) {
@@ -153,7 +157,7 @@ public class GitBreadGUI extends Application {
     }
 
     private void recipeListViewDefaultIcon() {
-        ImageView recipeListPlaceHolder = new ImageView(new Image("file:./data/icons/sharing/recipecollection.png"));
+        ImageView recipeListPlaceHolder = new ImageView(new Image("file:./data/icons/sharing/recipecollectionsplitload.png"));
         recipeListPlaceHolder.setOpacity(0.5);
         recipeListView.setPlaceholder(recipeListPlaceHolder);
         recipeListView.setMinWidth(204);
@@ -248,6 +252,9 @@ public class GitBreadGUI extends Application {
 
         // make a new branch
         newBranchButton();
+
+        // merge a branch with current branch
+        mergeBranchWithOther();
 
         //make a new commit to the current recipe and branch
         newCommitToCurrentBranchButton();
@@ -410,8 +417,18 @@ public class GitBreadGUI extends Application {
         });
     }
 
-    private void newCommitToCurrentBranchButton() {
+    private void mergeBranchWithOther() {
         flowBottomRow.getChildren().get(3).setOnMouseClicked(e -> {
+            if (activeRecipeHistory != null) {
+                MergeStage mergeStage = new MergeStage();
+                mergeStage.display(activeRecipeHistory);
+                updateTextArea();
+            }
+        });
+    }
+
+    private void newCommitToCurrentBranchButton() {
+        flowBottomRow.getChildren().get(4).setOnMouseClicked(e -> {
             if (activeRecipeHistory != null) {
                 RecipeStage recipeStage = new RecipeStage();
                 recipeStage.display(activeCollection, activeRecipeHistory, false);
@@ -508,6 +525,7 @@ public class GitBreadGUI extends Application {
         }
     }
 
+    //EFFECTS: prints a history of the attempts of the CURRENT ACTIVE COMMIT along with any notes.
     private void updateTextArea() {
         instructionsTextArea.setText(activeRecipeHistory
                 .getActiveCommit()

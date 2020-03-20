@@ -103,7 +103,6 @@ public class Attempt {
 //    }
     public String print() {
         return "\n----------- " + datePretty() + "-----------\n"
-                + photoPath + "\n"
                 + "ATTEMPT NOTES :\n"
                 + resultNotes
                 + "\n"
