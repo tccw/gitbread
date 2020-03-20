@@ -77,7 +77,7 @@ public class Steganos {
 
     //EFFECTS: decode a byte array
     /*
-    put the byte array length in the first 4 bytes of the message so decode() can know how long the message is.
+    The byte array length is in the first 4 bytes of the message so decode() can know how long the message is.
      */
     public String decode(File file) throws IOException {
         byte[] byteImage = imageToByteArray(file);

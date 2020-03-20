@@ -5,12 +5,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.RecipeDevHistory;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 public class MergeStage {
     private static final int HEIGHT = 150;
@@ -24,7 +28,9 @@ public class MergeStage {
     public void display(RecipeDevHistory activeHistory) {
         stage.setTitle("Merge dialog");
         stage.initModality(Modality.APPLICATION_MODAL);
-        choiceBox.getItems().addAll(activeHistory.getBranches());
+        List<String> branches = activeHistory.getBranches();
+        branches.remove(activeHistory.getCurrentBranch());
+        choiceBox.getItems().addAll(branches);
         setUpScene(activeHistory);
         mergeButtonAction(activeHistory);
         stage.setScene(scene);
@@ -32,7 +38,14 @@ public class MergeStage {
     }
 
     private void setUpScene(RecipeDevHistory activeHistory) {
-        vbox.getChildren().add(new Label(activeHistory.getCurrentBranch()));
+        TextFlow flow = new TextFlow();
+        Text currentBranch = new Text(activeHistory.getCurrentBranch());
+        currentBranch.setStyle("-fx-font-weight: bold");
+        flow.getChildren().addAll(new Text("Merge: "), currentBranch, new Text(" with"));
+        flow.setTextAlignment(TextAlignment.CENTER);
+
+        String merge = "Merge: " + activeHistory.getCurrentBranch() + " with";
+        vbox.getChildren().add(flow);
         vbox.getChildren().add(choiceBox);
         vbox.getChildren().add(mergeButton);
         vbox.setAlignment(Pos.CENTER);
