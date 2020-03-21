@@ -20,16 +20,15 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
-import model.*;
+import model.Attempt;
+import model.Commit;
+import model.RecipeDevCollection;
+import model.RecipeDevHistory;
 import persistence.Writer;
 import persistence.steganography.Steganos;
 
-import javax.swing.*;
-import javax.tools.Tool;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.time.Clock;
 import java.util.List;
 import java.util.Map;
@@ -157,7 +156,8 @@ public class GitBreadGUI extends Application {
     }
 
     private void recipeListViewDefaultIcon() {
-        ImageView recipeListPlaceHolder = new ImageView(new Image("file:./data/icons/sharing/recipecollectionsplitload.png"));
+        ImageView recipeListPlaceHolder = new ImageView(
+                new Image("file:./data/icons/sharing/recipecollectionsplitload.png"));
         recipeListPlaceHolder.setOpacity(0.5);
         recipeListView.setPlaceholder(recipeListPlaceHolder);
         recipeListView.setMinWidth(204);
@@ -178,7 +178,12 @@ public class GitBreadGUI extends Application {
             try {
                 if (files.get(0).getName().contains(".png") || files.get(0).getName().contains(".PNG")) {
                     Steganos encoder = new Steganos();
-                    activeCollection = loadRecipeCollectionJson(encoder.decode(files.get(0)));
+                    String json = encoder.decode(files.get(0));
+                    if (encoder.isDecodedCollection()) {
+                        activeCollection = loadRecipeCollectionJson(json);
+                    } else {
+                        activeCollection.add("New recipe", loadRecipeDevHistoryJson(json));
+                    }
                     addItemsListView();
                 } else {
                     throw new IOException();
@@ -290,7 +295,7 @@ public class GitBreadGUI extends Application {
                 String message = activeCollection.toJson();
                 File fileIn = new File("data/icons/sharing/collectionsharingbynikitagolubev.png");
                 Steganos encoder = new Steganos();
-                encoder.encode(message, fileIn);
+                encoder.encode(message, fileIn, true);
                 File fileOut = fileChooserHelper("./data/icons/sharing/exported",
                         "png",
                         "save", primaryStage);
@@ -316,7 +321,7 @@ public class GitBreadGUI extends Application {
                         "png",
                         "save", primaryStage);
                 Steganos encoder = new Steganos();
-                encoder.encode(message, fileIn);
+                encoder.encode(message, fileIn, false);
                 if (fileOut != null) {
                     encoder.save(fileOut);
                 }
@@ -491,16 +496,20 @@ public class GitBreadGUI extends Application {
         attempts = new Tab("Attempt Record");
         attempts.setClosable(false);
         attempts.setContent(attemptsTextArea);
+        tileScrollPaneSetUp();
+        images = new Tab("Attempt Lookbook");
+        images.setClosable(false);
+        images.setContent(scrollPane);
+        infoDisplay.getTabs().addAll(instructions, attempts, images);
+    }
+
+    private void tileScrollPaneSetUp() {
         tilePane = new TilePane();
         tilePane.setHgap(10);
         tilePane.setVgap(10);
         scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);
         scrollPane.setContent(tilePane);
-        images = new Tab("Attempt Lookbook");
-        images.setClosable(false);
-        images.setContent(scrollPane);
-        infoDisplay.getTabs().addAll(instructions, attempts, images);
     }
 
     //MODIFIES: this

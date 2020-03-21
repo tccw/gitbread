@@ -2,7 +2,10 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import persistence.Writer;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
@@ -181,13 +184,24 @@ public class TestRecipeDevHistory {
 
     @Test
     void TestMergeWithSelf() {
-       try{
-           assertFalse(repo.merge("master"));
-           assertFalse(repo.merge("nonexistent-branch"));
-           repo.newBranch("master");
-       } catch (NoSuchAlgorithmException e) {
-           fail();
-       }
+        try {
+            assertFalse(repo.merge("master"));
+            assertFalse(repo.merge("nonexistent-branch"));
+            repo.newBranch("master");
+        } catch (NoSuchAlgorithmException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void TestSave() {
+        try {
+            Writer writer = new Writer(new File("./data/recipecollections/recipeHistoryTest.json"));
+            writer.write(repo);
+            writer.close();
+        } catch (IOException e) {
+            fail("Unexpected IOException.");
+        }
     }
 
 }

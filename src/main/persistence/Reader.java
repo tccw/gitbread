@@ -30,6 +30,12 @@ public class Reader {
         return mapper.readValue(json, RecipeDevCollection.class);
     }
 
+    public static RecipeDevHistory loadRecipeDevHistoryJson(String json) throws JsonProcessingException {
+        ObjectMapper mapper = JsonMapper.builder().build();
+        registerObjectMapper(mapper);
+        return mapper.readValue(json, RecipeDevHistory.class);
+    }
+
     //https://codeboje.de/jackson-java-8-datetime-handling/
     private static void registerObjectMapper(ObjectMapper mapper) {
         mapper.registerModule(new JavaTimeModule());

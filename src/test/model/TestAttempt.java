@@ -53,6 +53,11 @@ class TestAttempt {
         HelperCheckAttemptFields(attempt, frenchLoaf, timeNow, expected);
     }
 
+    @Test
+    public void TestAddHasPhoto() {
+        assertFalse(attempt.hasPhoto());
+    }
+
 
     //EFFECTS: checks that an attempt has the
     private void HelperCheckAttemptFields(Attempt attempt, Recipe recipe, LocalDateTime timeNow, String resultNotes) {

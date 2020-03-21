@@ -15,13 +15,15 @@ stack-overflow posts as well as the following discussion on dream-to-code:
                         https://www.dreamincode.net/forums/topic/27950-steganography/
  */
 public class Steganos {
-    private static final int OFFSET = 32; // using 32 bits to store the length of the embedded message
+    private static final int OFFSET = 40; // using 32 bits to store the length of the embedded message
     private ByteArrayOutputStream outputStream;
     private ByteArrayInputStream inputStream;
     private BufferedImage image;
     private byte[] byteMessage;
     private byte[] originalPixels;
     private byte[] encodedPixels;
+    private boolean encodeCollection;
+    private boolean decodedCollection;
 
 
     //EFFECTS: constructs a steganos object with empty ImageBuffer
@@ -36,7 +38,8 @@ public class Steganos {
 
     //MODIFIES: this
     //EFFECTS: encode the PNG byte array.
-    public void encode(String message, File image) throws IOException {
+    public void encode(String message, File image, boolean encodeCollection) throws IOException {
+        this.encodeCollection = encodeCollection;
         toByteMessage(message);
         toByteImageOriginal(image);
         writeMessageToImage();
@@ -57,7 +60,8 @@ public class Steganos {
         this.byteMessage = message.getBytes();
     }
 
-    //EFFECTS: embed the message within the original image byte array.
+    //EFFECTS: embed the message within the original image byte array. Indicate if the image is a RecipeDevHistory or
+    //         a RecipeDevCollection using 99 for collection, and 104 for history.
     private void writeMessageToImage() {
         int offset = OFFSET;
         encodedPixels = originalPixels;
@@ -66,7 +70,12 @@ public class Steganos {
         if (byteMessage.length + OFFSET > originalPixels.length) {
             throw new IllegalArgumentException("Image to small to embed.");
         }
-        System.arraycopy(length, 0, encodedPixels, 0, offset / 8);
+        if (encodeCollection) {
+            System.arraycopy(new byte[]{(byte) 99}, 0, encodedPixels, 0, 1);
+        } else {
+            System.arraycopy(new byte[]{(byte) 114}, 0, encodedPixels, 0, 1);
+        }
+        System.arraycopy(length, 0, encodedPixels, 1, (offset / 8) - 1);
         for (int msgByte : byteMessage) {
             for (int bit = 7; bit >= 0; --bit, ++offset) {
                 int b = (msgByte >> bit) & 1;
@@ -82,8 +91,10 @@ public class Steganos {
     public String decode(File file) throws IOException {
         byte[] byteImage = imageToByteArray(file);
         int offset = OFFSET;
+        byte[] classType = new byte[1];
         byte[] byteLength = new byte[4];
-        System.arraycopy(byteImage, 0, byteLength, 0, offset / 8);
+        System.arraycopy(byteImage, 0, classType, 0, 1);
+        System.arraycopy(byteImage, 1, byteLength, 0, (offset / 8) - 1);
         int length = byteArrayToInt(byteLength);
         byte[] result = new byte[length];
         for (int b = 0; b < length; ++b) {
@@ -91,6 +102,8 @@ public class Steganos {
                 result[b] = (byte) ((result[b] << 1) | (byteImage[offset] & 1));
             }
         }
+
+        this.decodedCollection = classType[0] == (byte) 99;
 
         return new String(result);
     }
@@ -163,5 +176,11 @@ public class Steganos {
         return inputStream;
     }
 
+    public boolean isEncodeCollection() {
+        return encodeCollection;
+    }
 
+    public boolean isDecodedCollection() {
+        return decodedCollection;
+    }
 }
