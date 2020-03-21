@@ -52,6 +52,8 @@ public class GitBreadGUI extends Application {
             "file:./data/icons/buttons/mergebysmashicons.png",
             "file:./data/icons/buttons/agronomy.png"};
     private static final File attemptsImageDir = new File("./data/icons/sharing/exported");
+    private static final String DARK_CSS = "./ui/gitbreaddarkstyle.css";
+    private static final String LIGHT_CSS = "./ui/gitbreadlightstyle.css";
     ToggleButton darkModeToggle;
 
     RecipeDevCollection activeCollection;
@@ -91,6 +93,7 @@ public class GitBreadGUI extends Application {
         setUpButtonActions(primaryStage);
     }
 
+    // THE LOOK
     private void initialize(Stage primaryStage) {
         activeCollection = new RecipeDevCollection();
         activeRecipeHistory = null;
@@ -143,6 +146,7 @@ public class GitBreadGUI extends Application {
         primaryStage.show();
     }
 
+    //THE LOGIC
     private void recipeListViewSetup() {
         recipeListViewDefaultIcon();
 
@@ -231,6 +235,24 @@ public class GitBreadGUI extends Application {
         cell.setContextMenu(contextMenu);
     }
 
+    private void buildBranchList(ListCell<String> cell, List<String> branches, Menu switchBranch) {
+        ToggleGroup branchToggle = new ToggleGroup();
+        for (String s : branches) {
+            RadioMenuItem child = new RadioMenuItem(s);
+            if (s.equals("master")) {
+                child.setSelected(true);
+            }
+            child.setToggleGroup(branchToggle);
+            switchBranch.getItems().add(child);
+            child.textProperty().bind(Bindings.format(s, cell.itemProperty()));
+            child.setOnAction(e -> {
+                activeCollection.get(cell.getItem()).checkout(s);
+                activeRecipeHistory = activeCollection.get(cell.getItem());
+                updateTextArea();
+            });
+        }
+    }
+
     private void setUpButtonActions(Stage primaryStage) {
         // Open a file browser to load a JSON text file of a recipe collection
         loadJsonButton(primaryStage);
@@ -311,24 +333,26 @@ public class GitBreadGUI extends Application {
 
     private void saveRecipeAsImageButton(Stage primaryStage) {
         flowTopRow.getChildren().get(3).setOnMouseClicked(e -> {
-            try {
-                String message = activeRecipeHistory.toJson();
-                File fileIn = fileChooserHelper(
-                        "./data/recipephotos",
-                        "png",
-                        "load", primaryStage);
-                File fileOut = fileChooserHelper("./data/icons/sharing/exported",
-                        "png",
-                        "save", primaryStage);
-                Steganos encoder = new Steganos();
-                encoder.encode(message, fileIn, false);
-                if (fileOut != null) {
-                    encoder.save(fileOut);
+            if (activeRecipeHistory != null) {
+                try {
+                    String message = activeRecipeHistory.toJson();
+                    File fileIn = fileChooserHelper(
+                            "./data/recipephotos",
+                            "png",
+                            "load", primaryStage);
+                    File fileOut = fileChooserHelper("./data/icons/sharing/exported",
+                            "png",
+                            "save", primaryStage);
+                    Steganos encoder = new Steganos();
+                    encoder.encode(message, fileIn, false);
+                    if (fileOut != null) {
+                        encoder.save(fileOut);
+                    }
+                } catch (JsonProcessingException ex) {
+                    AlertMessage.display("Error converting to JSON.", "JsonProcessingException");
+                } catch (IOException ex) {
+                    AlertMessage.display("Error saving image.", "IOException");
                 }
-            } catch (JsonProcessingException ex) {
-                AlertMessage.display("Error converting to JSON.", "JsonProcessingException");
-            } catch (IOException ex) {
-                AlertMessage.display("Error saving image.", "IOException");
             }
         });
     }
@@ -362,8 +386,7 @@ public class GitBreadGUI extends Application {
                 Attempt attempt = activeRecipeHistory.getActiveCommit().getRecipeVersion()
                         .getAttemptHistory().get(size - 1);
                 logAttemptNotes(primaryStage, attempt);
-                infoLabel.setText(String.format("Attempted count: %1$d :: Modified count %2$d",
-                        activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
+                updateAttemptModifiedLabel();
                 updateTextArea();
             }
         });
@@ -446,11 +469,11 @@ public class GitBreadGUI extends Application {
     private void darkModeToggle() {
         darkModeToggle.setOnAction(e -> {
             if (!darkMode) {
-                scene.getStylesheets().add("./ui/gitbreaddarkstyle.css");
+                scene.getStylesheets().add(DARK_CSS);
                 darkMode = true;
             } else {
-                scene.getStylesheets().remove("./ui/gitbreaddarkstyle.css");
-                scene.getStylesheets().add("./ui/gitbreadlightstyle.css");
+                scene.getStylesheets().remove(DARK_CSS);
+                scene.getStylesheets().add(LIGHT_CSS);
                 darkMode = false;
             }
         });
@@ -460,24 +483,16 @@ public class GitBreadGUI extends Application {
         recipeListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 activeRecipeHistory = activeCollection.get(newValue);
+
+                updateAttemptModifiedLabel();
                 updateTextArea();
-                infoLabel.setText(String.format("Attempts: %1$d :: Modifications: %2$d",
-                        activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
             }
         });
     }
 
-    private void buildBranchList(ListCell<String> cell, List<String> branches, Menu switchBranch) {
-        for (String s : branches) {
-            MenuItem child = new MenuItem(s);
-            switchBranch.getItems().add(child);
-            child.textProperty().bind(Bindings.format(s, cell.itemProperty()));
-            child.setOnAction(e -> {
-                activeCollection.get(cell.getItem()).checkout(s);
-                activeRecipeHistory = activeCollection.get(cell.getItem());
-                updateTextArea();
-            });
-        }
+    private void updateAttemptModifiedLabel() {
+        infoLabel.setText(String.format("Attempts: %1$d :: Modifications: %2$d",
+                activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
     }
 
     //https://stackoverflow.com/questions/4917326/how-to-iterate-over-the-files-of-a-certain-directory-in-java/4917347

@@ -95,6 +95,7 @@ public class RecipeDevCollection implements Saveable {
         return collection;
     }
 
+    // EFFECTS: helper for registering modules to the ObjectMapper
     private static void registerObjectMapper(ObjectMapper mapper) {
         mapper.registerModule(new JavaTimeModule());
         mapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, false);

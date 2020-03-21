@@ -88,7 +88,7 @@ public class TestReader {
         try {
             RecipeDevCollection collection = Reader.loadRecipeCollectionJson(this.collection.toJson());
             assertEquals(this.collection.toString(true), collection.toString(true));
-        } catch (JsonProcessingException e) {
+        } catch (IOException e) {
             fail();
         }
     }

@@ -50,9 +50,11 @@ public class Steganos {
     //https://stackoverflow.com/questions/27389249/what-type-of-array-required-in-writableraster-method-setpixels
     //https://stackoverflow.com/questions/6524196/java-get-pixel-array-from-image
     private void toByteImageOriginal(File f) throws IOException {
-        this.image = ImageIO.read(f.toURI().toURL());
-        ImageIO.write(image, "png", outputStream);
-        this.originalPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        if (f != null) {
+            this.image = ImageIO.read(f.toURI().toURL());
+            ImageIO.write(image, "png", outputStream);
+            this.originalPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        }
     }
 
     //EFFECTS: convert the message to a byte array

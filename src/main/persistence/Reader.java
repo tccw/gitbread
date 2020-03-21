@@ -10,6 +10,7 @@ import model.*;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Set;
 
 public class Reader {
 
@@ -21,19 +22,45 @@ public class Reader {
         ObjectMapper mapper = JsonMapper.builder().build();
         FileReader reader = new FileReader(file);
         registerObjectMapper(mapper);
-        return mapper.readValue(reader, RecipeDevCollection.class);
+
+        return checkoutRecipeDevCollection(null, file, reader, mapper);
     }
 
-    public static RecipeDevCollection loadRecipeCollectionJson(String json) throws JsonProcessingException {
+    public static RecipeDevCollection loadRecipeCollectionJson(String json) throws IOException {
         ObjectMapper mapper = JsonMapper.builder().build();
         registerObjectMapper(mapper);
-        return mapper.readValue(json, RecipeDevCollection.class);
+        return checkoutRecipeDevCollection(json, null, null, mapper);
+    }
+
+    private static RecipeDevCollection checkoutRecipeDevCollection(String json,
+                                                                   File file,
+                                                                   FileReader reader,
+                                                                   ObjectMapper mapper) throws IOException {
+        RecipeDevCollection result;
+        if (file == null) {
+            result = mapper.readValue(json, RecipeDevCollection.class);
+        } else {
+            result = mapper.readValue(reader, RecipeDevCollection.class);
+        }
+        Set<String> keys = result.getCollection().keySet();
+        for (String key : keys) {
+            result.get(key).checkout("master");
+        }
+        return result;
     }
 
     public static RecipeDevHistory loadRecipeDevHistoryJson(String json) throws JsonProcessingException {
         ObjectMapper mapper = JsonMapper.builder().build();
         registerObjectMapper(mapper);
-        return mapper.readValue(json, RecipeDevHistory.class);
+        /*
+            This is here as a patchwork quick-fix to true ID based serialization with Jackson. This ensures that
+            the loaded file has a reference to the proper commit. Currently the active commit is being deserialized
+            as a separate object with the same properties which breaks committing and attempts.
+         */
+
+        RecipeDevHistory result = mapper.readValue(json, RecipeDevHistory.class);
+        result.checkout("master");
+        return result;
     }
 
     //https://codeboje.de/jackson-java-8-datetime-handling/
