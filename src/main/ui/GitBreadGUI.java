@@ -115,7 +115,7 @@ public class GitBreadGUI extends Application {
         Tooltip.install(flowTopRow.getChildren().get(0), new Tooltip("Load recipe book"));
         Tooltip.install(flowTopRow.getChildren().get(1), new Tooltip("Add recipe"));
         Tooltip.install(flowTopRow.getChildren().get(2), new Tooltip("Export recipe book as image"));
-        Tooltip.install(flowTopRow.getChildren().get(3), new Tooltip("Export recipe"));
+        Tooltip.install(flowTopRow.getChildren().get(3), new Tooltip("Export recipe as image"));
         Tooltip.install(flowTopRow.getChildren().get(4), new Tooltip("Save"));
         Tooltip.install(flowBottomRow.getChildren().get(0), new Tooltip("Log attempt"));
         Tooltip.install(flowBottomRow.getChildren().get(1), new Tooltip("Scale"));

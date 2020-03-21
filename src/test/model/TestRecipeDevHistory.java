@@ -194,6 +194,14 @@ public class TestRecipeDevHistory {
     }
 
     @Test
+    void TestCheckoutBranchDoesNotExist() {
+        assertEquals("master", repo.getCurrentBranch());
+        repo.checkout("doesnotexist");
+        assertEquals("master", repo.getCurrentBranch());
+
+    }
+
+    @Test
     void TestSave() {
         try {
             Writer writer = new Writer(new File("./data/recipecollections/recipeHistoryTest.json"));
