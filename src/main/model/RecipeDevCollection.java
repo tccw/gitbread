@@ -1,11 +1,9 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import persistence.Saveable;
@@ -84,7 +82,7 @@ public class RecipeDevCollection implements Saveable {
     public String toJson() throws JsonProcessingException {
         ObjectMapper mapper = JsonMapper.builder().build();
         registerObjectMapper(mapper);
-        String json = null;
+        String json;
         json = mapper.writeValueAsString(this);
         return json;
     }

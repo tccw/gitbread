@@ -7,6 +7,7 @@ import model.RecipeDevCollection;
 import model.RecipeDevHistory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import persistence.Reader;
 
 import java.io.File;
 import java.io.IOException;
@@ -110,11 +111,12 @@ public class TestSteganography {
     @Test
     void TestEncodeImageTooSmall() {
         try {
-            encoder.encode(collectionMessage, new File("./data/icons/sharing/ImageTooSmall.png"), true);
+            encoder.encode(collectionMessage, new File("./data/icons/sharing/exported/ImageTooSmall.png"), true);
             fail();
         } catch (IOException e) {
-            //do nothing
+            fail();
+        } catch (IllegalArgumentException e) {
+            // do nothing
         }
-
     }
 }
