@@ -17,7 +17,6 @@ GitBread allows for things like:
 - Recording recipes
 - *branch* recipes to test variations
 - *merge* changes back into your main recipe for when your changes improve the recipe
-- *fork* the recipe in order to create an entirely new recipe based on a previous recipe
 - Automatically record the weather for the day you made your bread
 - Common bakers percentage calculations including support for preferments, poolish, hydration adjustments for milk and eggs, etc. 
 - Record process notes like your kneading method, if you rested the dough, number and length of rises, autolyse, etc.
@@ -48,11 +47,11 @@ GitBread allows for things like:
 - You can switch branches or remove a Recipe from the Recipe Collection in the right-click menu ![image](data/instructions/contextMenu.png)
 - You can record an attempt and the results using the attempt button ![image](data/icons/buttons/mixingbyfreepik.png)
 - My visual component allows the user to add a photo to the attempt lookbook which is displayed in the Lookbook tab. Photos for the tester to use are located in ./data/images/attemptphotos/
-- Recipe collections and recipes can also be added to the GUI by dragging and dropping exported images 
+- Recipe collections and recipes can also be added to the GUI by dragging and dropping exported images. The grader can save their own or find examples stored in ./data/icons/sharing/exported/ 
 - You can load a bread recipe collection by clicking the add collection button ![image](data/icons/buttons/recipecollection32.png)
 - You can save the recipe collection as a JSON text file by clicking on the save button ![image](data/icons/buttons/savebysmashicons.png)
-- You ca save the recipe collection as an image by clicking on the export as image button ![image](data/icons/buttons/exportrecipecollectionshare32.png)
-- You ca save an individual recipe as an image by clicking on the export as image button ![image](data/icons/buttons/exportrecipe32.png)
+- You can save the recipe collection as an image by clicking on the export as image button ![image](data/icons/buttons/exportrecipecollectionshare32.png)
+- You can save an individual recipe as an image by clicking on the export as image button ![image](data/icons/buttons/exportrecipe32.png)
 ---
 ### Future User stories
 - As a user, I want to be able to view the testing version of a recipe.
