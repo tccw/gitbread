@@ -1,5 +1,6 @@
 package model;
 
+import exceptions.BranchAlreadyExistsException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.Writer;
@@ -71,10 +72,14 @@ public class TestRecipeDevHistory {
 
     @Test
     void TestCreateNewBranchNoCommit() {
-        repo.newBranch("high-hydration-test");
-        assertEquals("high-hydration-test", repo.getCurrentBranch());
-        assertEquals(1, repo.getBranches().size());
-        assertEquals(1, repo.size());
+        try {
+            repo.newBranch("high-hydration-test");
+            assertEquals("high-hydration-test", repo.getCurrentBranch());
+            assertEquals(1, repo.getBranches().size());
+            assertEquals(1, repo.size());
+        } catch (BranchAlreadyExistsException e) {
+            fail();
+        }
     }
 
     @Test
@@ -85,6 +90,8 @@ public class TestRecipeDevHistory {
             repo.commit(new BreadRecipe(400, 0.52));
         } catch (NoSuchAlgorithmException e) {
             fail("Unexpected NoSuchAlgorithmException.");
+        } catch (BranchAlreadyExistsException e) {
+            fail();
         }
     }
 
@@ -96,8 +103,12 @@ public class TestRecipeDevHistory {
             assertTrue(repo.merge("master"));
             assertEquals(3, repo.size());
             assertEquals(2, repo.getBranches().size());
+            repo.checkout("high-hydration-test");
+            assertFalse(repo.commit(new BreadRecipe(1000)));
         } catch (NoSuchAlgorithmException e) {
             fail("Unexpected NoSuchAlgorithmException.");
+        } catch (BranchAlreadyExistsException e) {
+            fail();
         }
     }
 
@@ -118,6 +129,8 @@ public class TestRecipeDevHistory {
             assertEquals(3, repo.getBranches().size());
         } catch (NoSuchAlgorithmException e) {
             fail("Unexpected NoSuchAlgorithmException.");
+        } catch (BranchAlreadyExistsException e) {
+            fail();
         }
     }
 
@@ -188,7 +201,7 @@ public class TestRecipeDevHistory {
             assertFalse(repo.merge("master"));
             assertFalse(repo.merge("nonexistent-branch"));
             repo.newBranch("master");
-        } catch (NoSuchAlgorithmException e) {
+        } catch (NoSuchAlgorithmException | BranchAlreadyExistsException e) {
             fail();
         }
     }

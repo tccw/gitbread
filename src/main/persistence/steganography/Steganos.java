@@ -55,6 +55,8 @@ public class Steganos {
             this.image = ImageIO.read(f.toURI().toURL());
             ImageIO.write(image, "png", outputStream);
             this.originalPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        } else {
+            throw new IOException();
         }
     }
 

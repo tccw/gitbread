@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import exceptions.BranchAlreadyExistsException;
 import persistence.Saveable;
 
 import java.io.FileWriter;
@@ -50,24 +51,21 @@ public class RecipeDevHistory implements Saveable {
     //MODIFIES: this
     //EFFECTS: checks out the most recent commit with the given branch label.
     public void checkout(String branch) {
-        List<String> branches = this.getBranches();
-        if (branches.contains(branch)) {
-            for (Commit c : commits) {
-                if (c.getBranchLabel().equals(branch)) {
-                    activeCommit = c;
-                    currentBranch = branch;
-                    return;
-                }
+        for (Commit c : commits) {
+            if (c.getBranchLabel().equals(branch)) {
+                activeCommit = c;
+                currentBranch = branch;
+                return;
             }
         }
     }
 
     //MODIFIES: this
     //EFFECTS: create a new branch with the given name if one does not exist
-    public void newBranch(String branch) {
+    public void newBranch(String branch) throws BranchAlreadyExistsException {
         List<String> branches = this.getBranches();
         if (branches.contains(branch)) {
-            System.err.println("A branch with that name already exists.");
+            throw new BranchAlreadyExistsException();
         } else {
             branches.add(branch);
             currentBranch = branch;
