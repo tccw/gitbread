@@ -67,11 +67,11 @@ public abstract class Recipe {
         this.instructions = instructions;
     }
 
-    protected void setCookTime(int cookTime) {
+    public void setCookTime(int cookTime) {
         this.cookTime = cookTime;
     }
 
-    protected void setPrepTime(int prepTime) {
+    public void setPrepTime(int prepTime) {
         this.prepTime = prepTime;
     }
 
@@ -79,42 +79,42 @@ public abstract class Recipe {
         this.cookTemp = cookTemp;
     }
 
-    public void setIngredientList(ArrayList<Ingredient> ingredientList) {
-        this.ingredientList = ingredientList;
-    }
-
-    public void setAttemptHistory(ArrayList<Attempt> attemptHistory) {
-        this.attemptHistory = attemptHistory;;
-    }
+//    public void setIngredientList(ArrayList<Ingredient> ingredientList) {
+//        this.ingredientList = ingredientList;
+//    }
+//
+//    public void setAttemptHistory(ArrayList<Attempt> attemptHistory) {
+//        this.attemptHistory = attemptHistory;;
+//    }
 
     // getters
     @JsonSerialize
-    protected ArrayList<Ingredient> getIngredientList() {
+    public ArrayList<Ingredient> getIngredientList() {
         return this.ingredientList;
     }
 
     @JsonSerialize
-    protected String getInstructions() {
+    public String getInstructions() {
         return this.instructions;
     }
 
     @JsonSerialize
-    protected ArrayList<Attempt> getAttemptHistory() {
+    public ArrayList<Attempt> getAttemptHistory() {
         return this.attemptHistory;
     }
 
     @JsonSerialize
-    protected int getCookTime() {
+    public int getCookTime() {
         return this.cookTime;
     }
 
     @JsonSerialize
-    protected int getPrepTime() {
+    public int getPrepTime() {
         return this.prepTime;
     }
 
     @JsonSerialize
-    protected int getCookTemp() {
+    public int getCookTemp() {
         return this.cookTemp;
     }
 }

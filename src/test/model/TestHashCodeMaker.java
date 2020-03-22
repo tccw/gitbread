@@ -40,11 +40,6 @@ public class TestHashCodeMaker {
         }
     }
 
-    @Test
-    void TestBuildString() {
-        assertEquals(stringExpected, HashCodeMaker.buildString(testRecipe));
-    }
-
     private String sha1Helper(String value) {
         MessageDigest digest = null;
         try {
@@ -56,5 +51,10 @@ public class TestHashCodeMaker {
         digest.reset();
         digest.update(value.getBytes());
         return String.format("%040x", new BigInteger(1, digest.digest()));
+    }
+
+    @Test
+    void TestDummyConstructor() {
+        HashCodeMaker hashCodeMaker = new HashCodeMaker();
     }
 }

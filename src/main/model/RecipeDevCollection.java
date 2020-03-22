@@ -1,11 +1,11 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import persistence.Saveable;
 
 import java.io.FileWriter;
@@ -79,23 +79,11 @@ public class RecipeDevCollection implements Saveable {
     }
 
     //EFFECTS: helper for writing file to Json and for the steganography package.
-    public String toJson() {
+    public String toJson() throws JsonProcessingException {
         ObjectMapper mapper = JsonMapper.builder().build();
-        mapper.registerSubtypes(
-                RecipeDevCollection.class,
-                RecipeDevHistory.class,
-                Commit.class,
-                Recipe.class,
-                BreadRecipe.class,
-                Attempt.class,
-                Ingredient.class);
-        String json = null;
-        try {
-            json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
-        } catch (JsonProcessingException e) {
-            System.err.println("Problem converting collection to Json.");
-            e.printStackTrace();
-        }
+        registerObjectMapper(mapper);
+        String json;
+        json = mapper.writeValueAsString(this);
         return json;
     }
 
@@ -105,6 +93,20 @@ public class RecipeDevCollection implements Saveable {
 
     public Map<String, RecipeDevHistory> getCollection() {
         return collection;
+    }
+
+    // EFFECTS: helper for registering modules to the ObjectMapper
+    private static void registerObjectMapper(ObjectMapper mapper) {
+        mapper.registerModule(new JavaTimeModule());
+        mapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, false);
+        mapper.registerSubtypes(
+                RecipeDevCollection.class,
+                RecipeDevHistory.class,
+                Commit.class,
+                Recipe.class,
+                BreadRecipe.class,
+                Attempt.class,
+                Ingredient.class);
     }
 
 }

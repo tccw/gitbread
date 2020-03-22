@@ -2,7 +2,10 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import persistence.Writer;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Array;
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
@@ -16,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestRecipeDevHistory {
 
-    private Clock clock = Clock.fixed(LocalDateTime.of(2020, 2,14,12,10)
+    private Clock clock = Clock.fixed(LocalDateTime.of(2020, 2, 14, 12, 10)
             .toInstant(ZoneOffset.UTC), ZoneId.of("UTC"));
     private Recipe testRecipe;
     private RecipeDevHistory repo;
@@ -138,8 +141,8 @@ public class TestRecipeDevHistory {
             repo.commit(new BreadRecipe(1000, 0.81));
             repo.commit(new BreadRecipe(600, 0.51));
             repo.newBranch("high-temp");
-            repo.commit(new BreadRecipe(1000,0.76));
-            repo.commit(new BreadRecipe(1000,0.72));
+            repo.commit(new BreadRecipe(1000, 0.76));
+            repo.commit(new BreadRecipe(1000, 0.72));
             repo.checkout("high-hydration-test");
             repo.merge("master");
             repo.commit(new BreadRecipe(650, 0.45));
@@ -153,6 +156,59 @@ public class TestRecipeDevHistory {
             }
         } catch (Exception e) {
             fail();
+        }
+    }
+
+    @Test
+    void TestTotalAttempts() {
+        try {
+            repo = new RecipeDevHistory(new BreadRecipe(1000));
+            repo.commit(new BreadRecipe(1000, 0.60));
+            repo.commit(new BreadRecipe(1000, 0.59));
+            repo.newBranch("high-hydration-test");
+            repo.commit(new BreadRecipe(360, 0.78));
+            repo.attempt(clock);
+            repo.attempt(clock);
+            repo.checkout("master");
+            assertEquals(2, repo.totalAttempts());
+        } catch (Exception e) {
+            fail();
+        }
+    }
+
+    @Test
+    void TestCheckoutBranchNotInHistory() {
+        repo.checkout("nonexistent-branch");
+        assertEquals(1, repo.getBranches().size());
+    }
+
+    @Test
+    void TestMergeWithSelf() {
+        try {
+            assertFalse(repo.merge("master"));
+            assertFalse(repo.merge("nonexistent-branch"));
+            repo.newBranch("master");
+        } catch (NoSuchAlgorithmException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void TestCheckoutBranchDoesNotExist() {
+        assertEquals("master", repo.getCurrentBranch());
+        repo.checkout("doesnotexist");
+        assertEquals("master", repo.getCurrentBranch());
+
+    }
+
+    @Test
+    void TestSave() {
+        try {
+            Writer writer = new Writer(new File("./data/recipecollections/recipeHistoryTest.json"));
+            writer.write(repo);
+            writer.close();
+        } catch (IOException e) {
+            fail("Unexpected IOException.");
         }
     }
 

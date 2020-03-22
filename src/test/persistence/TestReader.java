@@ -1,5 +1,6 @@
 package persistence;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import model.*;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -81,6 +82,28 @@ public class TestReader {
                 fail("Unexpected IOException");
             }
         }
+
+    @Test
+    void TestLoadRecipeCollectionJson() {
+        try {
+            RecipeDevCollection collection = Reader.loadRecipeCollectionJson(this.collection.toJson());
+            assertEquals(this.collection.toString(true), collection.toString(true));
+        } catch (IOException e) {
+            fail();
+        }
+    }
+
+    @Test
+    void TestLoadRecipeHistoryJson() {
+        try {
+            RecipeDevHistory history = Reader.loadRecipeDevHistoryJson(frenchLoafHist.toJson());
+            assertEquals(frenchLoafHist.totalAttempts(), history.totalAttempts());
+            assertEquals(frenchLoafHist.getCurrentBranch(), history.getCurrentBranch());
+            assertEquals(frenchLoafHist.toJson(), history.toJson());
+        } catch (JsonProcessingException e) {
+            fail();
+        }
+    }
 
         @Test
     void TestDummyConstructor() {
