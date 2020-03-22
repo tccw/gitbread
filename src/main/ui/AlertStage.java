@@ -9,7 +9,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-public class AlertMessage {
+public class AlertStage {
     public static final int WIDTH = 300;
     public static final int HEIGHT = 100;
 

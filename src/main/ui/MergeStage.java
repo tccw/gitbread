@@ -53,17 +53,17 @@ public class MergeStage {
 
     private void mergeButtonAction(RecipeDevHistory activeHistory) {
         mergeButton.setOnMouseClicked(e -> {
-            try {
-                activeHistory.merge(choiceBox.getValue());
-                System.out.println(choiceBox.getValue());
-                stage.close();
-            } catch (NoSuchAlgorithmException ex) {
-                ex.printStackTrace();
+            if (choiceBox.getValue() != null) {
+                try {
+                    activeHistory.merge(choiceBox.getValue());
+                    System.out.println(choiceBox.getValue());
+                    stage.close();
+                } catch (NoSuchAlgorithmException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
     }
-
-
 
 
 }

@@ -1,6 +1,9 @@
 package ui;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.sun.corba.se.impl.resolver.SplitLocalResolverImpl;
+import com.sun.javafx.application.PlatformImpl;
+import com.sun.javafx.css.StyleManager;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -27,6 +30,7 @@ import model.RecipeDevHistory;
 import persistence.Writer;
 import persistence.steganography.Steganos;
 
+import javax.swing.*;
 import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
@@ -51,7 +55,6 @@ public class GitBreadGUI extends Application {
             "file:./data/icons/buttons/branchbysmashicons.png",
             "file:./data/icons/buttons/mergebysmashicons.png",
             "file:./data/icons/buttons/agronomy.png"};
-    private static final File attemptsImageDir = new File("./data/icons/sharing/exported");
     private static final String DARK_CSS = "./ui/gitbreaddarkstyle.css";
     private static final String LIGHT_CSS = "./ui/gitbreadlightstyle.css";
     ToggleButton darkModeToggle;
@@ -86,11 +89,28 @@ public class GitBreadGUI extends Application {
     // start contains the main JavaFX code for running and handling the application
     @Override
     public void start(Stage primaryStage) {
+        primaryStage.setOnCloseRequest(e -> {
+            e.consume(); // tells Java that I will take care of this request
+            confirmExit(primaryStage);
+        });
         initialize(primaryStage);
         setTooltips();
         gridPaneLayoutSetup(primaryStage);
         recipeListViewSetup();
         setUpButtonActions(primaryStage);
+    }
+
+    private void confirmExit(Stage primaryStage) {
+        boolean confirmExit = ConfirmStage.display("Are you sure you want to exit GitBread?",
+                "Confirm exit");
+        if (confirmExit && activeCollection.isEmpty()) {
+            primaryStage.close();
+        } else if (!activeCollection.isEmpty()) {
+            if (ConfirmStage.display("Would you like to save before exiting?", "Confirm")) {
+                saveAsJsonFileGeneral(primaryStage);
+            }
+            primaryStage.close();
+        }
     }
 
     // THE LOOK
@@ -111,6 +131,8 @@ public class GitBreadGUI extends Application {
         primaryStage.setMinWidth(WIDTH);
         primaryStage.setMaxHeight(HEIGHT);
         primaryStage.setMaxWidth(WIDTH);
+        Application.setUserAgentStylesheet(Application.STYLESHEET_MODENA);
+        StyleManager.getInstance().addUserAgentStylesheet(LIGHT_CSS);
     }
 
     private void setTooltips() {
@@ -139,7 +161,7 @@ public class GitBreadGUI extends Application {
         gridPane.setHgap(20);
         gridPane.setVgap(10);
         scene = new Scene(gridPane, WIDTH, HEIGHT);
-        scene.getStylesheets().add("./ui/gitbreadlightstyle.css");
+//        scene.getStylesheets().add("./ui/gitbreadlightstyle.css");
         primaryStage.setScene(scene);
         // Image courtesy of Freepik on https://www.flaticon.com/free-icon/agronomy_1188035
         primaryStage.getIcons().add(new Image("file:./data/icons/wheatcolor512.png"));
@@ -193,7 +215,7 @@ public class GitBreadGUI extends Application {
                     throw new IOException();
                 }
             } catch (IOException e) {
-                AlertMessage.display("Problem loading the collection.", "IOException");
+                AlertStage.display("Problem loading the collection.", "IOException");
             }
         });
     }
@@ -326,7 +348,7 @@ public class GitBreadGUI extends Application {
                 }
 
             } catch (IOException ex) {
-                AlertMessage.display("Error while saving.", "IOException");
+                AlertStage.display("Error while saving.", "IOException");
             }
         });
     }
@@ -349,9 +371,9 @@ public class GitBreadGUI extends Application {
                         encoder.save(fileOut);
                     }
                 } catch (JsonProcessingException ex) {
-                    AlertMessage.display("Error converting to JSON.", "JsonProcessingException");
+                    AlertStage.display("Error converting to JSON.", "JsonProcessingException");
                 } catch (IOException ex) {
-                    AlertMessage.display("Error saving image.", "IOException");
+                    AlertStage.display("Error saving image.", "IOException");
                 }
             }
         });
@@ -370,12 +392,33 @@ public class GitBreadGUI extends Application {
                     writer.write(activeCollection);
                     writer.close();
                 } catch (IOException ex) {
-                    AlertMessage.display("Error saving file.", "IOException");
+                    AlertStage.display("Error saving file.", "IOException");
                 }
             } else {
-                AlertMessage.display("No recipes to save!", "Empty Collection");
+                AlertStage.display("No recipes to save!", "Empty Collection");
             }
         });
+    }
+
+    private void saveAsJsonFileGeneral(Stage primaryStage) {
+        if (!activeCollection.isEmpty()) {
+            try {
+                File file = fileChooserHelper(
+                        "./data/recipecollections",
+                        "json",
+                        "save",
+                        primaryStage);
+                Writer writer = new Writer(file);
+                writer.write(activeCollection);
+                writer.close();
+            } catch (IOException ex) {
+                AlertStage.display("Error saving file.", "IOException");
+            } catch (NullPointerException e) {
+                //do nothing and continue
+            }
+        } else {
+            AlertStage.display("No recipes to save!", "Empty Collection");
+        }
     }
 
     private void logAttemptButton(Stage primaryStage) {
@@ -466,14 +509,16 @@ public class GitBreadGUI extends Application {
         });
     }
 
+    //https://stackoverflow.com/questions/46559981/javafx-set-default-css-stylesheet-for-the-whole-application
+    //EFFECTS: modifies the global style sheet for the javaFX instance.
     private void darkModeToggle() {
         darkModeToggle.setOnAction(e -> {
             if (!darkMode) {
-                scene.getStylesheets().add(DARK_CSS);
+                StyleManager.getInstance().addUserAgentStylesheet(DARK_CSS);
                 darkMode = true;
             } else {
-                scene.getStylesheets().remove(DARK_CSS);
-                scene.getStylesheets().add(LIGHT_CSS);
+                StyleManager.getInstance().removeUserAgentStylesheet(DARK_CSS);
+                StyleManager.getInstance().addUserAgentStylesheet(LIGHT_CSS);
                 darkMode = false;
             }
         });
@@ -587,7 +632,7 @@ public class GitBreadGUI extends Application {
             activeCollection = loadRecipeCollectionFile(file);
             addItemsListView();
         } catch (IOException e) {
-            AlertMessage.display("Error loading the file.", "IOException");
+            AlertStage.display("Error loading the file.", "IOException");
         }
     }
 

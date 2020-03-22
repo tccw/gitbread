@@ -111,7 +111,7 @@ public class RecipeStage {
             boolean notDouble = false;
             for (int i = 2; i < fields.length; i++) {
                 if (!isDouble(fields[i])) {
-                    AlertMessage.display("Please check that all fields are numbers.", "NumberFormatException");
+                    AlertStage.display("Please check that all fields are numbers.", "NumberFormatException");
                     notDouble = true;
                     break;
                 }

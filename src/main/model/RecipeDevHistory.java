@@ -74,7 +74,7 @@ public class RecipeDevHistory implements Saveable {
         }
     }
 
-    public boolean merge(String branch) throws NoSuchAlgorithmException {
+    public boolean merge(String branch) throws NoSuchAlgorithmException, NullPointerException {
         List<String> branches = this.getBranches();
         if (branch.equals(currentBranch)) {
             System.err.println("Cannot merge a branch with itself.");

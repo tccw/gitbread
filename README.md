@@ -44,6 +44,15 @@ GitBread allows for things like:
 ---
 ## Instructions for Grader
 ![image](./data/instructions/LabeledScreenshot.PNG)
+- You can add a Recipe to a RecipeCollection by clicking the add recipe button ![image](data/icons/buttons/addrecipe32.png)
+- You can switch branches or remove a Recipe from the Recipe Collection in the right-click menu ![image](data/instructions/contextMenu.png)
+- You can record an attempt and the results using the attempt button ![image](data/icons/buttons/mixingbyfreepik.png)
+- My visual component allows the user to add a photo to the attempt lookbook which is displayed in the Lookbook tab. Photos for the tester to use are located in ./data/images/attemptphotos/
+- Recipe collections and recipes can also be added to the GUI by dragging and dropping exported images 
+- You can load a bread recipe collection by clicking the add collection button ![image](data/icons/buttons/recipecollection32.png)
+- You can save the recipe collection as a JSON text file by clicking on the save button ![image](data/icons/buttons/savebysmashicons.png)
+- You ca save the recipe collection as an image by clicking on the export as image button ![image](data/icons/buttons/exportrecipecollectionshare32.png)
+- You ca save an individual recipe as an image by clicking on the export as image button ![image](data/icons/buttons/exportrecipe32.png)
 ---
 ### Future User stories
 - As a user, I want to be able to view the testing version of a recipe.

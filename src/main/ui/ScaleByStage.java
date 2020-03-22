@@ -8,6 +8,7 @@ import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.BreadRecipe;
 import model.RecipeDevHistory;
@@ -28,6 +29,7 @@ public class ScaleByStage {
     public void display(RecipeDevHistory activeRecipeHistory) {
         recipe = (BreadRecipe) (activeRecipeHistory.getActiveCommit().getRecipeVersion());
         initializeRadioButtons();
+        window.initModality(Modality.APPLICATION_MODAL);
         vbox.getChildren().addAll(this.doughWeight, this.flourWeight, this.weight, this.scaleButton);
         vbox.setAlignment(Pos.CENTER_LEFT);
         window.setScene(scene);
