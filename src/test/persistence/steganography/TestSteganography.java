@@ -119,4 +119,14 @@ public class TestSteganography {
             // do nothing
         }
     }
+
+    @Test
+    void TestNullFileException() {
+        try {
+            encoder.encode(collectionMessage, null, true);
+            fail();
+        } catch (IOException e) {
+            // expected behavior
+        }
+    }
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sun.corba.se.impl.resolver.SplitLocalResolverImpl;
 import com.sun.javafx.application.PlatformImpl;
 import com.sun.javafx.css.StyleManager;
+import exceptions.BranchAlreadyExistsException;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -105,7 +106,7 @@ public class GitBreadGUI extends Application {
                 "Confirm exit");
         if (confirmExit && activeCollection.isEmpty()) {
             primaryStage.close();
-        } else if (!activeCollection.isEmpty()) {
+        } else if (!activeCollection.isEmpty() && confirmExit) {
             if (ConfirmStage.display("Would you like to save before exiting?", "Confirm")) {
                 saveAsJsonFileGeneral(primaryStage);
             }
@@ -366,13 +367,11 @@ public class GitBreadGUI extends Application {
             if (activeRecipeHistory != null) {
                 try {
                     String message = activeRecipeHistory.toJson();
-                    File fileIn = fileChooserHelper(
-                            "./data/recipephotos",
-                            "png",
-                            "load", primaryStage);
-                    File fileOut = fileChooserHelper("./data/icons/sharing/exported",
-                            "png",
-                            "save", primaryStage);
+                    File fileIn = fileChooserHelper("./data/recipephotos", "png", "load", primaryStage);
+                    if (fileIn == null) {
+                        return;
+                    }
+                    File fileOut = fileChooserHelper("./data/icons/sharing/exported", "png", "save", primaryStage);
                     Steganos encoder = new Steganos();
                     encoder.encode(message, fileIn, false);
                     if (fileOut != null) {
@@ -483,15 +482,19 @@ public class GitBreadGUI extends Application {
 
     private void branchNameOnKeyPressed(Stage stage, TextField branchName) {
         branchName.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                activeRecipeHistory.newBranch(branchName.getText());
-                RecipeStage recipeStage = new RecipeStage();
-                recipeStage.display(activeCollection, activeRecipeHistory, false);
-                addItemsListView();
-                recipeListView.refresh();
-                stage.close();
-            } else if (event.getCode() == KeyCode.ESCAPE) {
-                stage.close();
+            try {
+                if (event.getCode() == KeyCode.ENTER) {
+                    activeRecipeHistory.newBranch(branchName.getText());
+                    RecipeStage recipeStage = new RecipeStage();
+                    recipeStage.display(activeCollection, activeRecipeHistory, false);
+                    addItemsListView();
+                    recipeListView.refresh();
+                    stage.close();
+                } else if (event.getCode() == KeyCode.ESCAPE) {
+                    stage.close();
+                }
+            } catch (BranchAlreadyExistsException e) {
+                AlertStage.display("A branch with that name already exists.", "BranchAlreadyExistsException");
             }
         });
     }

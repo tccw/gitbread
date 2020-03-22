@@ -1,11 +1,9 @@
 .root {
-    -fx-accent: #1e74c6;
+    -fx-accent: #bb6ad9;
     -fx-focus-color: -fx-accent;
     -fx-base: #373e43;
     -fx-control-inner-background: derive(-fx-base, 35%);
     -fx-control-inner-background-alt: -fx-control-inner-background ;
-    -fx-accent: #bb6ad9;
-    -fx-focus-color: #bb6ad9;
 }
 
 .toggle-button {
@@ -24,3 +22,6 @@
     -fx-effect: innershadow( three-pass-box , rgba(0,0,0,0.1) , 1, 0.0 , 0 , 1);
 }
 
+.text-field {
+    -fx-text-color: black;
+}
