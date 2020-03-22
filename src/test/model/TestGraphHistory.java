@@ -56,6 +56,12 @@ public class TestGraphHistory {
 
     @Test
     void dummyConstructorTest() {
+
         GraphHistory dummy = new GraphHistory();
+        try {
+            List<Node> anotherDummy = dummy.getParents(new Node(new BreadRecipe(1000), "master"));
+        } catch (NullPointerException | NoSuchAlgorithmException e) {
+            //do nothing
+        }
     }
 }

@@ -31,9 +31,9 @@ public class HashCodeMaker {
         string.append(recipe.getCookTime());
         string.append(recipe.getPrepTime());
         string.append(recipe.getInstructions());
-        if (recipe.getClass() == BreadRecipe.class) {
-            string.append(breadBuilder((BreadRecipe) (recipe)));
-        }
+//        if (recipe.getClass() == BreadRecipe.class) {
+        string.append(breadBuilder((BreadRecipe) (recipe)));
+//        }
         return string.toString();
     }
 

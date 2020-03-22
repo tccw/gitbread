@@ -1,6 +1,7 @@
 package persistence.steganography;
 
 import javax.imageio.ImageIO;
+import javax.naming.SizeLimitExceededException;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
@@ -133,11 +134,14 @@ public class Steganos {
     //https://stackoverflow.com/questions/5399798/byte-array-and-int-conversion-in-java/11419863
     //EFFECTS: converts an integer into a 4-byte byte array.
     private byte[] intToByteArray(int i) {
-        if (i < 0) {
-            throw new IllegalArgumentException("Message length is negative!");
-        } else if (i == 0) {
-            throw new IllegalArgumentException("Cannot encode a collection with length zero.");
-        }
+//        if (i < 0) {
+//            throw new IllegalArgumentException("Message length is negative!");
+//        } else if (i == 0) {
+//            throw new IllegalArgumentException("Cannot encode a collection with length zero.");
+//        }
+//        if (i > Math.pow(2,24)) {
+//            throw new SizeLimitExceededException();
+//        }
         byte byte3 = (byte) ((i & 0xFF000000) >> 24);
         byte byte2 = (byte) ((i & 0x00FF0000) >> 16);
         byte byte1 = (byte) ((i & 0x0000FF00) >> 8);
@@ -147,14 +151,14 @@ public class Steganos {
 
     //EFFECTS: converts a 4-byte byte array into an integer
     private int byteArrayToInt(byte[] b) throws IllegalArgumentException {
-        if (b.length > OFFSET / 8) {
-            throw new IllegalArgumentException();
-        } else {
-            return b[3] & 0xFF
-                    | (b[2] & 0xFF) << 8
-                    | (b[1] & 0xFF) << 16
-                    | (b[0] & 0xFF) << 24;
-        }
+//        if (b.length > OFFSET / 8) {
+//            throw new IllegalArgumentException();
+//        } else {
+        return b[3] & 0xFF
+                | (b[2] & 0xFF) << 8
+                | (b[1] & 0xFF) << 16
+                | (b[0] & 0xFF) << 24;
+//        }
     }
 
     // getters

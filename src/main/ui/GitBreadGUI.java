@@ -114,6 +114,8 @@ public class GitBreadGUI extends Application {
     }
 
     // THE LOOK
+    //MODIFIES: this
+    //EFFECTS: initialize the main stages and other UI elements
     private void initialize(Stage primaryStage) {
         activeCollection = new RecipeDevCollection();
         activeRecipeHistory = null;
@@ -135,6 +137,8 @@ public class GitBreadGUI extends Application {
         StyleManager.getInstance().addUserAgentStylesheet(LIGHT_CSS);
     }
 
+    //MODIFIES: this
+    //EFFECTS: set tooltips for all the UI elements
     private void setTooltips() {
         darkModeToggle.setTooltip(new Tooltip("Toggle DarkMode"));
         Tooltip.install(flowTopRow.getChildren().get(0), new Tooltip("Load recipe book"));
@@ -149,6 +153,8 @@ public class GitBreadGUI extends Application {
         Tooltip.install(flowBottomRow.getChildren().get(4), new Tooltip("Update recipe"));
     }
 
+    //MODIFIES: this
+    //EFFECTS: place the gridPane elements
     private void gridPaneLayoutSetup(Stage primaryStage) {
 //        gridPane.setGridLinesVisible(true);
         gridPane.setPadding(new Insets(10, 20, 20, 20));
@@ -181,6 +187,8 @@ public class GitBreadGUI extends Application {
         recipeListViewRightClickMenu();
     }
 
+    //MODIFIES: this
+    //EFFECTS: set the background image of the default recipe collection / recipe list area
     private void recipeListViewDefaultIcon() {
         ImageView recipeListPlaceHolder = new ImageView(
                 new Image("file:./data/icons/sharing/recipecollectionsplitload.png"));
