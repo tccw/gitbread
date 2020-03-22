@@ -22,8 +22,7 @@ public class ConfirmStage {
         stage.setTitle(title);
         VBox vbox = new VBox(20);
         vbox.setPadding(new Insets(20));
-        Label label = new Label();
-        label.setText(message);
+        Label label = new Label(message);
         Button yes = new Button("Yes");
         Button no = new Button("No");
         yes.setOnMouseClicked(e -> {
@@ -37,8 +36,7 @@ public class ConfirmStage {
 
         vbox.getChildren().addAll(label, yes, no);
         vbox.setAlignment(Pos.CENTER);
-        Scene layout = new Scene(vbox);
-        stage.setScene(layout);
+        stage.setScene(new Scene(vbox));
         stage.showAndWait();
 
         return answer;
