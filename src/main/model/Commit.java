@@ -1,25 +1,49 @@
 package model;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.LinkedList;
+import java.util.List;
 
-public class Commit {
+public class Node {
+
+
+    /*
+    Each node points to its parent node. Nodes can have multiple parents (branches that merge).
+    Only the root will have an empty parents list.
+    root<---node1<---node2<---node3
+     */
+
     private Recipe recipeVersion;
     private String branchLabel;
     private String sha1;
-    private String comment;
-    private boolean isMerged;
+    private List<Node> parents;
 
     //default constructor for Jackson
-    public Commit() {
+    public Node() {
     }
 
     // a commit object containing the given recipe and branch label
-    public Commit(Recipe version, String branchLabel) throws NoSuchAlgorithmException {
+    public Node(Recipe version, String branchLabel) throws NoSuchAlgorithmException {
         this.recipeVersion = version;
         this.branchLabel = branchLabel;
         this.sha1 = HashCodeMaker.sha1(this.recipeVersion);
-        this.comment = "";
-        this.isMerged = false;
+        this.parents = new LinkedList<>(); // root is the only node with no parents (only empty node)
+    }
+
+    public void commit(Recipe recipe) {
+
+    }
+
+    public boolean isRoot() {
+        return this.parents.isEmpty();
+    }
+
+    public void setParents(List<Node> parents) {
+        this.parents = parents;
+    }
+
+    public List<Node> getParents() {
+        return parents;
     }
 
     public Recipe getRecipeVersion() {
@@ -34,18 +58,6 @@ public class Commit {
         return sha1;
     }
 
-    public String getComment() {
-        return comment;
-    }
-
-    public boolean isMerged() {
-        return isMerged;
-    }
-
-    public void setMerged(boolean merged) {
-        isMerged = merged;
-    }
-
     public void setBranchLabel(String branchLabel) {
         this.branchLabel = branchLabel;
     }
@@ -58,7 +70,4 @@ public class Commit {
         this.sha1 = sha1;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
 }
