@@ -3,10 +3,11 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.text.AbstractDocument;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestNodeGraph {
     NodeGraph graph;
@@ -29,7 +30,21 @@ public class TestNodeGraph {
 
     @Test
     void TestGetHistory() {
-        List<Node> history = graph.getHistory();
-        System.out.println("what");
+
+        try {
+            graph.newBranch("new-branch");
+            graph.commit(new BreadRecipe(1200,.3));
+            graph.commit(new BreadRecipe(1200, 0.31));
+            graph.commit(new BreadRecipe(1200, 0.32));
+            graph.checkout("master");
+            graph.commit(new BreadRecipe(1000, 0.8));
+            List<Node> historyMaster = graph.getHistory("master");
+            List<Node> historyNewBranch = graph.getHistory("new-branch");
+            assertEquals(2, graph.getBranches().size());
+            assertEquals(6, historyMaster.size());
+            System.out.println("what");
+        } catch (NoSuchAlgorithmException e) {
+           fail();
+        }
     }
 }
