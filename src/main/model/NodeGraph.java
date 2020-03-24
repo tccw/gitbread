@@ -12,12 +12,11 @@ public class NodeGraph {
     }
 
     public NodeGraph(Recipe recipe) throws NoSuchAlgorithmException {
-        Node initalNode = new Node(recipe, "master");
-        this.activeNode = initalNode;
+        this.activeNode = new Node(recipe, "master");
         this.currentBranch = "master";
     }
 
-    public void commit(Recipe recipe) {
+    public void commit(Recipe recipe) throws NoSuchAlgorithmException {
         Node commit = new Node(recipe, this.currentBranch);
         LinkedList<Node> parents = new LinkedList<>();
         parents.add(commit);
@@ -30,9 +29,13 @@ public class NodeGraph {
     }
 
     public List<Node> getHistory() {
-
         LinkedList<Node> history = new LinkedList<>();
-        while ()
+        Node root = this.activeNode;
+        while (!root.isRoot()) {
+            history.add(root);
+            root = root.getParents().get(0);
+        }
+        return history;
     }
 
 
