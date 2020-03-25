@@ -63,16 +63,20 @@ public class NodeGraph {
             return null;
         } else {
             LinkedList<Node> path = new LinkedList<>();
-            Node root = this.activeNode;
+            Node root = this.mostRecentNodesByBranch.get(branch);
             while (!root.isRoot()) {
                 for (Node node : root.getParents()) {
                     if (root.getBranchLabel().equals(branch)) {
+                        path.addFirst(root);
+                    } else {
+                        branch = root.getBranchLabel();
                         path.addFirst(root);
                     }
                     root = node;
                 }
             }
             path.addFirst(root);
+
             return path;
         }
     }
