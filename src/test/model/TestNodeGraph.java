@@ -3,7 +3,6 @@ package model;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import javax.swing.text.AbstractDocument;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
@@ -37,8 +36,8 @@ public class TestNodeGraph {
             graph.commit(new BreadRecipe(1200, 0.32));
             graph.checkout("master");
             graph.commit(new BreadRecipe(1000, 0.8));
-            List<Node> historyMaster = graph.getHistory("master");
-            List<Node> historyNewBranch = graph.getHistory("new-branch");
+            List<Node> historyMaster = graph.getBranchHistory("master");
+            List<Node> historyNewBranch = graph.getBranchHistory("new-branch");
             assertEquals(2, graph.getBranches().size());
             assertEquals(6, historyMaster.size());
             System.out.println("what");
@@ -54,11 +53,11 @@ public class TestNodeGraph {
           |
           m
           | \
-          m  b
+          m  t
           |  |
-          m  b
+          m  t
           |  | \
-          m  b  a
+          m  t  a
           |     |
           |     a
           |   /
@@ -84,9 +83,12 @@ public class TestNodeGraph {
             branchingGraph.commit(new BreadRecipe(699, 0.97));        // to master
             branchingGraph.commit(new BreadRecipe(688, 0.96));        // to master
             branchingGraph.commit(new BreadRecipe(677, 0.95));        // to master
-            List<Node> testBranchPath = branchingGraph.getHistory("test-bread");
-            List<Node> testMasterPath = branchingGraph.getHistory("master");
-            List<Node> allWheatPath = branchingGraph.getHistory("all-wheat");
+            List<Node> testBranchPath = branchingGraph.getBranchHistory("test-bread");
+            List<Node> testMasterPath = branchingGraph.getBranchHistory("master");
+            List<Node> allWheatPath = branchingGraph.getBranchHistory("all-wheat");
+            branchingGraph.checkout("all-wheat");
+            branchingGraph.merge("master");
+            List<Node> testPathAfterMerge = branchingGraph.getBranchHistory("master");
             System.out.println("hmmm");
         } catch (NoSuchAlgorithmException e) {
             fail();

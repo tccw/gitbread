@@ -38,8 +38,8 @@ public class Node {
         return this.parents.isEmpty();
     }
 
-    public void setParents(List<Node> parents) {
-        this.parents = parents;
+    public void addParent(Node parent) {
+        this.parents.add(parent);
     }
 
     public List<Node> getParents() {

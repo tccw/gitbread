@@ -31,9 +31,10 @@ public class HashCodeMaker {
         string.append(recipe.getCookTime());
         string.append(recipe.getPrepTime());
         string.append(recipe.getInstructions());
-//        if (recipe.getClass() == BreadRecipe.class) {
-        string.append(breadBuilder((BreadRecipe) (recipe)));
-//        }
+        if (recipe.getClass() == BreadRecipe.class) {
+            string.append(breadBuilder((BreadRecipe) (recipe)));
+        }
+        //TODO: add the branch to this to make more unique SHA1 codes
         return string.toString();
     }
 

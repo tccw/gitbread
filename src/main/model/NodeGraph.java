@@ -20,9 +20,7 @@ public class NodeGraph {
 
     public void commit(Recipe recipe) throws NoSuchAlgorithmException {
         Node commit = new Node(recipe, this.currentBranch);
-        LinkedList<Node> parents = new LinkedList<>();
-        parents.add(this.activeNode);
-        commit.setParents(parents);
+        commit.addParent(this.activeNode);
         this.activeNode = commit;
         if (this.mostRecentNodesByBranch.get(this.currentBranch) != null) {
             mostRecentNodesByBranch.replace(this.currentBranch, this.activeNode);
@@ -40,49 +38,86 @@ public class NodeGraph {
         }
     }
 
-    //EFFECTS:
+    //EFFECTS: change to the most recent node of the selected branch
     public void checkout(String branch) {
         if (!this.mostRecentNodesByBranch.containsKey(branch)) {
-            System.out.println("Throw custom BranchDoesNotExist exception, ask if you want to create one");
+            System.err.println("Throw custom BranchDoesNotExist exception, ask if you want to create one");
         } else {
             this.currentBranch = branch;
             this.activeNode = mostRecentNodesByBranch.get(this.currentBranch);
         }
     }
 
-    //EFFECTS: merges changes from one branch to another
-    public void merge(Node node, String branch) {
-        // check which fields have been modified since the branch. If there are any fields that both branches have
-        // modified ask the user which they want to keep
-        // create a new  node with two parents (the most recent commit of the merging branch and of the merged branch)
-        //stub
+    //EFFECTS: merges the current branch with the given branch and checks out the merged to branch.
+    //          Currently merging is only for a single user so there are no checks for merge conflicts.
+    public void merge(String branch) throws NoSuchAlgorithmException {
+        if (!this.mostRecentNodesByBranch.containsKey(branch)) {
+            System.err.println("Throw custom BranchDoesNotExist exception, ask if you want to create one");
+        } else {
+            Node mergingNode = this.activeNode; // get the merging node
+            this.checkout(branch);              // checkout the merged-to branch so commit goes to the correct branch
+            this.commit(mergingNode.getRecipeVersion());   // commit the branch
+            this.activeNode.addParent(mergingNode);        // add the merging branch as another parent
+        }
     }
 
-    public List<Node> getHistory(String branch) {
+
+    public List<Node> getBranchHistory(String branch) {
         if (!this.mostRecentNodesByBranch.containsKey(branch)) {
+            System.err.println("Throw custom BranchDoesNotExist exception, ask if you want to create one");
             return null;
         } else {
             LinkedList<Node> path = new LinkedList<>();
             Node root = this.mostRecentNodesByBranch.get(branch);
             while (!root.isRoot()) {
                 for (Node node : root.getParents()) {
-                    if (root.getBranchLabel().equals(branch)) {
-                        path.addFirst(root);
-                    } else {
-                        branch = root.getBranchLabel();
-                        path.addFirst(root);
-                    }
+                    path.addFirst(root);
                     root = node;
                 }
             }
             path.addFirst(root);
-
             return path;
+        }
+    }
+
+    public List<Node> getNodeHistory(Node node) {
+        if (!node.isRoot()) {
+            LinkedList<Node> path = new LinkedList<>();
+            Node current = node;
+            while (!node.isRoot()) {
+                for (Node n : current.getParents()) {
+                    path.addFirst(current);
+                    current = n;
+                }
+            }
+            path.addFirst(current);
+            return path;
+        } else {
+            return null;
         }
     }
 
     public Set<String> getBranches() {
         return this.mostRecentNodesByBranch.keySet();
+    }
+
+    //EFFECTS: traverse backwards through the graph and get the branch point for the given node. Return null otherwise.
+    /*
+    This method is used within merge() to determine if the merging branch has modified any of the same fields which
+    were modified in the branch to be merged into after the original branch point.
+     */
+    private Node getBranchPoint(Node node, String mergeToBranch) {
+        String branch = node.getBranchLabel();
+        Node branchPoint = null;
+        while (node.getBranchLabel().equals(branch)) {
+            for (Node n : node.getParents()) {
+                if (n.getParents().size() == 1 && n.getBranchLabel().equals(mergeToBranch)) {
+                    return n;
+                }
+                node = n;
+            }
+        }
+        return branchPoint;
     }
 
 
