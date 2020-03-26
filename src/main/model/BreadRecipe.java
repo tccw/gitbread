@@ -53,7 +53,7 @@ public class BreadRecipe extends Recipe {
             this.doughWeight += i.getWeight();
         }
         super.instructions = "";
-        super.attemptHistory = new ArrayList<Attempt>();
+        super.attemptHistory = new ArrayList<>();
         super.cookTime = -1;  // -1 indicates no cookTime has been set
         super.prepTime = -1; // -1 indicates no prepTime has been set
         super.cookTemp = -1; // -1 indicates no cookTemp has been set
@@ -73,11 +73,28 @@ public class BreadRecipe extends Recipe {
         this.blankIngredientsTemplate();
         this.calcIngredientsFromDoughWeight(this.doughWeight);
         super.instructions = defaultInstructions;
-        super.attemptHistory = new ArrayList<Attempt>();
+        super.attemptHistory = new ArrayList<>();
         super.cookTime = 30;  // minutes
         super.prepTime = 135; //minutes
         super.cookTemp = 425; // in degrees F
         this.cookingVessel = "pan";
+    }
+
+    @Override
+    //EFFECTS: Create a deep copy of a recipe ignoring the attempt history. Used for merging branches.
+    public Recipe copy() {
+        BreadRecipe copy = new BreadRecipe(this.getDoughWeight());
+        copy.setWaterFraction(this.getWaterFraction());
+        copy.setSaltFraction(this.getSaltFraction());
+        copy.setSugarFraction(this.getSugarFraction());
+        copy.setFatFraction(this.getFatFraction());
+        copy.setYeastFraction(this.getYeastFraction());
+        copy.setInstructions(this.getInstructions());
+        copy.setCookTime(this.getCookTime());
+        copy.setPrepTime(this.getPrepTime());
+        copy.setCookTemp(this.getCookTemp());
+        copy.setCookingVessel(this.getCookingVessel());
+        return copy;
     }
 
     //EFFECTS:
@@ -116,7 +133,7 @@ public class BreadRecipe extends Recipe {
     private void calcIngredientsFromDoughWeight(int doughWeight) {
         updateYield();
         int flourWeight = (int) (doughWeight / this.yield);
-        ArrayList<Double> bakersFractions = new ArrayList<Double>(Arrays.asList(
+        ArrayList<Double> bakersFractions = new ArrayList<>(Arrays.asList(
                 this.flourFraction, this.waterFraction,
                 this.saltFraction, this.fatFraction,
                 this.sugarFraction, this.yeastFraction));
@@ -129,7 +146,7 @@ public class BreadRecipe extends Recipe {
     //MODIFIES: this
     //EFFECTS: calculate the ingredients list from given flour weight
     private void calcIngredientsFromFlourWeight(int flourWeight) {
-        ArrayList<Double> bakersFractions = new ArrayList<Double>(Arrays.asList(
+        ArrayList<Double> bakersFractions = new ArrayList<>(Arrays.asList(
                 this.flourFraction, this.waterFraction,
                 this.saltFraction, this.fatFraction,
                 this.sugarFraction, this.yeastFraction));
@@ -157,7 +174,7 @@ public class BreadRecipe extends Recipe {
 
     //EFFECTS: format the bake notes for toString()
     private String toStringHelperBakeNotes() {
-        String result = String.format("\nHydration: %1$d%%\n"
+        return String.format("\nHydration: %1$d%%\n"
                         + "Prep: %2$d hr %3$d min\n"
                         + "Bake: %4$d hr %5$d min\n"
                         + "Total: %6$d hr %7$d min\n"
@@ -167,7 +184,6 @@ public class BreadRecipe extends Recipe {
                 (int) (this.waterFraction * 100), this.prepTime / 60, this.prepTime % 60,
                 this.cookTime / 60, this.cookTime % 60, (this.prepTime + this.cookTime) / 60,
                 (this.prepTime + this.cookTime) % 60, this.cookTemp, this.cookingVessel, this.doughWeight);
-        return result;
     }
 
     //EFFECTS: format the instructions for toString
