@@ -150,7 +150,7 @@ public class NodeGraph implements Saveable {
     public String toJson() throws JsonProcessingException {
         ObjectMapper mapper = JsonMapper.builder().build();
         registerObjectMapper(mapper);
-        return mapper.writeValueAsString(this);
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
     }
 
     private static void registerObjectMapper(ObjectMapper mapper) {

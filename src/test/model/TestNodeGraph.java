@@ -4,7 +4,11 @@ import exceptions.BranchAlreadyExistsException;
 import exceptions.BranchDoesNotExistException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import persistence.Reader;
+import persistence.Writer;
 
+import java.io.File;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.time.LocalDateTime;
@@ -29,7 +33,7 @@ public class TestNodeGraph {
             for (double i = 0.2; i < 0.3; i = i + 0.02) {
                 graph.commit(new BreadRecipe(1000, 1 - i));
             }
-            lastRecipe = new BreadRecipe(1000,0.5);
+            lastRecipe = new BreadRecipe(1000, 0.5);
         } catch (NoSuchAlgorithmException e) {
             fail();
         }
@@ -39,7 +43,7 @@ public class TestNodeGraph {
     void TestGetHistory() {
         try {
             graph.newBranch("new-branch");
-            graph.commit(new BreadRecipe(1200,.3));
+            graph.commit(new BreadRecipe(1200, .3));
             graph.commit(new BreadRecipe(1200, 0.31));
             graph.commit(new BreadRecipe(1200, 0.32));
             graph.checkout("master");
@@ -49,7 +53,7 @@ public class TestNodeGraph {
             assertEquals(2, graph.getBranches().size());
             assertEquals(7, historyMaster.size());
         } catch (NoSuchAlgorithmException | BranchAlreadyExistsException | BranchDoesNotExistException e) {
-           fail();
+            fail();
         }
     }
 
@@ -124,7 +128,7 @@ public class TestNodeGraph {
 
     @Test
     void TestBranchHistoryNonexistentBranch() {
-        try{
+        try {
             graph.getBranchHistory("branch-does-not-exist");
             fail();
         } catch (BranchDoesNotExistException e) {
@@ -154,9 +158,9 @@ public class TestNodeGraph {
     void TestMultipleAttempt() {
         NodeGraph complexGraph;
         try {
-           complexGraph = HelperComplexGraph();
-           assertEquals(6, complexGraph.totalAttempts());
-           assertEquals(13, complexGraph.size());
+            complexGraph = HelperComplexGraph();
+            assertEquals(6, complexGraph.totalAttempts());
+            assertEquals(13, complexGraph.size());
         } catch (Exception e) {
             fail();
         }
@@ -173,6 +177,24 @@ public class TestNodeGraph {
             assertNull(root);
         } catch (BranchDoesNotExistException e) {
             fail();
+        }
+    }
+
+    @Test
+    void TestSave() {
+        Writer writer;
+        try {
+            writer = new Writer(new File("./data/recipecollections/recipeNodeGraphTest.json"));
+            writer.write(HelperComplexGraph());
+            writer.close();
+        } catch (IOException e) {
+            fail("IOException");
+        } catch (NoSuchAlgorithmException e) {
+            fail("NoSuchAlgorithmException");
+        } catch (BranchAlreadyExistsException e) {
+            fail("BranchAlreadyExistsException");
+        } catch (BranchDoesNotExistException e) {
+            fail("BranchDoesNotExistException");
         }
     }
 
@@ -194,7 +216,7 @@ public class TestNodeGraph {
         branchingGraph.commit(new BreadRecipe(888, 0.88));        // to test-bread
         branchingGraph.attempt(clock);
         branchingGraph.newBranch("all-wheat");
-        branchingGraph.commit(new BreadRecipe(799,0.77));         // to all-wheat
+        branchingGraph.commit(new BreadRecipe(799, 0.77));         // to all-wheat
         branchingGraph.commit(new BreadRecipe(788, 0.76));        // to all-wheat
         branchingGraph.attempt(clock);
         branchingGraph.attempt(clock);
