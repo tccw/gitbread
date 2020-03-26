@@ -39,7 +39,7 @@ public class TestNodeGraph {
             List<Node> historyMaster = graph.getBranchHistory("master");
             List<Node> historyNewBranch = graph.getBranchHistory("new-branch");
             assertEquals(2, graph.getBranches().size());
-            assertEquals(6, historyMaster.size());
+            assertEquals(7, historyMaster.size());
             System.out.println("what");
         } catch (NoSuchAlgorithmException e) {
            fail();
@@ -63,13 +63,15 @@ public class TestNodeGraph {
           |   /
           | /
           m
+          |
+          m
    */
     @Test
     void TestBranching() {
-        NodeGraph branchingGraph = null;
+        NodeGraph branchingGraph;
         try {
             branchingGraph = new NodeGraph(new BreadRecipe(1000, 1)); // to master
-            branchingGraph.commit(new BreadRecipe(999, 0.99));       // to master
+            branchingGraph.commit(new BreadRecipe(999, 0.99));        // to master
             branchingGraph.commit(new BreadRecipe(998, 0.98));        // to master
             branchingGraph.newBranch("test-bread");
             branchingGraph.commit(new BreadRecipe(899, 0.89));        // to test-bread
@@ -83,13 +85,14 @@ public class TestNodeGraph {
             branchingGraph.commit(new BreadRecipe(699, 0.97));        // to master
             branchingGraph.commit(new BreadRecipe(688, 0.96));        // to master
             branchingGraph.commit(new BreadRecipe(677, 0.95));        // to master
-            List<Node> testBranchPath = branchingGraph.getBranchHistory("test-bread");
-            List<Node> testMasterPath = branchingGraph.getBranchHistory("master");
+            branchingGraph.merge("all-wheat");                                         // to master
+            branchingGraph.commit(new BreadRecipe(599, 0.94));        // to master
+            List<Node> testBreadPath = branchingGraph.getBranchHistory("test-bread");
             List<Node> allWheatPath = branchingGraph.getBranchHistory("all-wheat");
-            branchingGraph.checkout("all-wheat");
-            branchingGraph.merge("master");
-            List<Node> testPathAfterMerge = branchingGraph.getBranchHistory("master");
-            System.out.println("hmmm");
+            List<Node> masterPath = branchingGraph.getBranchHistory("master");
+            assertEquals(6, testBreadPath.size());
+            assertEquals(7, allWheatPath.size());
+            assertEquals(8, masterPath.size());
         } catch (NoSuchAlgorithmException e) {
             fail();
         }

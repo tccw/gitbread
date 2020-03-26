@@ -48,16 +48,16 @@ public class NodeGraph {
         }
     }
 
-    //EFFECTS: merges the current branch with the given branch and checks out the merged to branch.
-    //          Currently merging is only for a single user so there are no checks for merge conflicts.
+    //MODIFIES: this
+    //EFFECTS: merge the given branch into the current branch.
+    //         Currently merging is only for a single user so there are no checks for merge conflicts.
     public void merge(String branch) throws NoSuchAlgorithmException {
         if (!this.mostRecentNodesByBranch.containsKey(branch)) {
             System.err.println("Throw custom BranchDoesNotExist exception, ask if you want to create one");
         } else {
-            Node mergingNode = this.activeNode; // get the merging node
-            this.checkout(branch);              // checkout the merged-to branch so commit goes to the correct branch
-            this.commit(mergingNode.getRecipeVersion());   // commit the branch
-            this.activeNode.addParent(mergingNode);        // add the merging branch as another parent
+            Node mergingNode = this.mostRecentNodesByBranch.get(branch); // get the merging node
+            this.commit(mergingNode.getRecipeVersion());                 // commit the branch
+            this.activeNode.addParent(mergingNode);                      // add the merging branch as another parent
         }
     }
 
@@ -70,10 +70,9 @@ public class NodeGraph {
             LinkedList<Node> path = new LinkedList<>();
             Node root = this.mostRecentNodesByBranch.get(branch);
             while (!root.isRoot()) {
-                for (Node node : root.getParents()) {
-                    path.addFirst(root);
-                    root = node;
-                }
+                // default behavior is to follow the first parent
+                path.addFirst(root);
+                root = root.getParents().get(0);
             }
             path.addFirst(root);
             return path;
@@ -100,25 +99,5 @@ public class NodeGraph {
     public Set<String> getBranches() {
         return this.mostRecentNodesByBranch.keySet();
     }
-
-    //EFFECTS: traverse backwards through the graph and get the branch point for the given node. Return null otherwise.
-    /*
-    This method is used within merge() to determine if the merging branch has modified any of the same fields which
-    were modified in the branch to be merged into after the original branch point.
-     */
-    private Node getBranchPoint(Node node, String mergeToBranch) {
-        String branch = node.getBranchLabel();
-        Node branchPoint = null;
-        while (node.getBranchLabel().equals(branch)) {
-            for (Node n : node.getParents()) {
-                if (n.getParents().size() == 1 && n.getBranchLabel().equals(mergeToBranch)) {
-                    return n;
-                }
-                node = n;
-            }
-        }
-        return branchPoint;
-    }
-
 
 }
