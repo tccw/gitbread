@@ -3,6 +3,7 @@ package ui;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.sun.javafx.css.StyleManager;
 import exceptions.BranchAlreadyExistsException;
+import exceptions.BranchDoesNotExistException;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -22,18 +23,17 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import model.Attempt;
-import model.Commit;
-import model.RecipeDevCollection;
-import model.RecipeDevHistory;
+import model.*;
 import persistence.Writer;
 import persistence.steganography.Steganos;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static persistence.Reader.*;
 
@@ -58,7 +58,7 @@ public class GitBreadGUI extends Application {
     ToggleButton darkModeToggle;
 
     RecipeDevCollection activeCollection;
-    RecipeDevHistory activeRecipeHistory;
+    NodeGraph activeRecipeHistory;
     ListView<String> recipeListView;
     ObservableList<String> items;
     TabPane infoDisplay;
@@ -220,6 +220,8 @@ public class GitBreadGUI extends Application {
                 }
             } catch (IOException e) {
                 AlertStage.display("Problem loading the collection.", "IOException");
+            } catch (BranchDoesNotExistException e) {
+                AlertStage.display("Branch does not exist.", "BranchDoesNotExistException");
             }
         });
     }
@@ -241,7 +243,7 @@ public class GitBreadGUI extends Application {
     }
 
     private void buildContextMenu(ListCell<String> cell, ContextMenu contextMenu) {
-        List<String> branches = activeCollection.get(cell.getItem()).getBranches();
+        Set<String> branches = activeCollection.get(cell.getItem()).getBranches();
         Menu switchBranch = new Menu();
         MenuItem removeRecipe = new MenuItem();
         removeRecipe.textProperty().bind(Bindings.format("remove", cell.itemProperty()));
@@ -261,7 +263,7 @@ public class GitBreadGUI extends Application {
         cell.setContextMenu(contextMenu);
     }
 
-    private void buildBranchList(ListCell<String> cell, List<String> branches, Menu switchBranch) {
+    private void buildBranchList(ListCell<String> cell, Set<String> branches, Menu switchBranch) {
         ToggleGroup branchToggle = new ToggleGroup();
         for (String s : branches) {
             RadioMenuItem child = new RadioMenuItem(s);
@@ -272,7 +274,11 @@ public class GitBreadGUI extends Application {
             switchBranch.getItems().add(child);
             child.textProperty().bind(Bindings.format(s, cell.itemProperty()));
             child.setOnAction(e -> {
-                activeCollection.get(cell.getItem()).checkout(s);
+                try {
+                    activeCollection.get(cell.getItem()).checkout(s);
+                } catch (BranchDoesNotExistException ex) {
+                    AlertStage.display("Branch " + s + " does not exist.", "BranchDoesNotExistException");
+                }
                 activeRecipeHistory = activeCollection.get(cell.getItem());
                 updateTextArea();
             });
@@ -394,8 +400,8 @@ public class GitBreadGUI extends Application {
     private void logAttempt(Stage primaryStage) {
         if (activeRecipeHistory != null) {
             activeRecipeHistory.attempt(clock);
-            int size = activeRecipeHistory.getActiveCommit().getRecipeVersion().getAttemptHistory().size();
-            Attempt attempt = activeRecipeHistory.getActiveCommit().getRecipeVersion()
+            int size = activeRecipeHistory.getActiveNode().getRecipeVersion().getAttemptHistory().size();
+            Attempt attempt = activeRecipeHistory.getActiveNode().getRecipeVersion()
                     .getAttemptHistory().get(size - 1);
             logAttemptNotes(primaryStage, attempt);
             updateAttemptModifiedLabel();
@@ -499,7 +505,7 @@ public class GitBreadGUI extends Application {
 
     private void updateAttemptModifiedLabel() {
         infoLabel.setText(String.format("Attempts: %1$d :: Modifications: %2$d",
-                activeRecipeHistory.totalAttempts(), activeRecipeHistory.getCommits().size() - 1));
+                activeRecipeHistory.totalAttempts(), activeRecipeHistory.size() - 1));
     }
 
     //https://stackoverflow.com/questions/4917326/how-to-iterate-over-the-files-of-a-certain-directory-in-java/4917347
@@ -537,33 +543,53 @@ public class GitBreadGUI extends Application {
     //MODIFIES: this
     //EFFECTS: update the attempts look book tab with images
     //TODO: fix this to order attempts by date
-    private void updateAttemptLookBook(RecipeDevHistory activeRecipeHistory) {
+    private void updateAttemptLookBook(NodeGraph activeRecipeHistory) {
         tilePane.getChildren().clear();
-        for (Commit commit : activeRecipeHistory.getCommits()) {
-            if (!commit.getRecipeVersion().getAttemptHistory().isEmpty()) {
-                for (Attempt attempt : commit.getRecipeVersion().getAttemptHistory()) {
-                    if (attempt.hasPhoto()) {
-                        ImageView imageView = new ImageView(
-                                new Image("file:" + attempt.getPhotoPath()));
-                        imageView.setFitWidth(100);
-                        imageView.setFitHeight(100);
-                        Tooltip.install(imageView, new Tooltip(commit.getBranchLabel() + ": "
-                                + commit.getSha1().substring(0, 10)));
-                        tilePane.getChildren().add(imageView);
-                    }
+        try {
+            for (Attempt attempt : activeRecipeHistory.getAttempts()) {
+                if (attempt.hasPhoto()) {
+                    ImageView imageView = new ImageView(
+                            new Image("file:" + attempt.getPhotoPath()));
+                    imageView.setFitWidth(100);
+                    imageView.setFitHeight(100);
+                    Tooltip.install(imageView, new Tooltip(HashCodeMaker.sha1(attempt.getRecipeVersion())));
+                    tilePane.getChildren().add(imageView);
                 }
             }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
+
     }
+
+
+//    private void updateAttemptLookBook(NodeGraph activeRecipeHistory) {
+//        tilePane.getChildren().clear();
+//        for (Commit commit : activeRecipeHistory.getCommits()) {
+//            if (!commit.getRecipeVersion().getAttemptHistory().isEmpty()) {
+//                for (Attempt attempt : commit.getRecipeVersion().getAttemptHistory()) {
+//                    if (attempt.hasPhoto()) {
+//                        ImageView imageView = new ImageView(
+//                                new Image("file:" + attempt.getPhotoPath()));
+//                        imageView.setFitWidth(100);
+//                        imageView.setFitHeight(100);
+//                        Tooltip.install(imageView, new Tooltip(commit.getBranchLabel() + ": "
+//                                + commit.getSha1().substring(0, 10)));
+//                        tilePane.getChildren().add(imageView);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     //EFFECTS: prints a history of the attempts of the CURRENT ACTIVE COMMIT along with any notes.
     private void updateTextArea() {
         instructionsTextArea.setText(activeRecipeHistory
-                .getActiveCommit()
+                .getActiveNode()
                 .getRecipeVersion()
                 .toString());
         StringBuilder attemptsString = new StringBuilder();
-        List<Attempt> attempts = activeRecipeHistory.getActiveCommit().getRecipeVersion().getAttemptHistory();
+        List<Attempt> attempts = activeRecipeHistory.getActiveNode().getRecipeVersion().getAttemptHistory();
         for (Attempt attempt : attempts) {
             attemptsString.append(attempt.print());
         }
@@ -595,12 +621,14 @@ public class GitBreadGUI extends Application {
             addItemsListView();
         } catch (IOException e) {
             AlertStage.display("Error loading the file.", "IOException");
+        } catch (BranchDoesNotExistException e) {
+            e.printStackTrace();
         }
     }
 
     private void addItemsListView() {
         recipeListView.getItems().clear();
-        for (Map.Entry<String, RecipeDevHistory> entry : activeCollection.getCollection().entrySet()) {
+        for (Map.Entry<String, NodeGraph> entry : activeCollection.getCollection().entrySet()) {
             items.add(entry.getKey());
         }
         recipeListView.setItems(items);

@@ -11,8 +11,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.BreadRecipe;
+import model.NodeGraph;
 import model.RecipeDevCollection;
-import model.RecipeDevHistory;
 
 import java.security.NoSuchAlgorithmException;
 
@@ -28,10 +28,10 @@ public class RecipeStage {
     private VBox buttonArea;
     private TextArea instructions;
     private RecipeDevCollection collection;
-    private RecipeDevHistory activeHistory;
+    private NodeGraph activeHistory;
 
     //EFFECTS: display the recipe entry stage.
-    public void display(RecipeDevCollection collection, RecipeDevHistory activeHistory, Boolean isNewRecipe) {
+    public void display(RecipeDevCollection collection, NodeGraph activeHistory, Boolean isNewRecipe) {
         this.collection = collection;
         this.activeHistory = activeHistory;
         initializeWindows();
@@ -65,7 +65,7 @@ public class RecipeStage {
     }
 
     private void setFieldsToCurrentCommit() {
-        BreadRecipe recipeToEdit = (BreadRecipe) (this.activeHistory.getActiveCommit().getRecipeVersion());
+        BreadRecipe recipeToEdit = (BreadRecipe) (this.activeHistory.getActiveNode().getRecipeVersion());
         fields[0].setEditable(false);
         fields[0].setText("Title"); //TODO: set the title as the key of the recipe
         fields[2].setText(String.valueOf(recipeToEdit.getWaterFraction() * 100));
@@ -137,7 +137,7 @@ public class RecipeStage {
             if (!isNewRecipe) {
                 this.activeHistory.commit(recipe);
             } else {
-                this.collection.add(fields[0].getText(), new RecipeDevHistory(recipe));
+                this.collection.add(fields[0].getText(), new NodeGraph(recipe));
             }
             window.close();
         } catch (NoSuchAlgorithmException event) {

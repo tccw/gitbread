@@ -74,7 +74,7 @@ public class NodeGraph implements Saveable {
         }
     }
 
-
+    //EFFECTS: returns the change history of the given branch
     public List<Node> getBranchHistory(String branch) throws BranchDoesNotExistException {
         if (!this.mostRecentNodesByBranch.containsKey(branch)) {
             throw new BranchDoesNotExistException();
@@ -91,6 +91,7 @@ public class NodeGraph implements Saveable {
         }
     }
 
+    //EFFECTS: returns the change history of the given node
     public List<Node> getNodeHistory(Node node) {
         if (!node.isRoot()) {
             LinkedList<Node> path = new LinkedList<>();
@@ -115,20 +116,27 @@ public class NodeGraph implements Saveable {
         activeNode.getRecipeVersion().addAttempt(clock);
     }
 
+    //EFFECTS: returns the total number of attempts (for all recipe versions) in a node graph
     public int totalAttempts() {
+        return getAttempts().size();
+    }
+
+    //EFFECTS: returns a list of all attempts sorted by date (oldest -> newest)
+    public List<Attempt> getAttempts() {
         List<Node> accumulator = new ArrayList<>();
-        int count = 0;
+        List<Attempt> attempts = new ArrayList<>();
         for (String branch : this.mostRecentNodesByBranch.keySet()) {
             Node node = this.mostRecentNodesByBranch.get(branch);
             while (!node.isRoot() && !accumulator.contains(node)) {
-                count += node.getRecipeVersion().getAttemptHistory().size();
+                attempts.addAll(node.getRecipeVersion().getAttemptHistory());
                 accumulator.add(node);
                 node = node.getParents().get(0);
             }
         }
-        return count;
+        return attempts;
     }
 
+    //EFFECTS: returns the number of nodes in the node graph
     public int size() {
         List<Node> accumulator = new ArrayList<>();
         for (String branch : this.mostRecentNodesByBranch.keySet()) {
@@ -137,7 +145,6 @@ public class NodeGraph implements Saveable {
                 accumulator.add(node);
                 node = node.getParents().get(0);
             }
-
         }
         return accumulator.size() + 1; //TODO: fix this so that the root also gets added
     }
@@ -150,7 +157,7 @@ public class NodeGraph implements Saveable {
     public String toJson() throws JsonProcessingException {
         ObjectMapper mapper = JsonMapper.builder().build();
         registerObjectMapper(mapper);
-        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+        return mapper.writeValueAsString(this);
     }
 
     private static void registerObjectMapper(ObjectMapper mapper) {
@@ -158,7 +165,6 @@ public class NodeGraph implements Saveable {
         mapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, false);
         mapper.registerSubtypes(
                 RecipeDevCollection.class,
-                RecipeDevHistory.class,
                 Node.class,
                 NodeGraph.class,
                 Recipe.class,

@@ -11,7 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.BreadRecipe;
-import model.RecipeDevHistory;
+import model.NodeGraph;
 
 public class ScaleByStage {
     private static final int HEIGHT = 160;
@@ -26,8 +26,8 @@ public class ScaleByStage {
     private ToggleGroup scaleOptions;
     private BreadRecipe recipe;
 
-    public void display(RecipeDevHistory activeRecipeHistory) {
-        recipe = (BreadRecipe) (activeRecipeHistory.getActiveCommit().getRecipeVersion());
+    public void display(NodeGraph activeRecipeHistory) {
+        recipe = (BreadRecipe) (activeRecipeHistory.getActiveNode().getRecipeVersion());
         initializeRadioButtons();
         window.initModality(Modality.APPLICATION_MODAL);
         vbox.getChildren().addAll(this.doughWeight, this.flourWeight, this.weight, this.scaleButton);
