@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.List;
 
 /*
 This is the abstract representation of a Recipe with common fields and methods.
@@ -61,6 +62,12 @@ public abstract class Recipe {
 
     //EFFECTS: this
     public abstract String toString();
+
+    public abstract List<String> toStringArray();
+
+    public String[] splitInstructions() {
+        return this.instructions.split("\\d\\d?\\.");
+    }
 
     // setters
     public void setInstructions(String instructions) {

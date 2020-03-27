@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /*
 Bread recipe is a subclass of Recipe and represents recipes recipes made of primarily flour, with little to no fat
@@ -171,6 +172,15 @@ public class BreadRecipe extends Recipe {
 
         return result.toString();
     }
+
+    @Override
+    public List<String> toStringArray() {
+        String[] splitList = this.instructions.split("\\d\\d?\\.");
+        ArrayList<String> result = new ArrayList<>(Arrays.asList(splitList));
+        return null; // stub
+    }
+
+
 
     //EFFECTS: format the bake notes for toString()
     private String toStringHelperBakeNotes() {

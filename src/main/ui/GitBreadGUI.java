@@ -20,10 +20,14 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.*;
+import org.fxmisc.richtext.InlineCssTextArea;
+import org.fxmisc.richtext.StyledTextArea;
 import persistence.Writer;
 import persistence.steganography.Steganos;
 
@@ -67,6 +71,7 @@ public class GitBreadGUI extends Application {
     Tab instructions;
     Tab attempts;
     Tab images;
+    Tab testInstructions;
     TextArea instructionsTextArea;
     TextArea attemptsTextArea;
     Label infoLabel;
@@ -529,6 +534,51 @@ public class GitBreadGUI extends Application {
         images.setClosable(false);
         images.setContent(scrollPane);
         infoDisplay.getTabs().addAll(instructions, attempts, images);
+        testInstructionsSetup();
+    }
+
+    //TESTING display of instructions like Allrecipes
+    private void testInstructionsSetup() {
+        String sample = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut"
+                + " labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris "
+                + "nisi ut aliquip ex ea commodo consequat.";
+        testInstructions = new Tab("Instructions Buttons");
+        testInstructions.setClosable(false);
+        ScrollPane scrollPane = new ScrollPane();
+        scrollPane.setFitToWidth(true);
+        GridPane gridPane = new GridPane();
+        Image tick = new Image("file:./data/icons/buttons/tickbythoseicons.png");
+        gridPane.setPadding(new Insets(10));
+        gridPane.setVgap(10);
+        gridPane.setHgap(10);
+        String[] splitInstructions = this.activeRecipeHistory.getActiveNode().getRecipeVersion().splitInstructions();
+        for (int i = 0; i < 20; i++) {
+            gridPane.addRow(i);
+            InlineCssTextArea styledTextArea = new InlineCssTextArea();
+            TextFlow textFlow = new TextFlow();
+            ImageView toggleCheck = new ImageView(new Image("file:./data/icons/buttons/numbertoggles/" + (i + 1) + ".png"));
+            toggleCheck.setPickOnBounds(true);
+            int loc = i + 1;
+            toggleCheck.setOnMouseClicked(e -> {
+                if (!toggleCheck.getImage().equals(tick)) {
+                    toggleCheck.setImage(tick);
+                    textFlow.setOpacity(0.4);
+                } else {
+                    //TODO: figure out how to get the old image back when you toggle. Maybe setTag() and getTag()?
+                    // https://stackoverflow.com/questions/5291726/what-is-the-main-purpose-of-settag-gettag-methods-of-view
+                    toggleCheck.setImage(new Image("file:./data/icons/buttons/numbertoggles/"
+                            + Integer.toString(loc) + ".png"));
+                    textFlow.setOpacity(1.0);
+                }
+
+            });
+            gridPane.add(toggleCheck, 0, i);
+            textFlow.getChildren().add(new Text(splitInstructions[i]));
+            gridPane.add(textFlow, 1, i);
+        }
+        scrollPane.setContent(gridPane);
+        testInstructions.setContent(scrollPane);
+        infoDisplay.getTabs().add(testInstructions);
     }
 
     private void tileScrollPaneSetUp() {
