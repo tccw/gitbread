@@ -9,7 +9,11 @@ public class Writer {
 
     //EFFECTS: constructs a a FileWriter to write the data to a JSON text file
     public Writer(File file) throws IOException {
-        this.fileWriter = new FileWriter(file);
+        if (file != null) {
+            this.fileWriter = new FileWriter(file);
+        } else {
+            throw new IOException();
+        }
     }
 
     //EFFECTS: writes the object to disk as a text file

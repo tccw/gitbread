@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import exceptions.BranchDoesNotExistException;
 import model.*;
 
 import java.io.File;
@@ -18,7 +19,8 @@ public class Reader {
     //TODO: use the singleton pattern to make sure there is only ever a single instance of ObjectMapper running.
     //REQUIRES: a properly formatted JSON file
     //EFFECTS: Load the provided collection file as a a RecipeDevCollection object.
-    public static RecipeDevCollection loadRecipeCollectionFile(File file) throws IOException {
+    public static RecipeDevCollection loadRecipeCollectionFile(File file) throws IOException,
+                                                                                 BranchDoesNotExistException {
         ObjectMapper mapper = JsonMapper.builder().build();
         FileReader reader = new FileReader(file);
         registerObjectMapper(mapper);
@@ -26,7 +28,8 @@ public class Reader {
         return checkoutRecipeDevCollection(null, file, reader, mapper);
     }
 
-    public static RecipeDevCollection loadRecipeCollectionJson(String json) throws IOException {
+    public static RecipeDevCollection loadRecipeCollectionJson(String json) throws IOException,
+                                                                                   BranchDoesNotExistException {
         ObjectMapper mapper = JsonMapper.builder().build();
         registerObjectMapper(mapper);
         return checkoutRecipeDevCollection(json, null, null, mapper);
@@ -35,7 +38,8 @@ public class Reader {
     private static RecipeDevCollection checkoutRecipeDevCollection(String json,
                                                                    File file,
                                                                    FileReader reader,
-                                                                   ObjectMapper mapper) throws IOException {
+                                                                   ObjectMapper mapper) throws IOException,
+                                                                                BranchDoesNotExistException {
         RecipeDevCollection result;
         if (file == null) {
             result = mapper.readValue(json, RecipeDevCollection.class);
@@ -49,7 +53,8 @@ public class Reader {
         return result;
     }
 
-    public static RecipeDevHistory loadRecipeDevHistoryJson(String json) throws JsonProcessingException {
+    public static NodeGraph loadRecipeDevHistoryJson(String json) throws JsonProcessingException,
+                                                                         BranchDoesNotExistException {
         ObjectMapper mapper = JsonMapper.builder().build();
         registerObjectMapper(mapper);
         /*
@@ -58,7 +63,7 @@ public class Reader {
             as a separate object with the same properties which breaks committing and attempts.
          */
 
-        RecipeDevHistory result = mapper.readValue(json, RecipeDevHistory.class);
+        NodeGraph result = mapper.readValue(json, NodeGraph.class);
         result.checkout("master");
         return result;
     }
@@ -69,8 +74,8 @@ public class Reader {
         mapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, false);
         mapper.registerSubtypes(
                 RecipeDevCollection.class,
-                RecipeDevHistory.class,
-                Commit.class,
+                Node.class,
+                NodeGraph.class,
                 Recipe.class,
                 BreadRecipe.class,
                 Attempt.class,

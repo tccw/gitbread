@@ -10,7 +10,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import model.Attempt;
-import model.RecipeDevHistory;
 
 import java.io.File;
 import java.net.URL;
@@ -43,7 +42,7 @@ public class AttemptNotesStage {
         photoPath = null;
         add = new Button("add");
         stage.initModality(Modality.APPLICATION_MODAL);
-        List<TextArea> textFieldList = new ArrayList<TextArea>();
+        List<TextArea> textFieldList = new ArrayList<>();
         vbox = new VBox(20);
         vbox.setPadding(new Insets(20));
 

@@ -1,10 +1,7 @@
 package persistence.steganography;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import model.BreadRecipe;
-import model.Recipe;
-import model.RecipeDevCollection;
-import model.RecipeDevHistory;
+import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.Reader;
@@ -17,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSteganography {
     RecipeDevCollection recipeCollection;
-    RecipeDevHistory recipeHistoryFrenchLoaf;
-    RecipeDevHistory recipeHistoryPizza;
-    RecipeDevHistory recipeHistoryCinnamonRaisin;
+    NodeGraph recipeHistoryFrenchLoaf;
+    NodeGraph recipeHistoryPizza;
+    NodeGraph recipeHistoryCinnamonRaisin;
     Recipe frenchLoaf;
     Recipe pizza;
     Recipe cinnamonRaisin;
@@ -39,9 +36,9 @@ public class TestSteganography {
             cinnamonRaisin = new BreadRecipe(800);
             cinnamonRaisin.setInstructions("1. Mix it up 2. Bake it down 3. funky town");
             recipeCollection = new RecipeDevCollection();
-            recipeHistoryFrenchLoaf = new RecipeDevHistory(frenchLoaf);
-            recipeHistoryPizza = new RecipeDevHistory(pizza);
-            recipeHistoryCinnamonRaisin = new RecipeDevHistory(cinnamonRaisin);
+            recipeHistoryFrenchLoaf = new NodeGraph(frenchLoaf);
+            recipeHistoryPizza = new NodeGraph(pizza);
+            recipeHistoryCinnamonRaisin = new NodeGraph(cinnamonRaisin);
             recipeHistoryPizza.commit(new BreadRecipe(350, 0.58));
             recipeHistoryPizza.commit(new BreadRecipe(350, 0.64));
             recipeCollection.add("French loaf", recipeHistoryFrenchLoaf);

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestBreadRecipe {
+public class TestBreadRecipe extends TestRecipe {
 
     private BreadRecipe frenchLoaf;
     private BreadRecipe pizza;
@@ -111,7 +111,7 @@ public class TestBreadRecipe {
         assertEquals(60, pizza.getPrepTime());
         assertEquals(6, pizza.getCookTime());
         assertEquals("pizza stone", pizza.getCookingVessel());
-
+        assertEquals(0, pizza.countAttempts());
     }
 
     @Test
@@ -143,10 +143,11 @@ public class TestBreadRecipe {
     public void HelperCheckBreadRecipeInitializedDoughWeight(BreadRecipe r, int doughWeight) {
         double expectedYield = r.getFlourFraction() + r.getWaterFraction() + r.getSaltFraction()
                 + r.getSugarFraction() + r.getFatFraction() + r.getYeastFraction();
-        ArrayList<String> ingredients = new ArrayList<String>();
-        ingredients.addAll(Arrays.asList("flour", "water", "salt", "sugar", "fat", "yeast"));
+        ArrayList<String> ingredients;
+        ingredients = new ArrayList<>(Arrays.asList("flour", "water", "salt", "sugar", "fat", "yeast"));
         int flourWeight = (int) (doughWeight / r.getYield());
-        ArrayList<Integer> weights = new ArrayList<Integer>(Arrays.asList(flourWeight, (int) (flourWeight * 0.66),
+        ArrayList<Integer> weights;
+        weights = new ArrayList<>(Arrays.asList(flourWeight, (int) (flourWeight * 0.66),
                 (int) (flourWeight * 0.02), 0, 0, (int) (flourWeight * 0.006)));
         assertEquals(1, r.getFlourFraction());
         assertEquals(0.66, r.getWaterFraction());
@@ -171,9 +172,10 @@ public class TestBreadRecipe {
         double expectedYield = r.getFlourFraction() + r.getWaterFraction() + r.getSaltFraction()
                 + r.getSugarFraction() + r.getFatFraction() + r.getYeastFraction();
         int expectedDoughWeight = 0;
-        ArrayList<String> ingredients = new ArrayList<String>();
-        ingredients.addAll(Arrays.asList("flour", "water", "salt", "sugar", "fat", "yeast"));
-        ArrayList<Integer> weights = new ArrayList<Integer>(Arrays.asList(flourWeight, (int) (flourWeight * hydration),
+        ArrayList<String> ingredients;
+        ingredients = new ArrayList<>(Arrays.asList("flour", "water", "salt", "sugar", "fat", "yeast"));
+        ArrayList<Integer> weights;
+        weights = new ArrayList<>(Arrays.asList(flourWeight, (int) (flourWeight * hydration),
                 (int) (flourWeight * 0.02), 0, 0, (int) (flourWeight * 0.006)));
         assertEquals(1, r.getFlourFraction());
         assertEquals(hydration, r.getWaterFraction());

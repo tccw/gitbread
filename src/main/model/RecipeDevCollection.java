@@ -19,17 +19,17 @@ Represents a collection/log of recipes histories, which is a LinkedList of past 
 
 public class RecipeDevCollection implements Saveable {
 
-    Map<String, RecipeDevHistory> collection;
+    Map<String, NodeGraph> collection;
 
     //EFFECTS: instantiates a new empty collection
     public RecipeDevCollection() {
-        collection = new HashMap<String, RecipeDevHistory>();
+        collection = new HashMap<>();
     }
 
     //EFFECTS: creates and adds a new recipe to the recipe collection
-    public void add(String title, RecipeDevHistory collection) {
-        this.collection.put(title, collection);
-        // create a new RecipeDevHistory "repository"
+    public void add(String title, NodeGraph recipeHistory) {
+        this.collection.put(title, recipeHistory);
+        // create a new NodeGraph "repository"
     }
 
     //EFFECTS: return the size of the recipe collection
@@ -49,7 +49,7 @@ public class RecipeDevCollection implements Saveable {
     }
 
     //EFFECTS: returns the recipe history associated with the given key
-    public RecipeDevHistory get(String key) {
+    public NodeGraph get(String key) {
         return this.collection.get(key);
     }
 
@@ -58,7 +58,7 @@ public class RecipeDevCollection implements Saveable {
     // foreach with a HashMap https://stackoverflow.com/questions/4234985/how-to-for-each-the-hashmap
     public String toString(boolean verbose) {
         StringBuilder result = new StringBuilder();
-        for (Map.Entry<String, RecipeDevHistory> entry : this.collection.entrySet()) {
+        for (Map.Entry<String, NodeGraph> entry : this.collection.entrySet()) {
             String title = entry.getKey();
             int numAttempts = entry.getValue().totalAttempts();
             int numChanges = entry.getValue().size() - 1;
@@ -87,11 +87,11 @@ public class RecipeDevCollection implements Saveable {
         return json;
     }
 
-    public void setCollection(Map<String, RecipeDevHistory> collection) {
+    public void setCollection(Map<String, NodeGraph> collection) {
         this.collection = collection;
     }
 
-    public Map<String, RecipeDevHistory> getCollection() {
+    public Map<String, NodeGraph> getCollection() {
         return collection;
     }
 
@@ -101,8 +101,8 @@ public class RecipeDevCollection implements Saveable {
         mapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, false);
         mapper.registerSubtypes(
                 RecipeDevCollection.class,
-                RecipeDevHistory.class,
-                Commit.class,
+                Node.class,
+                NodeGraph.class,
                 Recipe.class,
                 BreadRecipe.class,
                 Attempt.class,

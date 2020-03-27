@@ -1,5 +1,7 @@
 package persistence;
 
+import exceptions.BranchAlreadyExistsException;
+import exceptions.BranchDoesNotExistException;
 import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,20 +27,20 @@ class TestWriter {
     BreadRecipe frenchLoafTesting;
     BreadRecipe hearthLoaf;
     BreadRecipe hearthLoafTesting;
-    RecipeDevHistory frenchLoafHist;
-    RecipeDevHistory hearthLoafHist;
+    NodeGraph frenchLoafHist;
+    NodeGraph hearthLoafHist;
 
     @BeforeEach
     void setUp() {
         try {
             testWriter = new Writer(new File(TEST_DIRECTORY));
 
-            frenchLoaf = new BreadRecipe(1000);
-            frenchLoafTesting = new BreadRecipe(650, 0.72);
+            frenchLoaf = new BreadRecipe(650, 0.72);
+            frenchLoafTesting =  new BreadRecipe(1000);
             hearthLoaf = new BreadRecipe(375, 0.58);
             hearthLoafTesting = new BreadRecipe(450, 0.72);
-            frenchLoafHist = new RecipeDevHistory(frenchLoaf);
-            hearthLoafHist = new RecipeDevHistory(hearthLoaf);
+            frenchLoafHist = new NodeGraph(frenchLoaf);
+            hearthLoafHist = new NodeGraph(hearthLoaf);
             frenchLoafHist.commit(frenchLoafTesting);
             hearthLoafHist.commit(hearthLoafTesting);
 
@@ -74,13 +76,9 @@ class TestWriter {
             testWriter.close();
             //Try reading them back
             RecipeDevCollection loadedCollection = Reader.loadRecipeCollectionFile(new File(TEST_DIRECTORY));
-            assertEquals(frenchLoaf.toString(), loadedCollection.get("French loaf").getCommits().get(1)
+            assertEquals(frenchLoafTesting.toString(), collection.get("French loaf").getActiveNode()
                     .getRecipeVersion().toString());
-            assertEquals(frenchLoafTesting.toString(), collection.get("French loaf").getActiveCommit()
-                    .getRecipeVersion().toString());
-            assertEquals(hearthLoaf.toString(), loadedCollection.get("Hearth loaf").getCommits().get(1)
-                    .getRecipeVersion().toString());
-            assertEquals(hearthLoafTesting.toString(), collection.get("Hearth loaf").getActiveCommit()
+            assertEquals(hearthLoafTesting.toString(), collection.get("Hearth loaf").getActiveNode()
                     .getRecipeVersion().toString());
             assertEquals(2, loadedCollection.get("French loaf").totalAttempts());
             assertEquals(1, loadedCollection.get("French loaf").size() - 1);
@@ -88,6 +86,8 @@ class TestWriter {
             assertEquals(1, loadedCollection.get("Hearth loaf").size() - 1);
         } catch (IOException e) {
             fail("Unexpected IOException");
+        } catch (BranchDoesNotExistException e) {
+            fail();
         }
     }
 
@@ -95,8 +95,8 @@ class TestWriter {
     void TestWriteComplex() {
         try {
             RecipeDevCollection repo = new RecipeDevCollection();
-            RecipeDevHistory recipeVersionHistory;
-            recipeVersionHistory = new RecipeDevHistory(new BreadRecipe(1000));
+            NodeGraph recipeVersionHistory;
+            recipeVersionHistory = new NodeGraph(new BreadRecipe(1000));
             recipeVersionHistory.commit(new BreadRecipe(1000, 0.60));
             recipeVersionHistory.commit(new BreadRecipe(1000, 0.59));
             recipeVersionHistory.newBranch("high-hydration-test");
@@ -121,4 +121,5 @@ class TestWriter {
             fail();
         }
     }
+
 }
