@@ -132,6 +132,9 @@ public class NodeGraph implements Saveable {
                 accumulator.add(node);
                 node = node.getParents().get(0);
             }
+            if (node.isRoot()) {
+                attempts.addAll(node.getRecipeVersion().getAttemptHistory());
+            }
         }
         return attempts;
     }

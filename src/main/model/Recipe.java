@@ -69,7 +69,7 @@ public abstract class Recipe {
     public String[] splitInstructions() {
         // problem here is that String.split() splits around the RegEx match so the first element is an empty string
         // because the string starts with a RegEx match (i.e. "1.")
-        String temp = this.instructions.substring(1).trim(); // drop the "1." at the beginning of the instructions
+        String temp = this.instructions.substring(2).trim(); // drop the "1." at the beginning of the instructions
         return temp.split("\\d\\d?\\.");
     }
 

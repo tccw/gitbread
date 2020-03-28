@@ -67,9 +67,9 @@ public class GitBreadGUI extends Application {
     TabPane infoDisplay;
     TilePane tilePane;
     ScrollPane scrollPane;
+    Tab instructions;
     Tab attempts;
     Tab images;
-    Tab testInstructions;
     GridPane instructionsGridPane;
     TextArea attemptsTextArea;
     Label infoLabel;
@@ -517,16 +517,16 @@ public class GitBreadGUI extends Application {
         attemptsTextArea.setEditable(false);
         infoDisplay = new TabPane();
         infoDisplay.setMaxHeight(HEIGHT * 0.7);
-        testInstructions = new Tab("Instructions Buttons");
-        testInstructions.setClosable(false);
+        instructions = new Tab("Instructions");
+        instructions.setClosable(false);
         instructionsGridPane = new GridPane();
-        instructionsGridPane.setPadding(new Insets(0, 0, 0, 0));
+        instructionsGridPane.setPadding(new Insets(10));
         instructionsGridPane.setVgap(20);
         instructionsGridPane.setHgap(10);
         ScrollPane scrollPaneInstructions = new ScrollPane();
         scrollPaneInstructions.setFitToWidth(true);
         scrollPaneInstructions.setContent(instructionsGridPane);
-        testInstructions.setContent(scrollPaneInstructions);
+        instructions.setContent(scrollPaneInstructions);
         attempts = new Tab("Attempt Record");
         attempts.setClosable(false);
         attempts.setContent(attemptsTextArea);
@@ -534,7 +534,7 @@ public class GitBreadGUI extends Application {
         images = new Tab("Attempt Lookbook");
         images.setClosable(false);
         images.setContent(scrollPane);
-        infoDisplay.getTabs().addAll(testInstructions, attempts, images);
+        infoDisplay.getTabs().addAll(instructions, attempts, images);
 
     }
 
@@ -618,7 +618,6 @@ public class GitBreadGUI extends Application {
                 instructionsGridPane.add(toggleCheck, 0, i);
                 textFlow.getChildren().add(new Text(splitInstructions[i]));
                 instructionsGridPane.add(textFlow, 1, i);
-                System.out.println(instructionsGridPane.getScaleX());
             }
         }
     }
@@ -631,8 +630,7 @@ public class GitBreadGUI extends Application {
                 toggleCheck.setImage(TICK_MARK);
                 step.setOpacity(0.4);
             } else {
-                toggleCheck.setImage(new Image("file:./data/icons/buttons/numbertoggles/"
-                        + Integer.toString(loc) + ".png"));
+                toggleCheck.setImage(new Image("file:./data/icons/buttons/numbertoggles/" + loc + ".png"));
                 step.setOpacity(1.0);
             }
         });
