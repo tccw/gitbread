@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /*
@@ -66,12 +67,15 @@ public abstract class Recipe {
     public abstract List<String> toStringArray();
 
     public String[] splitInstructions() {
-        return this.instructions.split("\\d\\d?\\.");
+        // problem here is that String.split() splits around the RegEx match so the first element is an empty string
+        // because the string starts with a RegEx match (i.e. "1.")
+        String temp = this.instructions.substring(1).trim(); // drop the "1." at the beginning of the instructions
+        return temp.split("\\d\\d?\\.");
     }
 
     // setters
     public void setInstructions(String instructions) {
-        this.instructions = instructions;
+        this.instructions = instructions.trim();
     }
 
     public void setCookTime(int cookTime) {

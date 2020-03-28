@@ -26,8 +26,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.*;
-import org.fxmisc.richtext.InlineCssTextArea;
-import org.fxmisc.richtext.StyledTextArea;
 import persistence.Writer;
 import persistence.steganography.Steganos;
 
@@ -57,6 +55,7 @@ public class GitBreadGUI extends Application {
             "file:./data/icons/buttons/branchbysmashicons.png",
             "file:./data/icons/buttons/mergebysmashicons.png",
             "file:./data/icons/buttons/agronomy.png"};
+    private static final Image TICK_MARK = new Image("file:./data/icons/buttons/tickbythoseicons.png");
     private static final String DARK_CSS = "./ui/gitbreaddarkstyle.css";
     private static final String LIGHT_CSS = "./ui/gitbreadlightstyle.css";
     ToggleButton darkModeToggle;
@@ -68,11 +67,10 @@ public class GitBreadGUI extends Application {
     TabPane infoDisplay;
     TilePane tilePane;
     ScrollPane scrollPane;
-    Tab instructions;
     Tab attempts;
     Tab images;
     Tab testInstructions;
-    TextArea instructionsTextArea;
+    GridPane instructionsGridPane;
     TextArea attemptsTextArea;
     Label infoLabel;
 
@@ -501,7 +499,6 @@ public class GitBreadGUI extends Application {
         recipeListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 activeRecipeHistory = activeCollection.get(newValue);
-
                 updateAttemptModifiedLabel();
                 updateTextArea();
             }
@@ -515,17 +512,21 @@ public class GitBreadGUI extends Application {
 
     //https://stackoverflow.com/questions/4917326/how-to-iterate-over-the-files-of-a-certain-directory-in-java/4917347
     private void tabSetup() {
-        instructionsTextArea = new TextArea();
-        instructionsTextArea.setWrapText(true);
-        instructionsTextArea.setEditable(false);
         attemptsTextArea = new TextArea();
         attemptsTextArea.setWrapText(true);
         attemptsTextArea.setEditable(false);
         infoDisplay = new TabPane();
         infoDisplay.setMaxHeight(HEIGHT * 0.7);
-        instructions = new Tab("Instructions");
-        instructions.setClosable(false);
-        instructions.setContent(instructionsTextArea);
+        testInstructions = new Tab("Instructions Buttons");
+        testInstructions.setClosable(false);
+        instructionsGridPane = new GridPane();
+        instructionsGridPane.setPadding(new Insets(0, 0, 0, 0));
+        instructionsGridPane.setVgap(20);
+        instructionsGridPane.setHgap(10);
+        ScrollPane scrollPaneInstructions = new ScrollPane();
+        scrollPaneInstructions.setFitToWidth(true);
+        scrollPaneInstructions.setContent(instructionsGridPane);
+        testInstructions.setContent(scrollPaneInstructions);
         attempts = new Tab("Attempt Record");
         attempts.setClosable(false);
         attempts.setContent(attemptsTextArea);
@@ -533,52 +534,8 @@ public class GitBreadGUI extends Application {
         images = new Tab("Attempt Lookbook");
         images.setClosable(false);
         images.setContent(scrollPane);
-        infoDisplay.getTabs().addAll(instructions, attempts, images);
-        testInstructionsSetup();
-    }
+        infoDisplay.getTabs().addAll(testInstructions, attempts, images);
 
-    //TESTING display of instructions like Allrecipes
-    private void testInstructionsSetup() {
-        String sample = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut"
-                + " labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris "
-                + "nisi ut aliquip ex ea commodo consequat.";
-        testInstructions = new Tab("Instructions Buttons");
-        testInstructions.setClosable(false);
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setFitToWidth(true);
-        GridPane gridPane = new GridPane();
-        Image tick = new Image("file:./data/icons/buttons/tickbythoseicons.png");
-        gridPane.setPadding(new Insets(10));
-        gridPane.setVgap(10);
-        gridPane.setHgap(10);
-        String[] splitInstructions = this.activeRecipeHistory.getActiveNode().getRecipeVersion().splitInstructions();
-        for (int i = 0; i < 20; i++) {
-            gridPane.addRow(i);
-            InlineCssTextArea styledTextArea = new InlineCssTextArea();
-            TextFlow textFlow = new TextFlow();
-            ImageView toggleCheck = new ImageView(new Image("file:./data/icons/buttons/numbertoggles/" + (i + 1) + ".png"));
-            toggleCheck.setPickOnBounds(true);
-            int loc = i + 1;
-            toggleCheck.setOnMouseClicked(e -> {
-                if (!toggleCheck.getImage().equals(tick)) {
-                    toggleCheck.setImage(tick);
-                    textFlow.setOpacity(0.4);
-                } else {
-                    //TODO: figure out how to get the old image back when you toggle. Maybe setTag() and getTag()?
-                    // https://stackoverflow.com/questions/5291726/what-is-the-main-purpose-of-settag-gettag-methods-of-view
-                    toggleCheck.setImage(new Image("file:./data/icons/buttons/numbertoggles/"
-                            + Integer.toString(loc) + ".png"));
-                    textFlow.setOpacity(1.0);
-                }
-
-            });
-            gridPane.add(toggleCheck, 0, i);
-            textFlow.getChildren().add(new Text(splitInstructions[i]));
-            gridPane.add(textFlow, 1, i);
-        }
-        scrollPane.setContent(gridPane);
-        testInstructions.setContent(scrollPane);
-        infoDisplay.getTabs().add(testInstructions);
     }
 
     private void tileScrollPaneSetUp() {
@@ -602,16 +559,15 @@ public class GitBreadGUI extends Application {
                             new Image("file:" + attempt.getPhotoPath()));
                     imageView.setFitWidth(100);
                     imageView.setFitHeight(100);
-                    Tooltip.install(imageView, new Tooltip(HashCodeMaker.sha1(attempt.getRecipeVersion())));
+                    Tooltip.install(imageView, new Tooltip(HashCodeMaker.sha1(attempt
+                                                                              .getRecipeVersion()).substring(0,7)));
                     tilePane.getChildren().add(imageView);
                 }
             }
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-
     }
-
 
 //    private void updateAttemptLookBook(NodeGraph activeRecipeHistory) {
 //        tilePane.getChildren().clear();
@@ -634,10 +590,7 @@ public class GitBreadGUI extends Application {
 
     //EFFECTS: prints a history of the attempts of the CURRENT ACTIVE COMMIT along with any notes.
     private void updateTextArea() {
-        instructionsTextArea.setText(activeRecipeHistory
-                .getActiveNode()
-                .getRecipeVersion()
-                .toString());
+        updateInstructions();
         StringBuilder attemptsString = new StringBuilder();
         List<Attempt> attempts = activeRecipeHistory.getActiveNode().getRecipeVersion().getAttemptHistory();
         for (Attempt attempt : attempts) {
@@ -645,6 +598,46 @@ public class GitBreadGUI extends Application {
         }
         attemptsTextArea.setText(attemptsString.toString());
         updateAttemptLookBook(activeRecipeHistory);
+    }
+
+    //MODIFIES: this
+    //EFFECTS: creates
+    private void updateInstructions() {
+        instructionsGridPane.getChildren().clear();
+        boolean hasInstructions = !this.activeRecipeHistory
+                .getActiveNode().getRecipeVersion().getInstructions().isEmpty();
+        if (this.activeRecipeHistory != null && hasInstructions) {
+            String[] splitInstructions = this.activeRecipeHistory
+                    .getActiveNode().getRecipeVersion().splitInstructions();
+            for (int i = 0; i < splitInstructions.length; i++) {
+                instructionsGridPane.addRow(i);
+                TextFlow textFlow = new TextFlow();
+                ImageView toggleCheck = new ImageView(new Image("file:./data/icons/buttons/numbertoggles/"
+                        + (i + 1) + ".png"));
+                setToggleCheckListeners(toggleCheck, textFlow, i);
+                instructionsGridPane.add(toggleCheck, 0, i);
+                textFlow.getChildren().add(new Text(splitInstructions[i]));
+                instructionsGridPane.add(textFlow, 1, i);
+                System.out.println(instructionsGridPane.getScaleX());
+            }
+        }
+    }
+
+    private void setToggleCheckListeners(ImageView toggleCheck, TextFlow step, int i) {
+        toggleCheck.setPickOnBounds(true);
+        int loc = i + 1;
+        toggleCheck.setOnMouseClicked(e -> {
+            if (!toggleCheck.getImage().equals(TICK_MARK)) {
+                toggleCheck.setImage(TICK_MARK);
+                step.setOpacity(0.4);
+            } else {
+                toggleCheck.setImage(new Image("file:./data/icons/buttons/numbertoggles/"
+                        + Integer.toString(loc) + ".png"));
+                step.setOpacity(1.0);
+            }
+        });
+        toggleCheck.setOnMouseEntered(e -> toggleCheck.setOpacity(0.5));
+        toggleCheck.setOnMouseExited(e -> toggleCheck.setOpacity(1.0));
     }
 
     private FlowPane makeFlowPaneButtons(String[] urls) {
