@@ -173,15 +173,6 @@ public class BreadRecipe extends Recipe {
         return result.toString();
     }
 
-    @Override
-    public List<String> toStringArray() {
-        String[] splitList = this.instructions.split("\\d\\d?\\.");
-        ArrayList<String> result = new ArrayList<>(Arrays.asList(splitList));
-        return null; // stub
-    }
-
-
-
     //EFFECTS: format the bake notes for toString()
     private String toStringHelperBakeNotes() {
         return String.format("\nHydration: %1$d%%\n"

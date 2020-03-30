@@ -64,8 +64,6 @@ public abstract class Recipe {
     //EFFECTS: this
     public abstract String toString();
 
-    public abstract List<String> toStringArray();
-
     public String[] splitInstructions() {
         // problem here is that String.split() splits around the RegEx match so the first element is an empty string
         // because the string starts with a RegEx match (i.e. "1.")

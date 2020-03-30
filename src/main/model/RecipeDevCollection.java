@@ -19,7 +19,7 @@ Represents a collection/log of recipes histories, which is a LinkedList of past 
 
 public class RecipeDevCollection implements Saveable {
 
-    Map<String, NodeGraph> collection;
+    private Map<String, NodeGraph> collection;
 
     //EFFECTS: instantiates a new empty collection
     public RecipeDevCollection() {

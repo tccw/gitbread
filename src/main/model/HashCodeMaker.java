@@ -10,6 +10,7 @@ public class HashCodeMaker {
 
     //method take from here: http://oliviertech.com/java/generate-SHA1-hash-from-a-String/
     //EFFECTS: calculates a SHA-1 hashcode for version control
+    //TODO: pass this method the branch label as well
     @JsonProperty("recipe")
     public static String sha1(Recipe recipe) throws NoSuchAlgorithmException {
         String value = buildString(recipe);
@@ -27,6 +28,7 @@ public class HashCodeMaker {
     // or cook/prep time and cooking temperature are considered version changes.
     private static String buildString(Recipe recipe) {
         StringBuilder string = new StringBuilder();
+//        string.append(branch);
         string.append(recipe.getCookTemp());
         string.append(recipe.getCookTime());
         string.append(recipe.getPrepTime());

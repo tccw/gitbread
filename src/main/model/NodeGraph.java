@@ -61,6 +61,11 @@ public class NodeGraph implements Saveable {
         }
     }
 
+    //EFFECTS:
+//    public Node getBySHA(String sha1) {
+//        List<Node> accumulator
+//    }
+
     //MODIFIES: this
     //EFFECTS: merge the given branch into the current branch.
     //         Currently merging is only for a single user so there are no checks for merge conflicts.
@@ -98,7 +103,7 @@ public class NodeGraph implements Saveable {
             while (!node.isRoot()) {
                 // default behavior is to follow the first parent
                 path.addFirst(node);
-                node = node.getParents().get(0);
+                node = node.getParents().get(0); //TODO: make this a call to a function called .next()
             }
             path.addFirst(node);
             return path;
@@ -158,22 +163,8 @@ public class NodeGraph implements Saveable {
     }
 
     public String toJson() throws JsonProcessingException {
-        ObjectMapper mapper = JsonMapper.builder().build();
-        registerObjectMapper(mapper);
+        ObjectMapper mapper = ObjectMapperSingleton.getInstance();
         return mapper.writeValueAsString(this);
-    }
-
-    private static void registerObjectMapper(ObjectMapper mapper) {
-        mapper.registerModule(new JavaTimeModule());
-        mapper.configure(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS, false);
-        mapper.registerSubtypes(
-                RecipeDevCollection.class,
-                Node.class,
-                NodeGraph.class,
-                Recipe.class,
-                BreadRecipe.class,
-                Attempt.class,
-                Ingredient.class);
     }
 
     public Node getActiveNode() {

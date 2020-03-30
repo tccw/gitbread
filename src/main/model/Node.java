@@ -27,7 +27,7 @@ public class Node {
     public Node(Recipe version, String branchLabel) throws NoSuchAlgorithmException {
         this.recipeVersion = version;
         this.branchLabel = branchLabel;
-        this.sha1 = HashCodeMaker.sha1(this.recipeVersion);
+        this.sha1 = HashCodeMaker.sha1(this.getRecipeVersion());
         this.parents = new LinkedList<>(); // root is the only node with no parents (only empty node)
     }
 

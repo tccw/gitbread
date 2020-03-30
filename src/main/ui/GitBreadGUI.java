@@ -559,9 +559,21 @@ public class GitBreadGUI extends Application {
                             new Image("file:" + attempt.getPhotoPath()));
                     imageView.setFitWidth(100);
                     imageView.setFitHeight(100);
-                    Tooltip.install(imageView, new Tooltip(HashCodeMaker.sha1(attempt
-                                                                              .getRecipeVersion()).substring(0,7)));
+//                    Tooltip.install(imageView, new Tooltip(HashCodeMaker.sha1(attempt
+//                                                                              .getRecipeVersion()).substring(0,7)));
                     tilePane.getChildren().add(imageView);
+                    //TODO: set the ID to the hash for later search. Define on-click action to take the user to that
+                    // node. Issue arises here because I don't know the branch it came from.
+                    imageView.setId(HashCodeMaker.sha1(attempt.getRecipeVersion()));
+                    imageView.setOnMouseEntered(e -> {
+                        imageView.setOpacity(0.7);
+                    });
+                    imageView.setOnMouseExited(e -> {
+                        imageView.setOpacity(1.0);
+                    });
+                    imageView.setOnMouseClicked(e -> {
+
+                    });
                 }
             }
         } catch (NoSuchAlgorithmException e) {
