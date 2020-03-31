@@ -14,8 +14,8 @@ The attempt class represents an attempt at making a recipe. It records the date 
 bread preparation can be sensitive to humidity and temperature. It also sets a pointer to the bread recipe used
 and allows the user to enter in some notes about the results of the attempt.
  */
-
-public class Attempt {
+//https://stackoverflow.com/questions/5927109/sort-objects-in-arraylist-by-date
+public class Attempt implements Comparable<Attempt> {
     /*
     @JsonBackReference tells Jackson to not serialize this field but to reconstruct using the @JasonManagedReference
     annotated field on the other side of the circular reference/bidirectional relationship. In this case that reference
@@ -32,7 +32,6 @@ public class Attempt {
 
     //EFFECTS: Construct an attempt with the date, current weather, weather for the day,
     // given recipe, and empty resultNotes.
-
     public Attempt(Recipe recipeVersion, Clock clock) {
         this.recipeVersion = recipeVersion;
         this.dateTime = LocalDateTime.now(clock);
@@ -65,11 +64,18 @@ public class Attempt {
 
     // EFFECTS: returns the LocalDateTime field to an easy to read string
     private String datePretty() {
-        return getDateTime()
-                .format(DateTimeFormatter
-                        .ofLocalizedDate(FormatStyle.FULL)
-                        .withLocale(Locale.CANADA));
+        return getDateTime().format(DateTimeFormatter.ofPattern("EEEE, MMMM dd, YYYY - hh:mm a"));
     }
+
+    //EFFECTS: print the attempt to a readable format
+    public String print() {
+        return "\n----------- " + datePretty() + " -----------\n"
+                + "ATTEMPT NOTES :\n"
+                + resultNotes
+                + "\n"
+                + this.recipeVersion.toString();
+    }
+
 
     //EFFECTS:
     public boolean hasPhoto() {
@@ -98,15 +104,10 @@ public class Attempt {
         return photoPath;
     }
 
-    //    public String getWeather() {
-//        return weatherNow;
-//    }
-    public String print() {
-        return "\n----------- " + datePretty() + "-----------\n"
-                + "ATTEMPT NOTES :\n"
-                + resultNotes
-                + "\n"
-                + this.recipeVersion.toString();
-    }
 
+    //EFFECTS: Override compareTo in the Comparable<T> to allow sorting by date
+    @Override
+    public int compareTo(Attempt object) {
+        return getDateTime().compareTo(object.getDateTime());
+    }
 }

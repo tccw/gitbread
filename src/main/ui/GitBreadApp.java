@@ -3,6 +3,7 @@
 //import commandline.CommandParser;
 //import commandline.Option;
 //import commandline.Options;
+//import exceptions.BranchDoesNotExistException;
 //import model.*;
 //import persistence.Reader;
 //import persistence.Writer;
@@ -133,7 +134,7 @@
 //        }
 //        try {
 //            collection = Reader.loadRecipeCollectionFile(file);
-//        } catch (IOException e) {
+//        } catch (IOException | BranchDoesNotExistException e) {
 //            System.out.println(String.format("Couldn't load file %s", p.get("-fn")));
 //        }
 //    }
@@ -151,9 +152,9 @@
 //    private void doBreadScale(CommandParser p) {
 //        BreadRecipe recipe;
 //        if (p.containsFlag("-t")) {
-//            recipe = (BreadRecipe) collection.get(p.get("-t")).getActiveVersion();
+//            recipe = (BreadRecipe) collection.get(p.get("-t")).getActiveNode().getRecipeVersion();
 //        } else {
-//            recipe = (BreadRecipe) collection.get(p.get("-n")).getActiveVersion();
+//            recipe = (BreadRecipe) collection.get(p.get("-n")).getActiveNode().getRecipeVersion();
 //        }
 //        if (p.containsFlag("-dw")) {
 //            recipe.scaleByDoughWeight(Integer.parseInt(p.get("-dw")));

@@ -8,10 +8,17 @@ import java.util.List;
 
 public class Node {
     /*
-    Each node points to its parent node. Nodes can have multiple parents (branches that merge).
-    Only the root will have an empty parents list.
+    Each node points to its parent node. Nodes can have up to two parents (branches that merge).
+    Only the initial node will have an empty parents list.
     A node can be the parent of any number of nodes, but each node will only ever have a maximum of two parents
-    root<---node1<---node2<---node3
+                                        a<--a<--a
+                                       /          \
+                                  t<--t<--t        \
+                                 /                  \
+                    init<--m<--m<--m<--m<-----------m<--m<--m
+                                                    ^
+                                                    |
+                                               two parents
      */
 
     private Recipe recipeVersion;
@@ -27,13 +34,20 @@ public class Node {
     public Node(Recipe version, String branchLabel) throws NoSuchAlgorithmException {
         this.recipeVersion = version;
         this.branchLabel = branchLabel;
-        this.sha1 = HashCodeMaker.sha1(this.getRecipeVersion());
+        this.sha1 = HashCodeMaker.sha1(this);
         this.parents = new LinkedList<>(); // root is the only node with no parents (only empty node)
+    }
+
+    //REQUIRES: Should always be called in conjunction with isRoot(). This is similar to the hasNext() and next()
+    //          methods from Iterable.
+    //EFFECTS: returns the first parent of the Node for traversal
+    public Node firstParent() {
+        return this.getParents().get(0);
     }
 
     //EFFECTS: check if the Node is the initial (root) node
     @JsonIgnore
-    public boolean isRoot() {
+    public boolean isInit() {
         return this.parents.isEmpty();
     }
 
@@ -56,6 +70,7 @@ public class Node {
     public String getSha1() {
         return sha1;
     }
+
 
 //    public void setBranchLabel(String branchLabel) {
 //        this.branchLabel = branchLabel;

@@ -68,7 +68,7 @@ class TestAttempt {
     @Test
     void TestPrint() {
         String expected = "\n" +
-                "----------- Friday, February 14, 2020-----------\n" +
+                "----------- Friday, February 14, 2020 - 12:10 PM -----------\n" +
                 "ATTEMPT NOTES :\n" +
                 "\n" +
                 "Ingredients: \n" +
@@ -104,7 +104,7 @@ class TestAttempt {
     }
 
     private void HelperGetWeather() throws IOException {
-        ArrayList<String> apiKey = new ArrayList<String>(Files.readAllLines(Paths.get(path)));
+        ArrayList<String> apiKey = new ArrayList<>(Files.readAllLines(Paths.get(path)));
 
         ForecastRequest request = new ForecastRequestBuilder()
                 .key(new APIKey(apiKey.get(0)))

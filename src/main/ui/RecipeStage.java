@@ -122,6 +122,7 @@ public class RecipeStage {
         });
     }
 
+    //EFFECTS: gather all fields necessary to make a recipe, create the recipe and make a new commit
     private void makeCommit(boolean isNewRecipe) {
         BreadRecipe recipe = new BreadRecipe(1000);
         recipe.setWaterFraction(Double.parseDouble(fields[2].getText()) / 100);
@@ -145,6 +146,7 @@ public class RecipeStage {
         }
     }
 
+    //EFFECTS: return true if the text in a given field can be converted to a double
     private boolean isDouble(TextField input) {
         try {
             double field = Double.parseDouble(input.getText()); // if this line executes return true

@@ -33,9 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static persistence.Reader.*;
 
@@ -552,65 +550,35 @@ public class GitBreadGUI extends Application {
     //TODO: fix this to order attempts by date
     private void updateAttemptLookBook(NodeGraph activeRecipeHistory) {
         tilePane.getChildren().clear();
-        try {
-            for (Attempt attempt : activeRecipeHistory.getAttempts()) {
-                if (attempt.hasPhoto()) {
-                    ImageView imageView = new ImageView(
-                            new Image("file:" + attempt.getPhotoPath()));
-                    imageView.setFitWidth(100);
-                    imageView.setFitHeight(100);
-//                    Tooltip.install(imageView, new Tooltip(HashCodeMaker.sha1(attempt
-//                                                                              .getRecipeVersion()).substring(0,7)));
-                    tilePane.getChildren().add(imageView);
-                    //TODO: set the ID to the hash for later search. Define on-click action to take the user to that
-                    // node. Issue arises here because I don't know the branch it came from.
-                    imageView.setId(HashCodeMaker.sha1(attempt.getRecipeVersion()));
-                    imageView.setOnMouseEntered(e -> {
-                        imageView.setOpacity(0.7);
-                    });
-                    imageView.setOnMouseExited(e -> {
-                        imageView.setOpacity(1.0);
-                    });
-                    imageView.setOnMouseClicked(e -> {
-
-                    });
-                }
+        final int IMAGE_VIEW_SIZE = 150;
+        List<Attempt> attempts = activeRecipeHistory.getAttempts();
+        for (Attempt attempt : attempts) {
+            if (attempt.hasPhoto()) {
+                ImageView imageView = new ImageView(new Image("file:" + attempt.getPhotoPath()));
+                imageView.setFitWidth(IMAGE_VIEW_SIZE);
+                imageView.setFitHeight(IMAGE_VIEW_SIZE);
+                tilePane.getChildren().add(imageView);
+                Node nodeOfAttempt = activeRecipeHistory.getNodeOfAttempt(attempt);
+                imageView.setId(nodeOfAttempt.getSha1());
+                Tooltip.install(imageView,
+                        new Tooltip(nodeOfAttempt.getBranchLabel() + " " + imageView.getId().substring(0, 7)));
+                imageView.setOnMouseEntered(e -> imageView.setOpacity(0.7));
+                imageView.setOnMouseExited(e -> imageView.setOpacity(1.0));
+                imageView.setOnMouseClicked(e -> {
+                    //stub
+                    // will search for the node based on the imageView ID and pull up that recipe version
+                });
             }
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
         }
     }
-
-//    private void updateAttemptLookBook(NodeGraph activeRecipeHistory) {
-//        tilePane.getChildren().clear();
-//        for (Commit commit : activeRecipeHistory.getCommits()) {
-//            if (!commit.getRecipeVersion().getAttemptHistory().isEmpty()) {
-//                for (Attempt attempt : commit.getRecipeVersion().getAttemptHistory()) {
-//                    if (attempt.hasPhoto()) {
-//                        ImageView imageView = new ImageView(
-//                                new Image("file:" + attempt.getPhotoPath()));
-//                        imageView.setFitWidth(100);
-//                        imageView.setFitHeight(100);
-//                        Tooltip.install(imageView, new Tooltip(commit.getBranchLabel() + ": "
-//                                + commit.getSha1().substring(0, 10)));
-//                        tilePane.getChildren().add(imageView);
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     //EFFECTS: prints a history of the attempts of the CURRENT ACTIVE COMMIT along with any notes.
     private void updateTextArea() {
         updateInstructions();
-        StringBuilder attemptsString = new StringBuilder();
-        List<Attempt> attempts = activeRecipeHistory.getActiveNode().getRecipeVersion().getAttemptHistory();
-        for (Attempt attempt : attempts) {
-            attemptsString.append(attempt.print());
-        }
-        attemptsTextArea.setText(attemptsString.toString());
+        updateAttemptsTextArea();
         updateAttemptLookBook(activeRecipeHistory);
     }
+
 
     //MODIFIES: this
     //EFFECTS: creates
@@ -632,6 +600,16 @@ public class GitBreadGUI extends Application {
                 instructionsGridPane.add(textFlow, 1, i);
             }
         }
+    }
+
+    private void updateAttemptsTextArea() {
+        StringBuilder attemptsString = new StringBuilder();
+        List<Attempt> attempts = activeRecipeHistory.getAttempts();
+        for (Attempt attempt : attempts) {
+            attemptsString.append(attempt.print());
+        }
+        attemptsTextArea.clear();
+        attemptsTextArea.setText(attemptsString.toString());
     }
 
     private void setToggleCheckListeners(ImageView toggleCheck, TextFlow step, int i) {
