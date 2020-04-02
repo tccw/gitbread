@@ -62,7 +62,11 @@ public class NodeGraph implements Saveable {
 
     //EFFECTS:
 //    public Node getBySHA(String sha1) {
-//        List<Node> accumulator
+//        // stub
+//        for (String branch : this.mostRecentNodesByBranch.keySet()) {
+//            List<Node> nodes = this.getBranchHistory(branch);
+//
+//        }
 //    }
 
     //MODIFIES: this

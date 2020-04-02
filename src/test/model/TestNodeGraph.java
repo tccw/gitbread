@@ -34,7 +34,13 @@ public class TestNodeGraph {
                 graph.commit(new BreadRecipe(1000, 1 - i));
             }
             lastRecipe = new BreadRecipe(1000, 0.5);
-        } catch (NoSuchAlgorithmException e) {
+            graph.newBranch("new-branch");
+            graph.commit(new BreadRecipe(1200, .3));
+            graph.commit(new BreadRecipe(1200, 0.31));
+            graph.commit(new BreadRecipe(1200, 0.32));
+            graph.checkout("master");
+            graph.commit(new BreadRecipe(1000, 0.8));
+        } catch (NoSuchAlgorithmException | BranchDoesNotExistException | BranchAlreadyExistsException e) {
             fail();
         }
     }
@@ -42,17 +48,11 @@ public class TestNodeGraph {
     @Test
     void TestGetHistory() {
         try {
-            graph.newBranch("new-branch");
-            graph.commit(new BreadRecipe(1200, .3));
-            graph.commit(new BreadRecipe(1200, 0.31));
-            graph.commit(new BreadRecipe(1200, 0.32));
-            graph.checkout("master");
-            graph.commit(new BreadRecipe(1000, 0.8));
             List<Node> historyMaster = graph.getBranchHistory("master");
             List<Node> historyNewBranch = graph.getBranchHistory("new-branch");
             assertEquals(2, graph.getBranches().size());
             assertEquals(7, historyMaster.size());
-        } catch (NoSuchAlgorithmException | BranchAlreadyExistsException | BranchDoesNotExistException e) {
+        } catch (BranchDoesNotExistException e) {
             fail();
         }
     }
@@ -106,6 +106,16 @@ public class TestNodeGraph {
     }
 
     @Test
+    void TestBranchCheckout() {
+        try {
+            graph.checkout("new-branch");
+            assertEquals("new-branch", graph.getCurrentBranch());
+        } catch (BranchDoesNotExistException e) {
+            fail();
+        }
+    }
+
+    @Test
     void TestBranchAlreadyExistsNewBranch() {
         try {
             graph.newBranch("master");
@@ -119,7 +129,7 @@ public class TestNodeGraph {
     void TestCreateNewBranchNoCommit() {
         try {
             graph.newBranch("butter-biscuits");
-            assertEquals(1, graph.getMostRecentNodesByBranch().size());
+            assertEquals(2, graph.getMostRecentNodesByBranch().size());
             assertEquals("butter-biscuits", graph.getCurrentBranch());
         } catch (Exception e) {
             fail();
@@ -172,11 +182,28 @@ public class TestNodeGraph {
             List<Node> fullBranchHistory = graph.getBranchHistory("master");
             List<Node> partialBranchHistory = graph.getNodeHistory(fullBranchHistory.get(3));
             List<Node> root = graph.getNodeHistory(fullBranchHistory.get(0));
-            assertEquals(6, fullBranchHistory.size());
+            assertEquals(7, fullBranchHistory.size());
             assertEquals(4, partialBranchHistory.size());
             assertNull(root);
         } catch (BranchDoesNotExistException e) {
             fail();
+        }
+    }
+
+    @Test
+    void TestGetNodeOfAttempt() {
+        try{
+            NodeGraph complexGraph = HelperComplexGraph();
+            List<Attempt> attempts = complexGraph.getAttempts();
+            Attempt attempt = attempts.get(0);
+            Node node = complexGraph.getNodeOfAttempt(attempt);
+            assertEquals(688, node.getRecipeVersion().getIngredientWeight("flour"));
+        } catch (NoSuchAlgorithmException e) {
+            fail("NoSuchAlgorithmException");
+        } catch (BranchAlreadyExistsException e) {
+            fail("BranchAlreadyExistsException");
+        } catch (BranchDoesNotExistException e) {
+            fail("BranchDoesNotExistException");
         }
     }
 

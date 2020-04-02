@@ -71,17 +71,4 @@ public class Node {
         return sha1;
     }
 
-
-//    public void setBranchLabel(String branchLabel) {
-//        this.branchLabel = branchLabel;
-//    }
-
-//    public void setRecipeVersion(Recipe recipeVersion) {
-//        this.recipeVersion = recipeVersion;
-//    }
-
-//    public void setSha1(String sha1) {
-//        this.sha1 = sha1;
-//    }
-
 }

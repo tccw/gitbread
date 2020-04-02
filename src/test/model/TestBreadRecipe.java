@@ -115,6 +115,20 @@ public class TestBreadRecipe extends TestRecipe {
     }
 
     @Test
+    void TestSplitInstructions() {
+        String[] splitInstructions = frenchLoaf.splitInstructions();
+        String[] expected = new String[]{"Mix all ingredients ",
+                 " Knead dough until smooth ",
+                 " Let rise in oiled bowl for 1 hour ",
+                 " Knock back, shape, and let rise for 45 minutes on baking pan lightly covered ",
+                 " Bake 30 minutes at 425F"};
+        for (int i = 0; i < splitInstructions.length; i++) {
+            assertEquals(expected[i], splitInstructions[i]);
+        }
+
+    }
+
+    @Test
     public void TestToString() {
         String expected = "Ingredients: \n" +
                 "   - Flour, 593g\n" +

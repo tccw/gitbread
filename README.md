@@ -64,16 +64,21 @@ These are thrown in the commit(), merge(), newBranch(), checkout(), and getBranc
 
 Task 3: 
 1.  Every time I need an ObjectMapper for reading or creating JSON strings, I have to create a new mapper and register all 
-the classes it needs to know about in my project to properly serialize and deserialize objects. This is a coupling issue 
-between the different classes that access the Object mapper.**Implemented ObjectMapperSingleton as a different class so 
+the classes it needs to know about in my project to properly serialize and deserialize objects. This was a coupling and
+ cohesion issue. Coupling because any time an ObjectMapper is needed that class also has to run the same class registration
+ module for serializing/deserializing properly. Any time a new class was added I had to go and change the 4-5 ObjectMapper
+ registration methods in different classes. Cohesion because each class which saved data was also managing an ObjectMapper. **Implemented ObjectMapperSingleton as a different class so 
 that Jackson's ObjectMapper could implement the Singleton pattern. This allowed for replacing a lot of duplicated code in the 
 NodeGraph and Reader classes.**
+
 2. The NodeGraph class searches by default down the first parent (0th element of the parent list). This means that the 
 NodeGraph class needs to know that Node has a parent list that has to be indexed into with an integer, which is a coupling issue.
 **I refactored this class so that Node has a method called firstParent() which returns the first parent of the given Node.
 This eliminates the need for NodeGraph to know anything about the concrete implementation of Node.**
+
 3. My GUI setup and logic are in the same class together. This is a cohesion problem because my GUI class is managing 
 both the look of the application and the logic behind the buttons/fields.
+
 ### Other refactoring
 - Changed from a 1D linked-list to a graph structure for branching. Each node points backwards to a maximum of two
  parents, but can be the parent of an arbitrary number of nodes.

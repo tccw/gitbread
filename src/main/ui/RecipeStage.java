@@ -17,6 +17,12 @@ import model.RecipeDevCollection;
 import java.security.NoSuchAlgorithmException;
 
 public class RecipeStage {
+    private static final String PROMPT_TEXT = "Instruction entry format: \r"
+                                            + "\r"
+                                            + "1. First instruction\r"
+                                            + "2. Second instruction\r"
+                                            + "3. Third instruction\r"
+                                            + "etc.";
     private static final int WIDTH = 600;
     private static final int HEIGHT = 700;
     private Button add;
@@ -56,6 +62,7 @@ public class RecipeStage {
         buttonArea = new VBox();
         instructions = new TextArea();
         instructions.setWrapText(true);
+        instructions.setPromptText(PROMPT_TEXT);
     }
 
     private void elementSetup(boolean isNewRecipe) {
