@@ -80,8 +80,8 @@ This eliminates the need for NodeGraph to know anything about the concrete imple
 both the look of the application and the logic behind the buttons/fields.
 
 ### Other refactoring
-- Changed from a 1D linked-list to a graph structure for branching. Each node points backwards to a maximum of two
- parents, but can be the parent of an arbitrary number of nodes.
+- Changed from a 1D linked-list to a graph structure for branching. Each node points backwards to an arbitrary number of
+ parents, and can be the parent of an arbitrary number of nodes.
 ---
     		PREVIOUS DESIGN:    m<--m<--m<--t<--t<--m<--m<--a<--t<--a<--a<--m<--m<--m
     

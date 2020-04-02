@@ -8,9 +8,9 @@ import java.util.List;
 
 public class Node {
     /*
-    Each node points to its parent node. Nodes can have up to two parents (branches that merge).
+    Each node points to its parent node. Nodes will normally have at most of two parents (branches that merge) but
+    can technically have an arbitrary number of parent nodes.
     Only the initial node will have an empty parents list.
-    A node can be the parent of any number of nodes, but each node will only ever have a maximum of two parents
                                         a<--a<--a
                                        /          \
                                   t<--t<--t        \
