@@ -20,6 +20,8 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -31,9 +33,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static persistence.Reader.*;
 
@@ -53,6 +53,7 @@ public class GitBreadGUI extends Application {
             "file:./data/icons/buttons/branchbysmashicons.png",
             "file:./data/icons/buttons/mergebysmashicons.png",
             "file:./data/icons/buttons/agronomy.png"};
+    private static final Image TICK_MARK = new Image("file:./data/icons/buttons/tickbythoseicons.png");
     private static final String DARK_CSS = "./ui/gitbreaddarkstyle.css";
     private static final String LIGHT_CSS = "./ui/gitbreadlightstyle.css";
     ToggleButton darkModeToggle;
@@ -67,7 +68,7 @@ public class GitBreadGUI extends Application {
     Tab instructions;
     Tab attempts;
     Tab images;
-    TextArea instructionsTextArea;
+    GridPane instructionsGridPane;
     TextArea attemptsTextArea;
     Label infoLabel;
 
@@ -496,7 +497,6 @@ public class GitBreadGUI extends Application {
         recipeListView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 activeRecipeHistory = activeCollection.get(newValue);
-
                 updateAttemptModifiedLabel();
                 updateTextArea();
             }
@@ -510,9 +510,6 @@ public class GitBreadGUI extends Application {
 
     //https://stackoverflow.com/questions/4917326/how-to-iterate-over-the-files-of-a-certain-directory-in-java/4917347
     private void tabSetup() {
-        instructionsTextArea = new TextArea();
-        instructionsTextArea.setWrapText(true);
-        instructionsTextArea.setEditable(false);
         attemptsTextArea = new TextArea();
         attemptsTextArea.setWrapText(true);
         attemptsTextArea.setEditable(false);
@@ -520,7 +517,14 @@ public class GitBreadGUI extends Application {
         infoDisplay.setMaxHeight(HEIGHT * 0.7);
         instructions = new Tab("Instructions");
         instructions.setClosable(false);
-        instructions.setContent(instructionsTextArea);
+        instructionsGridPane = new GridPane();
+        instructionsGridPane.setPadding(new Insets(10));
+        instructionsGridPane.setVgap(20);
+        instructionsGridPane.setHgap(10);
+        ScrollPane scrollPaneInstructions = new ScrollPane();
+        scrollPaneInstructions.setFitToWidth(true);
+        scrollPaneInstructions.setContent(instructionsGridPane);
+        instructions.setContent(scrollPaneInstructions);
         attempts = new Tab("Attempt Record");
         attempts.setClosable(false);
         attempts.setContent(attemptsTextArea);
@@ -529,6 +533,7 @@ public class GitBreadGUI extends Application {
         images.setClosable(false);
         images.setContent(scrollPane);
         infoDisplay.getTabs().addAll(instructions, attempts, images);
+
     }
 
     private void tileScrollPaneSetUp() {
@@ -545,56 +550,82 @@ public class GitBreadGUI extends Application {
     //TODO: fix this to order attempts by date
     private void updateAttemptLookBook(NodeGraph activeRecipeHistory) {
         tilePane.getChildren().clear();
-        try {
-            for (Attempt attempt : activeRecipeHistory.getAttempts()) {
-                if (attempt.hasPhoto()) {
-                    ImageView imageView = new ImageView(
-                            new Image("file:" + attempt.getPhotoPath()));
-                    imageView.setFitWidth(100);
-                    imageView.setFitHeight(100);
-                    Tooltip.install(imageView, new Tooltip(HashCodeMaker.sha1(attempt.getRecipeVersion())));
-                    tilePane.getChildren().add(imageView);
-                }
+        final int IMAGE_VIEW_SIZE = 150;
+        List<Attempt> attempts = activeRecipeHistory.getAttempts();
+        for (Attempt attempt : attempts) {
+            if (attempt.hasPhoto()) {
+                ImageView imageView = new ImageView(new Image("file:" + attempt.getPhotoPath()));
+                imageView.setFitWidth(IMAGE_VIEW_SIZE);
+                imageView.setFitHeight(IMAGE_VIEW_SIZE);
+                tilePane.getChildren().add(imageView);
+                Node nodeOfAttempt = activeRecipeHistory.getNodeOfAttempt(attempt);
+                imageView.setId(nodeOfAttempt.getSha1());
+                Tooltip.install(imageView,
+                        new Tooltip(nodeOfAttempt.getBranchLabel() + " " + imageView.getId().substring(0, 7)));
+                imageView.setOnMouseEntered(e -> imageView.setOpacity(0.7));
+                imageView.setOnMouseExited(e -> imageView.setOpacity(1.0));
+                imageView.setOnMouseClicked(e -> {
+                    //stub
+                    // will search for the node based on the imageView ID and pull up that recipe version
+                });
             }
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
         }
-
     }
-
-
-//    private void updateAttemptLookBook(NodeGraph activeRecipeHistory) {
-//        tilePane.getChildren().clear();
-//        for (Commit commit : activeRecipeHistory.getCommits()) {
-//            if (!commit.getRecipeVersion().getAttemptHistory().isEmpty()) {
-//                for (Attempt attempt : commit.getRecipeVersion().getAttemptHistory()) {
-//                    if (attempt.hasPhoto()) {
-//                        ImageView imageView = new ImageView(
-//                                new Image("file:" + attempt.getPhotoPath()));
-//                        imageView.setFitWidth(100);
-//                        imageView.setFitHeight(100);
-//                        Tooltip.install(imageView, new Tooltip(commit.getBranchLabel() + ": "
-//                                + commit.getSha1().substring(0, 10)));
-//                        tilePane.getChildren().add(imageView);
-//                    }
-//                }
-//            }
-//        }
-//    }
 
     //EFFECTS: prints a history of the attempts of the CURRENT ACTIVE COMMIT along with any notes.
     private void updateTextArea() {
-        instructionsTextArea.setText(activeRecipeHistory
-                .getActiveNode()
-                .getRecipeVersion()
-                .toString());
+        updateInstructions();
+        updateAttemptsTextArea();
+        updateAttemptLookBook(activeRecipeHistory);
+    }
+
+
+    //MODIFIES: this
+    //EFFECTS: creates
+    private void updateInstructions() {
+        instructionsGridPane.getChildren().clear();
+        boolean hasInstructions = !this.activeRecipeHistory
+                .getActiveNode().getRecipeVersion().getInstructions().isEmpty();
+        if (this.activeRecipeHistory != null && hasInstructions) {
+            String[] splitInstructions = this.activeRecipeHistory
+                    .getActiveNode().getRecipeVersion().splitInstructions();
+            for (int i = 0; i < splitInstructions.length; i++) {
+                instructionsGridPane.addRow(i);
+                TextFlow textFlow = new TextFlow();
+                ImageView toggleCheck = new ImageView(new Image("file:./data/icons/buttons/numbertoggles/"
+                        + (i + 1) + ".png"));
+                setToggleCheckListeners(toggleCheck, textFlow, i);
+                instructionsGridPane.add(toggleCheck, 0, i);
+                textFlow.getChildren().add(new Text(splitInstructions[i]));
+                instructionsGridPane.add(textFlow, 1, i);
+            }
+        }
+    }
+
+    private void updateAttemptsTextArea() {
         StringBuilder attemptsString = new StringBuilder();
-        List<Attempt> attempts = activeRecipeHistory.getActiveNode().getRecipeVersion().getAttemptHistory();
+        List<Attempt> attempts = activeRecipeHistory.getAttempts();
         for (Attempt attempt : attempts) {
             attemptsString.append(attempt.print());
         }
+        attemptsTextArea.clear();
         attemptsTextArea.setText(attemptsString.toString());
-        updateAttemptLookBook(activeRecipeHistory);
+    }
+
+    private void setToggleCheckListeners(ImageView toggleCheck, TextFlow step, int i) {
+        toggleCheck.setPickOnBounds(true);
+        int loc = i + 1;
+        toggleCheck.setOnMouseClicked(e -> {
+            if (!toggleCheck.getImage().equals(TICK_MARK)) {
+                toggleCheck.setImage(TICK_MARK);
+                step.setOpacity(0.4);
+            } else {
+                toggleCheck.setImage(new Image("file:./data/icons/buttons/numbertoggles/" + loc + ".png"));
+                step.setOpacity(1.0);
+            }
+        });
+        toggleCheck.setOnMouseEntered(e -> toggleCheck.setOpacity(0.5));
+        toggleCheck.setOnMouseExited(e -> toggleCheck.setOpacity(1.0));
     }
 
     private FlowPane makeFlowPaneButtons(String[] urls) {

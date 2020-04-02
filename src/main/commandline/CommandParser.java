@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CommandParser {
-    String command;
-    Map<String, String> parsedOptions;
+    private String command;
+    private Map<String, String> parsedOptions;
 
     //EFFECTS: creates a new parser
     public CommandParser() {
-        this.parsedOptions = new HashMap<String, String>();
+        this.parsedOptions = new HashMap<>();
         command = null;
     }
 

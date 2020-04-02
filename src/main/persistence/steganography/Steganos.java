@@ -16,7 +16,7 @@ stack-overflow posts as well as the following discussion on dream-to-code:
                         https://www.dreamincode.net/forums/topic/27950-steganography/
  */
 public class Steganos {
-    private static final int OFFSET = 40; // using 32 bits to store the length of the embedded message
+    private static final int OFFSET = 40; // firs 8 bits stores Recipe/Collection flag, 32 bits stores message length
     private ByteArrayOutputStream outputStream;
     private ByteArrayInputStream inputStream;
     private BufferedImage image;
