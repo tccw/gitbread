@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
@@ -249,9 +250,12 @@ public class GitBreadGUI extends Application {
         MenuItem removeRecipe = new MenuItem();
         removeRecipe.textProperty().bind(Bindings.format("remove", cell.itemProperty()));
         removeRecipe.setOnAction(e -> {
-            activeCollection.remove(cell.getItem());
-            addItemsListView();
-            recipeListView.refresh();
+            boolean toRemove = ConfirmStage.display("Remove this recipe history?", "Remove Recipe Confirmation");
+            if (toRemove) {
+                activeCollection.remove(cell.getItem());
+                addItemsListView();
+                recipeListView.refresh();
+            }
         });
         buildBranchList(cell, branches, switchBranch);
 
@@ -268,7 +272,9 @@ public class GitBreadGUI extends Application {
         ToggleGroup branchToggle = new ToggleGroup();
         for (String s : branches) {
             RadioMenuItem child = new RadioMenuItem(s);
-            if (s.equals("master")) {
+            if (activeRecipeHistory != null && s.equals(activeRecipeHistory.getCurrentBranch())) {
+                child.setSelected(true);
+            } else if (s.equals("master")) {
                 child.setSelected(true);
             }
             child.setToggleGroup(branchToggle);
@@ -336,6 +342,7 @@ public class GitBreadGUI extends Application {
         stage.display(activeCollection, activeRecipeHistory, true);
         addItemsListView();
         recipeListView.refresh();
+        //TODO: fix this to select from the listview the item just modified or added
     }
 
     private void saveCollectionAsImage(Stage primaryStage) {

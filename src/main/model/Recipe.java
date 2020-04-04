@@ -1,22 +1,25 @@
 package model;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.UUID;
 
 /*
 This is the abstract representation of a Recipe with common fields and methods.
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "className")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public abstract class Recipe {
 
     protected ArrayList<Ingredient> ingredientList = new ArrayList<>();
     protected String instructions;
+    @JsonSerialize
+    @JsonDeserialize
+    protected UUID id; // ID for proper object deserialization
     /*
      @JsonManagedReference tells Jackson to serialize this part of the circular reference and use it during
      deserialization to reconstruct the other side of the circular reference/bidirectional relationship. In this case,
@@ -29,9 +32,14 @@ public abstract class Recipe {
     protected int prepTime; // in minutes
     protected int cookTemp; // in F
 
+    //EFFECTS: Generates an unique ID for the recipe so that Jackson can deserialize the different references properly
+    public Recipe() {
+        this.id = UUID.randomUUID();
+    }
+
     //EFFECTS: Counts the number of elements in attemptHistory
     protected int countAttempts() {
-        return attemptHistory.size();
+        return this.attemptHistory.size();
     }
 
     //MODIFIES: this
