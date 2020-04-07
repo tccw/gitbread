@@ -1,11 +1,8 @@
 package model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -169,6 +166,7 @@ public class BreadRecipe extends Recipe {
                 result.append(String.format("   - %1$s, %2$dg\n", name, i.getWeight()));
             }
         }
+        result.append("\n");
         result.append(toStringHelperBakeNotes());
         result.append(toStringHelperInstructions());
 
@@ -177,7 +175,7 @@ public class BreadRecipe extends Recipe {
 
     //EFFECTS: format the bake notes for toString()
     private String toStringHelperBakeNotes() {
-        return String.format("\nHydration: %1$d%%\n"
+        return String.format("Hydration: %1$d%%\n"
                         + "Prep: %2$d hr %3$d min\n"
                         + "Bake: %4$d hr %5$d min\n"
                         + "Total: %6$d hr %7$d min\n"
@@ -198,6 +196,29 @@ public class BreadRecipe extends Recipe {
             result.append(String.format("    %d." + splitList[i] + "\n", i));
         }
         return result.toString();
+    }
+
+    @Override
+    public List<String> splitInstructions() {
+        List<String> stringList = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Ingredient i : ingredientList) {
+            if (i.getWeight() > 0) {
+                String name = i.getType().substring(0, 1).toUpperCase() + i.getType().substring(1).toLowerCase();
+                stringBuilder.append(String.format("\u2022 %1$s: %2$dg\n", name, i.getWeight()));
+            }
+        }
+        stringList.add(stringBuilder.toString());
+        String notes = this.toStringHelperBakeNotes();//.split("\\n");
+        // problem here is that String.split() splits around the RegEx match so the first element is an empty string
+        // because the string starts with a RegEx match (i.e. "1.")
+        String temp = this.instructions.substring(2).trim(); // drop the "1." at the beginning of the instructions
+        String[] instructions = temp.split("\\d\\d?\\.");
+        stringList.add(notes);
+        stringList.add("INSTRUCTIONS_SEPARATOR");
+        stringList.addAll(Arrays.asList(instructions));
+
+        return stringList;
     }
 
     // getters
@@ -270,8 +291,6 @@ public class BreadRecipe extends Recipe {
     public void setCookingVessel(String cookingVessel) {
         this.cookingVessel = cookingVessel;
     }
-
-
 
 
 }

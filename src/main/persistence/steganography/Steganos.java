@@ -1,13 +1,20 @@
 package persistence.steganography;
 
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritablePixelFormat;
+
 import javax.imageio.ImageIO;
 import javax.naming.SizeLimitExceededException;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
+import java.awt.*;
+import java.awt.image.*;
 import java.io.*;
 import java.net.URL;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 
 /*
 Steganography class for construction shareable recipes and recipe collections. Uses LSB (Least Significant Bit)
@@ -39,7 +46,8 @@ public class Steganos {
 
     //MODIFIES: this
     //EFFECTS: encode the PNG byte array.
-    public void encode(String message, File image, boolean encodeCollection) throws IOException {
+    public void encode(String message, File image, boolean encodeCollection)
+            throws IOException, SizeLimitExceededException {
         this.encodeCollection = encodeCollection;
         toByteMessage(message);
         toByteImageOriginal(image);
@@ -67,7 +75,7 @@ public class Steganos {
 
     //EFFECTS: embed the message within the original image byte array. Indicate if the image is a RecipeDevHistory or
     //         a RecipeDevCollection using 99 for collection, and 104 for history.
-    private void writeMessageToImage() {
+    private void writeMessageToImage() throws SizeLimitExceededException {
         int offset = OFFSET;
         encodedPixels = originalPixels;
         byte[] length = intToByteArray(this.byteMessage.length);
@@ -91,10 +99,41 @@ public class Steganos {
 
     //EFFECTS: decode a byte array
     /*
-    The byte array length is in the first 4 bytes of the message so decode() can know how long the message is.
+    The first five bytes of the array contain a one-byte type flag and a four-byte message length flag
      */
     public String decode(File file) throws IOException {
         byte[] byteImage = imageToByteArray(file);
+        return getStringFromBytes(byteImage);
+    }
+
+    //EFFECTS: Overloaded method for directly taking images rather than file locations
+    //https://stackoverflow.com/questions/24038524/how-to-get-byte-from-javafx-imageview
+    //https://stackoverflow.com/questions/32028783/how-do-i-use-pixelreaders-getpixels-method
+    //https://www.reddit.com/r/javahelp/comments/9njz5k/easiest_way_to_convert_a_javafxsceneimageimage_to/
+    //http://www.java-gaming.org/index.php/topic,31609
+    //https://www.powerbot.org/community/topic/963142-looking-for-a-faster-way-to-convert-bufferedimage-to-byte-array/
+    //https://stackoverflow.com/questions/3312853/how-does-bitshifting-work-in-java
+    //https://stackoverflow.com/questions/29226704/image-getraster-getdatabuffer-returns-array-of-negative-values
+    //https://stackoverflow.com/questions/27054672/writing-javafx-scene-image-image-to-file
+    //https://stackoverflow.com/questions/27457517/how-to-change-the-image-type-of-a-bufferedimage-which-is-loaded-from-file ****
+    /*
+    TODO: Fix this to allow drag and drop images from browser.
+    The problem here is that SwingFXUtils.fromFXImage returns a buffered image with raster data in a DataBufferInt
+    but I need a DataBufferByte and they cannot be cast to each other.
+     */
+    public String decode(Image image) {
+        // HACKY SOLUTION TODO: solve this in a less hacky way, perhaps without the use of Swing
+        int width = (int) image.getWidth();
+        int height = (int) image.getHeight();
+        BufferedImage buffImageFinal = new BufferedImage(width, height, 6);
+        BufferedImage buffImageTemp = SwingFXUtils.fromFXImage(image, null);
+        Graphics2D g = buffImageFinal.createGraphics();
+        g.drawImage(buffImageTemp, 0, 0, width, height, null);
+        g.dispose();
+        return getStringFromBytes(((DataBufferByte) buffImageFinal.getRaster().getDataBuffer()).getData());
+    }
+
+    private String getStringFromBytes(byte[] byteImage) {
         int offset = OFFSET;
         byte[] classType = new byte[1];
         byte[] byteLength = new byte[4];
@@ -102,6 +141,7 @@ public class Steganos {
         System.arraycopy(byteImage, 1, byteLength, 0, (offset / 8) - 1);
         int length = byteArrayToInt(byteLength);
         byte[] result = new byte[length];
+
         for (int b = 0; b < length; ++b) {
             for (int i = 0; i < 8; ++i, ++offset) {
                 result[b] = (byte) ((result[b] << 1) | (byteImage[offset] & 1));
@@ -109,9 +149,31 @@ public class Steganos {
         }
 
         this.decodedCollection = classType[0] == (byte) 99;
-
         return new String(result);
     }
+
+
+    //EFFECTS: converts an int[] to a byte[]
+    /*
+    TODO: figure out how each DataBufferInt entry represents the underlying bits/bytes.
+    I'm still not understanding something about how DataBufferInt is storing data. The first two entries give me the
+    correct first value for (number >> 24) & 0xFF, but the other three bytes are all wrong.
+     */
+    private byte[] toDataBufferByte(DataBuffer db, int width, int height) {
+        byte[] result = new byte[width * height * 4];
+        int[] dbIntArray = ((DataBufferInt) db).getData();
+        for (int i = 0; i < dbIntArray.length; i += 4) {
+            result[i] = (byte) ((dbIntArray[i] >> 24) & 0xFF);
+            result[i + 1] = (byte) ((dbIntArray[i] >> 16) & 0xFF);
+            result[i + 2] = (byte) ((dbIntArray[i] >> 8) & 0xFF);
+            result[i + 3] = (byte) (dbIntArray[i] & 0xFF);
+//            for (int j = 3; j >= 0; j--) {
+//                result[i + j] = (byte)((dbIntArray[i] & (8 * j)) >> 0xFF);
+//            }
+        }
+        return result; //stub
+    }
+
 
     //EFFECTS: convert the image linked in the given file to a byte array.
     private byte[] imageToByteArray(File file) throws IOException {
@@ -135,18 +197,18 @@ public class Steganos {
 
     //https://stackoverflow.com/questions/5399798/byte-array-and-int-conversion-in-java/11419863
     //EFFECTS: converts an integer into a 4-byte byte array.
-    private byte[] intToByteArray(int i) {
-//        if (i < 0) {
-//            throw new IllegalArgumentException("Message length is negative!");
-//        } else if (i == 0) {
-//            throw new IllegalArgumentException("Cannot encode a collection with length zero.");
-//        }
-//        if (i > Math.pow(2,24)) {
-//            throw new SizeLimitExceededException();
-//        }
-        byte byte3 = (byte) ((i & 0xFF000000) >> 24);
-        byte byte2 = (byte) ((i & 0x00FF0000) >> 16);
-        byte byte1 = (byte) ((i & 0x0000FF00) >> 8);
+    private byte[] intToByteArray(int i) throws SizeLimitExceededException {
+        if (i < 0) {
+            throw new IllegalArgumentException("Message length is negative!");
+        } else if (i == 0) {
+            throw new IllegalArgumentException("Cannot encode a collection with length zero.");
+        }
+        if (i > Math.pow(2, 24)) { // greater than the largest positive int we can store in 3 bytes
+            throw new SizeLimitExceededException();
+        }
+        byte byte3 = (byte) ((i & 0xFF000000) >> 24); // discard the rightmost 24 bits and keep the first 8
+        byte byte2 = (byte) ((i & 0x00FF0000) >> 16); // discard the rightmost 16 bits and keep the second 8
+        byte byte1 = (byte) ((i & 0x0000FF00) >> 8); // etc.
         byte byte0 = (byte) ((i & 0x000000FF));
         return (new byte[]{byte3, byte2, byte1, byte0});
     }

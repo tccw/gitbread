@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.Reader;
 
+import javax.naming.SizeLimitExceededException;
 import java.io.File;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -70,7 +71,7 @@ public class TestSteganography {
         try {
             encoder.encode(collectionMessage, fileIn, true);
             encoder.save(fileOut);
-        } catch (IOException e) {
+        } catch (IOException | SizeLimitExceededException e) {
             fail("Unexpected IOException.");
         }
         assertNotNull(encoder.getEncodedPixels());
@@ -86,7 +87,7 @@ public class TestSteganography {
             assertEquals(recipeCollection.toJson(), out);
             assertTrue(encoder.isEncodeCollection());
             assertTrue(encoder.isDecodedCollection());
-        } catch (IOException e) {
+        } catch (IOException | SizeLimitExceededException e) {
             fail();
         }
     }
@@ -100,7 +101,7 @@ public class TestSteganography {
             assertEquals(recipeHistoryPizza.toJson(), out);
             assertFalse(encoder.isEncodeCollection());
             assertFalse(encoder.isDecodedCollection());
-        } catch (IOException e) {
+        } catch (IOException | SizeLimitExceededException e) {
             fail();
         }
     }
@@ -114,6 +115,8 @@ public class TestSteganography {
             fail();
         } catch (IllegalArgumentException e) {
             // do nothing
+        } catch (SizeLimitExceededException e) {
+            e.printStackTrace();
         }
     }
 
@@ -122,7 +125,7 @@ public class TestSteganography {
         try {
             encoder.encode(collectionMessage, null, true);
             fail();
-        } catch (IOException e) {
+        } catch (IOException | SizeLimitExceededException e) {
             // expected behavior
         }
     }

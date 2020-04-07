@@ -14,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.FlowPane;
@@ -30,9 +29,9 @@ import model.*;
 import persistence.Writer;
 import persistence.steganography.Steganos;
 
+import javax.naming.SizeLimitExceededException;
 import java.io.File;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.util.*;
 
@@ -79,7 +78,7 @@ public class GitBreadGUI extends Application {
     Scene scene;
 
     private static final int WIDTH = 800;
-    public static final int HEIGHT = 600;
+    public static final int HEIGHT = 750;
     boolean darkMode = false;
 
     public static void main(String[] args) {
@@ -159,11 +158,11 @@ public class GitBreadGUI extends Application {
 //        gridPane.setGridLinesVisible(true);
         gridPane.setPadding(new Insets(10, 20, 20, 20));
         gridPane.add(flowTopRow, 0, 0, 5, 2);
-        gridPane.add(flowBottomRow, 0, 12, 5, 2);
+        gridPane.add(flowBottomRow, 0, 57, 5, 2);
         gridPane.add(darkModeToggle, 14, 0, 1, 1);
-        gridPane.add(recipeListView, 0, 2, 4, 10);
-        gridPane.add(infoDisplay, 4, 2, 10, 10);
-        gridPane.add(infoLabel, 5, 12, 10, 1);
+        gridPane.add(recipeListView, 0, 2, 4, 55);
+        gridPane.add(infoDisplay, 4, 2, 10, 55);
+        gridPane.add(infoLabel, 5, 57, 10, 1);
         gridPane.setHgap(20);
         gridPane.setVgap(10);
         scene = new Scene(gridPane, WIDTH, HEIGHT);
@@ -196,7 +195,7 @@ public class GitBreadGUI extends Application {
         recipeListView.setMinWidth(204);
         recipeListView.setMaxWidth(204);
         recipeListView.setOnDragOver(event -> {
-                    if (event.getDragboard().hasFiles()) {
+                    if (event.getDragboard().hasFiles() || event.getDragboard().hasImage()) {
                         event.acceptTransferModes(TransferMode.ANY);
                     }
                     event.consume();
@@ -204,19 +203,28 @@ public class GitBreadGUI extends Application {
         );
     }
 
+    //TODO: to try https://stackoverflow.com/questions/25123115/get-image-path-javafx
     private void recipeListViewOnDragDrop() {
         recipeListView.setOnDragDropped(event -> {
+            Steganos encoder = new Steganos();
             List<File> files = event.getDragboard().getFiles();
+            Image image = event.getDragboard().getImage();
             try {
-                if (files.get(0).getName().contains(".png") || files.get(0).getName().contains(".PNG")) {
-                    Steganos encoder = new Steganos();
+                if (!files.isEmpty()
+                        && (files.get(0).getName().contains(".png") || files.get(0).getName().contains(".PNG"))) {
                     String json = encoder.decode(files.get(0));
                     if (encoder.isDecodedCollection()) {
                         activeCollection = loadRecipeCollectionJson(json);
                     } else {
                         activeCollection.add("New recipe", loadRecipeDevHistoryJson(json));
                     }
-                    addItemsListView();
+                } else if (event.getDragboard().hasImage()) {
+                    String json = encoder.decode(image);
+                    if (encoder.isDecodedCollection()) {
+                        activeCollection = loadRecipeCollectionJson(json);
+                    } else {
+                        activeCollection.add("New recipe", loadRecipeDevHistoryJson(json));
+                    }
                 } else {
                     throw new IOException();
                 }
@@ -224,6 +232,8 @@ public class GitBreadGUI extends Application {
                 AlertStage.display("Problem loading the collection.", "IOException");
             } catch (BranchDoesNotExistException e) {
                 AlertStage.display("Branch does not exist.", "BranchDoesNotExistException");
+            } finally {
+                addItemsListView();
             }
         });
     }
@@ -358,7 +368,7 @@ public class GitBreadGUI extends Application {
                 encoder.save(fileOut);
             }
 
-        } catch (IOException ex) {
+        } catch (IOException | SizeLimitExceededException ex) {
             AlertStage.display("Error while saving.", "IOException");
         }
     }
@@ -381,6 +391,8 @@ public class GitBreadGUI extends Application {
                 AlertStage.display("Error converting to JSON.", "JsonProcessingException");
             } catch (IOException ex) {
                 AlertStage.display("Error saving image.", "IOException");
+            } catch (SizeLimitExceededException e) {
+                AlertStage.display("Size of message is too large", "SizeLimitExceededException");
             }
         }
     }
@@ -593,17 +605,24 @@ public class GitBreadGUI extends Application {
         instructionsGridPane.getChildren().clear();
         boolean hasInstructions = !this.activeRecipeHistory
                 .getActiveNode().getRecipeVersion().getInstructions().isEmpty();
+        List<String> displayString = this.activeRecipeHistory.getActiveNode().getRecipeVersion().splitInstructions();
         if (this.activeRecipeHistory != null && hasInstructions) {
-            String[] splitInstructions = this.activeRecipeHistory
-                    .getActiveNode().getRecipeVersion().splitInstructions();
-            for (int i = 0; i < splitInstructions.length; i++) {
+
+            int sepIndex = displayString.indexOf("INSTRUCTIONS_SEPARATOR");
+            for (int i = 0; i < sepIndex; i++) {
+                instructionsGridPane.addRow(i);
+                Label label = new Label();
+                label.setText(displayString.get(i));
+                instructionsGridPane.add(label, 1, i);
+            }
+            for (int i = sepIndex + 1; i < displayString.size(); i++) {
                 instructionsGridPane.addRow(i);
                 TextFlow textFlow = new TextFlow();
                 ImageView toggleCheck = new ImageView(new Image("file:./data/icons/buttons/numbertoggles/"
-                        + (i + 1) + ".png"));
+                        + (i - sepIndex) + ".png"));
                 setToggleCheckListeners(toggleCheck, textFlow, i);
                 instructionsGridPane.add(toggleCheck, 0, i);
-                textFlow.getChildren().add(new Text(splitInstructions[i]));
+                textFlow.getChildren().add(new Text(displayString.get(i)));
                 instructionsGridPane.add(textFlow, 1, i);
             }
         }
