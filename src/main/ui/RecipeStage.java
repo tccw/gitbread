@@ -24,7 +24,7 @@ public class RecipeStage {
                                             + "3. Third instruction\r"
                                             + "etc.";
     private static final int WIDTH = 600;
-    private static final int HEIGHT = 700;
+    private static final int HEIGHT = 750;
     private Button add;
     private TextField[] fields;
     private Label[] labels;
@@ -89,7 +89,7 @@ public class RecipeStage {
     private void makeFields() {
         String[] promptText = new String[]{"Recipe name", "Flour weight%", "Water weight%", "Salt weight%",
                 "Sugar weight%", "Fat weight%", "Yeast weight%", "Bake temp [deg. F]", "Bake time [mins]",
-                "Prep time [mins]"};
+                "Prep time [mins]", "Cooking vessel"};
         fields = new TextField[promptText.length];
         labels = new Label[promptText.length];
 //        PercentageStringConverter percent = new PercentageStringConverter(new DecimalFormat("##%"));
@@ -116,7 +116,7 @@ public class RecipeStage {
 
         add.setOnAction(e -> {
             boolean notDouble = false;
-            for (int i = 2; i < fields.length; i++) {
+            for (int i = 2; i < fields.length - 1; i++) {
                 if (!isDouble(fields[i])) {
                     AlertStage.display("Please check that all fields are numbers.", "NumberFormatException");
                     notDouble = true;
@@ -140,6 +140,7 @@ public class RecipeStage {
         recipe.setCookTemp(Integer.parseInt(fields[7].getText()));
         recipe.setCookTime(Integer.parseInt(fields[8].getText()));
         recipe.setPrepTime(Integer.parseInt(fields[9].getText()));
+        recipe.setCookingVessel(fields[10].getText());
         recipe.setInstructions(instructions.getText());
         try {
             if (!isNewRecipe) {

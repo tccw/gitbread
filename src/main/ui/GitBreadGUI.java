@@ -32,6 +32,7 @@ import persistence.steganography.Steganos;
 import javax.naming.SizeLimitExceededException;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.time.Clock;
 import java.util.*;
 
@@ -203,39 +204,36 @@ public class GitBreadGUI extends Application {
         );
     }
 
-    //TODO: to try https://stackoverflow.com/questions/25123115/get-image-path-javafx
+    //EFFECTS: Loads
+    //https://stackoverflow.com/questions/61068970/why-does-the-same-image-edit-png-produce-two-slightly-different-byte-arrays-i/61149562#61149562
     private void recipeListViewOnDragDrop() {
         recipeListView.setOnDragDropped(event -> {
             Steganos encoder = new Steganos();
-            List<File> files = event.getDragboard().getFiles();
-            Image image = event.getDragboard().getImage();
-            try {
-                if (!files.isEmpty()
-                        && (files.get(0).getName().contains(".png") || files.get(0).getName().contains(".PNG"))) {
-                    String json = encoder.decode(files.get(0));
-                    if (encoder.isDecodedCollection()) {
-                        activeCollection = loadRecipeCollectionJson(json);
-                    } else {
-                        activeCollection.add("New recipe", loadRecipeDevHistoryJson(json));
-                    }
-                } else if (event.getDragboard().hasImage()) {
-                    String json = encoder.decode(image);
-                    if (encoder.isDecodedCollection()) {
-                        activeCollection = loadRecipeCollectionJson(json);
-                    } else {
-                        activeCollection.add("New recipe", loadRecipeDevHistoryJson(json));
-                    }
-                } else {
-                    throw new IOException();
+            if (event.getDragboard().hasUrl()) {
+                try {
+                    URL path = new URL(event.getDragboard().getUrl());
+                    String decoded = encoder.decode(path);
+                    loadToStage(encoder, decoded);
+                } catch (IOException e) {
+                    AlertStage.display("Problem loading the collection.", "IOException");
+                } catch (BranchDoesNotExistException e) {
+                    AlertStage.display("Branch does not exist.", "BranchDoesNotExistException");
+                } finally {
+                    addItemsListView();
                 }
-            } catch (IOException e) {
-                AlertStage.display("Problem loading the collection.", "IOException");
-            } catch (BranchDoesNotExistException e) {
-                AlertStage.display("Branch does not exist.", "BranchDoesNotExistException");
-            } finally {
-                addItemsListView();
             }
         });
+    }
+
+    //MODIFIES: this
+    //EFFECTS: logic for loading a recipe collection vs. a recipe
+    private void loadToStage(Steganos encoder, String json) throws IOException, BranchDoesNotExistException {
+        if (encoder.isDecodedCollection()) {
+            activeCollection = loadRecipeCollectionJson(json);
+        } else {
+            String title = TextInputStage.display("Load Recipe", "Enter the recipe name", "Recipe title");
+            activeCollection.add(title, loadRecipeDevHistoryJson(json));
+        }
     }
 
     private void recipeListViewRightClickMenu() {
@@ -284,9 +282,10 @@ public class GitBreadGUI extends Application {
             RadioMenuItem child = new RadioMenuItem(s);
             if (activeRecipeHistory != null && s.equals(activeRecipeHistory.getCurrentBranch())) {
                 child.setSelected(true);
-            } else if (s.equals("master")) {
-                child.setSelected(true);
             }
+//            } else if (s.equals("master")) {
+//                child.setSelected(true);
+//            }
             child.setToggleGroup(branchToggle);
             switchBranch.getItems().add(child);
             child.textProperty().bind(Bindings.format(s, cell.itemProperty()));
@@ -377,7 +376,7 @@ public class GitBreadGUI extends Application {
         if (activeRecipeHistory != null) {
             try {
                 String message = activeRecipeHistory.toJson();
-                File fileIn = fileChooserHelper("./data/recipephotos", "png", "load", primaryStage);
+                File fileIn = fileChooserHelper("./data/images/attemptphotos", "png", "load", primaryStage);
                 if (fileIn == null) {
                     return;
                 }
@@ -566,7 +565,6 @@ public class GitBreadGUI extends Application {
 
     //MODIFIES: this
     //EFFECTS: update the attempts look book tab with images
-    //TODO: fix this to order attempts by date
     private void updateAttemptLookBook(NodeGraph activeRecipeHistory) {
         tilePane.getChildren().clear();
         final int IMAGE_VIEW_SIZE = 150;
@@ -640,7 +638,7 @@ public class GitBreadGUI extends Application {
 
     private void setToggleCheckListeners(ImageView toggleCheck, TextFlow step, int i) {
         toggleCheck.setPickOnBounds(true);
-        int loc = i + 1;
+        int loc = i - 2;
         toggleCheck.setOnMouseClicked(e -> {
             if (!toggleCheck.getImage().equals(TICK_MARK)) {
                 toggleCheck.setImage(TICK_MARK);

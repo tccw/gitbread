@@ -83,7 +83,7 @@ public class TestSteganography {
         try {
             encoder.encode(collectionMessage, fileIn, true);
             encoder.save(fileOut);
-            String out = encoder.decode(fileOut);
+            String out = encoder.decode(fileOut.toURI().toURL());
             assertEquals(recipeCollection.toJson(), out);
             assertTrue(encoder.isEncodeCollection());
             assertTrue(encoder.isDecodedCollection());
@@ -97,7 +97,7 @@ public class TestSteganography {
         try {
             encoder.encode(historyMessage, fileIn, false);
             encoder.save(fileOut);
-            String out = encoder.decode(fileOut);
+            String out = encoder.decode(fileOut.toURI().toURL());
             assertEquals(recipeHistoryPizza.toJson(), out);
             assertFalse(encoder.isEncodeCollection());
             assertFalse(encoder.isDecodedCollection());

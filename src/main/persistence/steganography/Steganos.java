@@ -100,37 +100,12 @@ public class Steganos {
     //EFFECTS: decode a byte array
     /*
     The first five bytes of the array contain a one-byte type flag and a four-byte message length flag
+    https://stackoverflow.com/questions/61068970/why-does-the-same-image-edit-png-produce-two-slightly-different-byte-arrays-i/61149562#61149562
+    This could also be solved by only writing to the Alpha byte when creating the images.
      */
-    public String decode(File file) throws IOException {
-        byte[] byteImage = imageToByteArray(file);
+    public String decode(URL url) throws IOException {
+        byte[] byteImage = imageToByteArray(url);
         return getStringFromBytes(byteImage);
-    }
-
-    //EFFECTS: Overloaded method for directly taking images rather than file locations
-    //https://stackoverflow.com/questions/24038524/how-to-get-byte-from-javafx-imageview
-    //https://stackoverflow.com/questions/32028783/how-do-i-use-pixelreaders-getpixels-method
-    //https://www.reddit.com/r/javahelp/comments/9njz5k/easiest_way_to_convert_a_javafxsceneimageimage_to/
-    //http://www.java-gaming.org/index.php/topic,31609
-    //https://www.powerbot.org/community/topic/963142-looking-for-a-faster-way-to-convert-bufferedimage-to-byte-array/
-    //https://stackoverflow.com/questions/3312853/how-does-bitshifting-work-in-java
-    //https://stackoverflow.com/questions/29226704/image-getraster-getdatabuffer-returns-array-of-negative-values
-    //https://stackoverflow.com/questions/27054672/writing-javafx-scene-image-image-to-file
-    //https://stackoverflow.com/questions/27457517/how-to-change-the-image-type-of-a-bufferedimage-which-is-loaded-from-file ****
-    /*
-    TODO: Fix this to allow drag and drop images from browser.
-    The problem here is that SwingFXUtils.fromFXImage returns a buffered image with raster data in a DataBufferInt
-    but I need a DataBufferByte and they cannot be cast to each other.
-     */
-    public String decode(Image image) {
-        // HACKY SOLUTION TODO: solve this in a less hacky way, perhaps without the use of Swing
-        int width = (int) image.getWidth();
-        int height = (int) image.getHeight();
-        BufferedImage buffImageFinal = new BufferedImage(width, height, 6);
-        BufferedImage buffImageTemp = SwingFXUtils.fromFXImage(image, null);
-        Graphics2D g = buffImageFinal.createGraphics();
-        g.drawImage(buffImageTemp, 0, 0, width, height, null);
-        g.dispose();
-        return getStringFromBytes(((DataBufferByte) buffImageFinal.getRaster().getDataBuffer()).getData());
     }
 
     private String getStringFromBytes(byte[] byteImage) {
@@ -153,33 +128,9 @@ public class Steganos {
     }
 
 
-    //EFFECTS: converts an int[] to a byte[]
-    /*
-    TODO: figure out how each DataBufferInt entry represents the underlying bits/bytes.
-    I'm still not understanding something about how DataBufferInt is storing data. The first two entries give me the
-    correct first value for (number >> 24) & 0xFF, but the other three bytes are all wrong.
-     */
-    private byte[] toDataBufferByte(DataBuffer db, int width, int height) {
-        byte[] result = new byte[width * height * 4];
-        int[] dbIntArray = ((DataBufferInt) db).getData();
-        for (int i = 0; i < dbIntArray.length; i += 4) {
-            result[i] = (byte) ((dbIntArray[i] >> 24) & 0xFF);
-            result[i + 1] = (byte) ((dbIntArray[i] >> 16) & 0xFF);
-            result[i + 2] = (byte) ((dbIntArray[i] >> 8) & 0xFF);
-            result[i + 3] = (byte) (dbIntArray[i] & 0xFF);
-//            for (int j = 3; j >= 0; j--) {
-//                result[i + j] = (byte)((dbIntArray[i] & (8 * j)) >> 0xFF);
-//            }
-        }
-        return result; //stub
-    }
-
-
     //EFFECTS: convert the image linked in the given file to a byte array.
-    private byte[] imageToByteArray(File file) throws IOException {
-        BufferedImage image;
-        URL path = file.toURI().toURL();
-        image = ImageIO.read(path);
+    private byte[] imageToByteArray(URL url) throws IOException {
+        BufferedImage image = ImageIO.read(url);
         return ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
     }
 
