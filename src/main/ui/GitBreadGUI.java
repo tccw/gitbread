@@ -29,9 +29,10 @@ import model.*;
 import persistence.Writer;
 import persistence.steganography.Steganos;
 
+import javax.naming.SizeLimitExceededException;
 import java.io.File;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
+import java.net.URL;
 import java.time.Clock;
 import java.util.*;
 
@@ -78,7 +79,7 @@ public class GitBreadGUI extends Application {
     Scene scene;
 
     private static final int WIDTH = 800;
-    public static final int HEIGHT = 600;
+    public static final int HEIGHT = 750;
     boolean darkMode = false;
 
     public static void main(String[] args) {
@@ -158,11 +159,11 @@ public class GitBreadGUI extends Application {
 //        gridPane.setGridLinesVisible(true);
         gridPane.setPadding(new Insets(10, 20, 20, 20));
         gridPane.add(flowTopRow, 0, 0, 5, 2);
-        gridPane.add(flowBottomRow, 0, 12, 5, 2);
+        gridPane.add(flowBottomRow, 0, 57, 5, 2);
         gridPane.add(darkModeToggle, 14, 0, 1, 1);
-        gridPane.add(recipeListView, 0, 2, 4, 10);
-        gridPane.add(infoDisplay, 4, 2, 10, 10);
-        gridPane.add(infoLabel, 5, 12, 10, 1);
+        gridPane.add(recipeListView, 0, 2, 4, 55);
+        gridPane.add(infoDisplay, 4, 2, 10, 55);
+        gridPane.add(infoLabel, 5, 57, 10, 1);
         gridPane.setHgap(20);
         gridPane.setVgap(10);
         scene = new Scene(gridPane, WIDTH, HEIGHT);
@@ -195,7 +196,7 @@ public class GitBreadGUI extends Application {
         recipeListView.setMinWidth(204);
         recipeListView.setMaxWidth(204);
         recipeListView.setOnDragOver(event -> {
-                    if (event.getDragboard().hasFiles()) {
+                    if (event.getDragboard().hasFiles() || event.getDragboard().hasImage()) {
                         event.acceptTransferModes(TransferMode.ANY);
                     }
                     event.consume();
@@ -203,28 +204,36 @@ public class GitBreadGUI extends Application {
         );
     }
 
+    //EFFECTS: Loads
+    //https://stackoverflow.com/questions/61068970/why-does-the-same-image-edit-png-produce-two-slightly-different-byte-arrays-i/61149562#61149562
     private void recipeListViewOnDragDrop() {
         recipeListView.setOnDragDropped(event -> {
-            List<File> files = event.getDragboard().getFiles();
-            try {
-                if (files.get(0).getName().contains(".png") || files.get(0).getName().contains(".PNG")) {
-                    Steganos encoder = new Steganos();
-                    String json = encoder.decode(files.get(0));
-                    if (encoder.isDecodedCollection()) {
-                        activeCollection = loadRecipeCollectionJson(json);
-                    } else {
-                        activeCollection.add("New recipe", loadRecipeDevHistoryJson(json));
-                    }
+            Steganos encoder = new Steganos();
+            if (event.getDragboard().hasUrl()) {
+                try {
+                    URL path = new URL(event.getDragboard().getUrl());
+                    String decoded = encoder.decode(path);
+                    loadToStage(encoder, decoded);
+                } catch (IOException e) {
+                    AlertStage.display("Problem loading the collection.", "IOException");
+                } catch (BranchDoesNotExistException e) {
+                    AlertStage.display("Branch does not exist.", "BranchDoesNotExistException");
+                } finally {
                     addItemsListView();
-                } else {
-                    throw new IOException();
                 }
-            } catch (IOException e) {
-                AlertStage.display("Problem loading the collection.", "IOException");
-            } catch (BranchDoesNotExistException e) {
-                AlertStage.display("Branch does not exist.", "BranchDoesNotExistException");
             }
         });
+    }
+
+    //MODIFIES: this
+    //EFFECTS: logic for loading a recipe collection vs. a recipe
+    private void loadToStage(Steganos encoder, String json) throws IOException, BranchDoesNotExistException {
+        if (encoder.isDecodedCollection()) {
+            activeCollection = loadRecipeCollectionJson(json);
+        } else {
+            String title = TextInputStage.display("Load Recipe", "Enter the recipe name", "Recipe title");
+            activeCollection.add(title, loadRecipeDevHistoryJson(json));
+        }
     }
 
     private void recipeListViewRightClickMenu() {
@@ -249,9 +258,12 @@ public class GitBreadGUI extends Application {
         MenuItem removeRecipe = new MenuItem();
         removeRecipe.textProperty().bind(Bindings.format("remove", cell.itemProperty()));
         removeRecipe.setOnAction(e -> {
-            activeCollection.remove(cell.getItem());
-            addItemsListView();
-            recipeListView.refresh();
+            boolean toRemove = ConfirmStage.display("Remove this recipe history?", "Remove Recipe Confirmation");
+            if (toRemove) {
+                activeCollection.remove(cell.getItem());
+                addItemsListView();
+                recipeListView.refresh();
+            }
         });
         buildBranchList(cell, branches, switchBranch);
 
@@ -268,9 +280,12 @@ public class GitBreadGUI extends Application {
         ToggleGroup branchToggle = new ToggleGroup();
         for (String s : branches) {
             RadioMenuItem child = new RadioMenuItem(s);
-            if (s.equals("master")) {
+            if (activeRecipeHistory != null && s.equals(activeRecipeHistory.getCurrentBranch())) {
                 child.setSelected(true);
             }
+//            } else if (s.equals("master")) {
+//                child.setSelected(true);
+//            }
             child.setToggleGroup(branchToggle);
             switchBranch.getItems().add(child);
             child.textProperty().bind(Bindings.format(s, cell.itemProperty()));
@@ -336,6 +351,7 @@ public class GitBreadGUI extends Application {
         stage.display(activeCollection, activeRecipeHistory, true);
         addItemsListView();
         recipeListView.refresh();
+        //TODO: fix this to select from the listview the item just modified or added
     }
 
     private void saveCollectionAsImage(Stage primaryStage) {
@@ -351,7 +367,7 @@ public class GitBreadGUI extends Application {
                 encoder.save(fileOut);
             }
 
-        } catch (IOException ex) {
+        } catch (IOException | SizeLimitExceededException ex) {
             AlertStage.display("Error while saving.", "IOException");
         }
     }
@@ -360,7 +376,7 @@ public class GitBreadGUI extends Application {
         if (activeRecipeHistory != null) {
             try {
                 String message = activeRecipeHistory.toJson();
-                File fileIn = fileChooserHelper("./data/recipephotos", "png", "load", primaryStage);
+                File fileIn = fileChooserHelper("./data/images/attemptphotos", "png", "load", primaryStage);
                 if (fileIn == null) {
                     return;
                 }
@@ -374,6 +390,8 @@ public class GitBreadGUI extends Application {
                 AlertStage.display("Error converting to JSON.", "JsonProcessingException");
             } catch (IOException ex) {
                 AlertStage.display("Error saving image.", "IOException");
+            } catch (SizeLimitExceededException e) {
+                AlertStage.display("Size of message is too large", "SizeLimitExceededException");
             }
         }
     }
@@ -547,7 +565,6 @@ public class GitBreadGUI extends Application {
 
     //MODIFIES: this
     //EFFECTS: update the attempts look book tab with images
-    //TODO: fix this to order attempts by date
     private void updateAttemptLookBook(NodeGraph activeRecipeHistory) {
         tilePane.getChildren().clear();
         final int IMAGE_VIEW_SIZE = 150;
@@ -586,17 +603,24 @@ public class GitBreadGUI extends Application {
         instructionsGridPane.getChildren().clear();
         boolean hasInstructions = !this.activeRecipeHistory
                 .getActiveNode().getRecipeVersion().getInstructions().isEmpty();
+        List<String> displayString = this.activeRecipeHistory.getActiveNode().getRecipeVersion().splitInstructions();
         if (this.activeRecipeHistory != null && hasInstructions) {
-            String[] splitInstructions = this.activeRecipeHistory
-                    .getActiveNode().getRecipeVersion().splitInstructions();
-            for (int i = 0; i < splitInstructions.length; i++) {
+
+            int sepIndex = displayString.indexOf("INSTRUCTIONS_SEPARATOR");
+            for (int i = 0; i < sepIndex; i++) {
+                instructionsGridPane.addRow(i);
+                Label label = new Label();
+                label.setText(displayString.get(i));
+                instructionsGridPane.add(label, 1, i);
+            }
+            for (int i = sepIndex + 1; i < displayString.size(); i++) {
                 instructionsGridPane.addRow(i);
                 TextFlow textFlow = new TextFlow();
                 ImageView toggleCheck = new ImageView(new Image("file:./data/icons/buttons/numbertoggles/"
-                        + (i + 1) + ".png"));
+                        + (i - sepIndex) + ".png"));
                 setToggleCheckListeners(toggleCheck, textFlow, i);
                 instructionsGridPane.add(toggleCheck, 0, i);
-                textFlow.getChildren().add(new Text(splitInstructions[i]));
+                textFlow.getChildren().add(new Text(displayString.get(i)));
                 instructionsGridPane.add(textFlow, 1, i);
             }
         }
@@ -614,7 +638,7 @@ public class GitBreadGUI extends Application {
 
     private void setToggleCheckListeners(ImageView toggleCheck, TextFlow step, int i) {
         toggleCheck.setPickOnBounds(true);
-        int loc = i + 1;
+        int loc = i - 2;
         toggleCheck.setOnMouseClicked(e -> {
             if (!toggleCheck.getImage().equals(TICK_MARK)) {
                 toggleCheck.setImage(TICK_MARK);

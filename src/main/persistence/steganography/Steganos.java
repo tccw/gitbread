@@ -1,13 +1,20 @@
 package persistence.steganography;
 
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritablePixelFormat;
+
 import javax.imageio.ImageIO;
 import javax.naming.SizeLimitExceededException;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.Raster;
-import java.awt.image.WritableRaster;
+import java.awt.*;
+import java.awt.image.*;
 import java.io.*;
 import java.net.URL;
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
 
 /*
 Steganography class for construction shareable recipes and recipe collections. Uses LSB (Least Significant Bit)
@@ -39,7 +46,8 @@ public class Steganos {
 
     //MODIFIES: this
     //EFFECTS: encode the PNG byte array.
-    public void encode(String message, File image, boolean encodeCollection) throws IOException {
+    public void encode(String message, File image, boolean encodeCollection)
+            throws IOException, SizeLimitExceededException {
         this.encodeCollection = encodeCollection;
         toByteMessage(message);
         toByteImageOriginal(image);
@@ -67,7 +75,7 @@ public class Steganos {
 
     //EFFECTS: embed the message within the original image byte array. Indicate if the image is a RecipeDevHistory or
     //         a RecipeDevCollection using 99 for collection, and 104 for history.
-    private void writeMessageToImage() {
+    private void writeMessageToImage() throws SizeLimitExceededException {
         int offset = OFFSET;
         encodedPixels = originalPixels;
         byte[] length = intToByteArray(this.byteMessage.length);
@@ -91,10 +99,16 @@ public class Steganos {
 
     //EFFECTS: decode a byte array
     /*
-    The byte array length is in the first 4 bytes of the message so decode() can know how long the message is.
+    The first five bytes of the array contain a one-byte type flag and a four-byte message length flag
+    https://stackoverflow.com/questions/61068970/why-does-the-same-image-edit-png-produce-two-slightly-different-byte-arrays-i/61149562#61149562
+    This could also be solved by only writing to the Alpha byte when creating the images.
      */
-    public String decode(File file) throws IOException {
-        byte[] byteImage = imageToByteArray(file);
+    public String decode(URL url) throws IOException {
+        byte[] byteImage = imageToByteArray(url);
+        return getStringFromBytes(byteImage);
+    }
+
+    private String getStringFromBytes(byte[] byteImage) {
         int offset = OFFSET;
         byte[] classType = new byte[1];
         byte[] byteLength = new byte[4];
@@ -102,6 +116,7 @@ public class Steganos {
         System.arraycopy(byteImage, 1, byteLength, 0, (offset / 8) - 1);
         int length = byteArrayToInt(byteLength);
         byte[] result = new byte[length];
+
         for (int b = 0; b < length; ++b) {
             for (int i = 0; i < 8; ++i, ++offset) {
                 result[b] = (byte) ((result[b] << 1) | (byteImage[offset] & 1));
@@ -109,15 +124,13 @@ public class Steganos {
         }
 
         this.decodedCollection = classType[0] == (byte) 99;
-
         return new String(result);
     }
 
+
     //EFFECTS: convert the image linked in the given file to a byte array.
-    private byte[] imageToByteArray(File file) throws IOException {
-        BufferedImage image;
-        URL path = file.toURI().toURL();
-        image = ImageIO.read(path);
+    private byte[] imageToByteArray(URL url) throws IOException {
+        BufferedImage image = ImageIO.read(url);
         return ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
     }
 
@@ -135,18 +148,18 @@ public class Steganos {
 
     //https://stackoverflow.com/questions/5399798/byte-array-and-int-conversion-in-java/11419863
     //EFFECTS: converts an integer into a 4-byte byte array.
-    private byte[] intToByteArray(int i) {
-//        if (i < 0) {
-//            throw new IllegalArgumentException("Message length is negative!");
-//        } else if (i == 0) {
-//            throw new IllegalArgumentException("Cannot encode a collection with length zero.");
-//        }
-//        if (i > Math.pow(2,24)) {
-//            throw new SizeLimitExceededException();
-//        }
-        byte byte3 = (byte) ((i & 0xFF000000) >> 24);
-        byte byte2 = (byte) ((i & 0x00FF0000) >> 16);
-        byte byte1 = (byte) ((i & 0x0000FF00) >> 8);
+    private byte[] intToByteArray(int i) throws SizeLimitExceededException {
+        if (i < 0) {
+            throw new IllegalArgumentException("Message length is negative!");
+        } else if (i == 0) {
+            throw new IllegalArgumentException("Cannot encode a collection with length zero.");
+        }
+        if (i > Math.pow(2, 24)) { // greater than the largest positive int we can store in 3 bytes
+            throw new SizeLimitExceededException();
+        }
+        byte byte3 = (byte) ((i & 0xFF000000) >> 24); // discard the rightmost 24 bits and keep the first 8
+        byte byte2 = (byte) ((i & 0x00FF0000) >> 16); // discard the rightmost 16 bits and keep the second 8
+        byte byte1 = (byte) ((i & 0x0000FF00) >> 8); // etc.
         byte byte0 = (byte) ((i & 0x000000FF));
         return (new byte[]{byte3, byte2, byte1, byte0});
     }

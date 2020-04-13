@@ -13,6 +13,12 @@ import java.security.NoSuchAlgorithmException;
 import java.time.Clock;
 import java.util.*;
 
+/*
+This is a container for a graph of Nodes which tracks the active node, current branch (for commits) and keeps a list
+of the most recent nodes in each branch for easy navigation. ActiveNode serves a similar purpose to the HEAD cursor in
+git.
+ */
+
 public class NodeGraph implements Saveable {
     private Node activeNode;
     private String currentBranch;
