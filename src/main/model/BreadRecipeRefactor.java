@@ -12,83 +12,23 @@ Bread recipe is a subclass of Recipe and represents recipes recipes made of prim
 (i.e. this should not be used for pastry). It uses baker's formulas to allow for easy scaling of recipes and the
 main constructor will back-calculate all the necessary ingredient weights.
  */
-public class BreadRecipe extends Recipe {
-    private static final String defaultInstructions =
-            "1. Mix all ingredients"
-                    + " 2. Knead dough until smooth"
-                    + " 3. Let rise in oiled bowl for 1 hour"
-                    + " 4. Knock back, shape, and let rise for 45 minutes on baking pan lightly covered"
-                    + " 5. Bake 30 minutes at 425F";
-    private static final double flourConst = 1;
-
-    private double flourFraction;
-    private double waterFraction;
-    private double saltFraction;
-    private double sugarFraction;
-    private double fatFraction;
-    private double yeastFraction;
+public class BreadRecipeRefactor extends RecipeRefactor {
     private double yield;
     private int doughWeight;
     private String cookingVessel;
 
-    //REQUIRES: flourWeight and hydrationFraction are > 0
-    //EFFECTS: constructs bread recipe for a given flour weight and desired hydration. All other parameters are empty
-    //         or zeroed out.
-    // TODO: change yield to round to the nearest two decimal places.
-    @JsonCreator
-    public BreadRecipe(@JsonProperty("flourWeight") int flourWeight,
-                       @JsonProperty("waterFraction") double waterFraction) {
+    //EFFECTS: construct an empty recipe with an ID and flourFraction, but all other fields to be set later.
+    public BreadRecipeRefactor() {
         super();
-        this.flourFraction = flourConst; // flour baker's percentage is always 100 (i.e. 1)
-        this.waterFraction = waterFraction;
-        this.saltFraction = 0.02;
-        this.sugarFraction = 0;
-        this.fatFraction = 0;
-        this.yeastFraction = 0.006;
-        updateYield();
-        this.blankIngredientsTemplate();
-        this.calcIngredientsFromFlourWeight(flourWeight);
-        for (Ingredient i : ingredientList) {
-            this.doughWeight += i.getWeight();
-        }
-        super.instructions = "";
-        super.attemptHistory = new ArrayList<>();
-        super.cookTime = -1;  // -1 indicates no cookTime has been set
-        super.prepTime = -1; // -1 indicates no prepTime has been set
-        super.cookTemp = -1; // -1 indicates no cookTemp has been set
-        this.cookingVessel = "none set";
-    }
-
-    //EFFECTS: constructs a default bread recipe with a desired wet dough weight
-    public BreadRecipe(int doughWeight) {
-        super();
-        this.flourFraction = flourConst; // flour baker's percentage is always 100 (i.e. 1)
-        this.waterFraction = .66;
-        this.saltFraction = 0.02;
-        this.sugarFraction = 0;
-        this.fatFraction = 0;
-        this.yeastFraction = 0.006;
-        updateYield();
-        this.doughWeight = doughWeight; // grams
-        this.blankIngredientsTemplate();
-        this.calcIngredientsFromDoughWeight(this.doughWeight);
-        super.instructions = defaultInstructions;
-        super.attemptHistory = new ArrayList<>();
-        super.cookTime = 30;  // minutes
-        super.prepTime = 135; //minutes
-        super.cookTemp = 425; // in degrees F
-        this.cookingVessel = "pan";
+        // leave all others undefined for now
     }
 
     @Override
     //EFFECTS: Create a deep copy of a recipe ignoring the attempt history. Used for merging branches.
-    public Recipe copy() {
-        BreadRecipe copy = new BreadRecipe(this.getDoughWeight());
-        copy.setWaterFraction(this.getWaterFraction());
-        copy.setSaltFraction(this.getSaltFraction());
-        copy.setSugarFraction(this.getSugarFraction());
-        copy.setFatFraction(this.getFatFraction());
-        copy.setYeastFraction(this.getYeastFraction());
+    public RecipeRefactor copy() {
+        BreadRecipeRefactor copy = new BreadRecipeRefactor();
+        copy.setSubRecipes(this.getSubRecipes());
+        copy.setIngredientEntries(this.getIngredientEntries());
         copy.setInstructions(this.getInstructions());
         copy.setCookTime(this.getCookTime());
         copy.setPrepTime(this.getPrepTime());
@@ -106,25 +46,19 @@ public class BreadRecipe extends Recipe {
     public void scaleByFlourWeight(int flourWeight) {
         calcIngredientsFromFlourWeight(flourWeight);
         this.doughWeight = 0;
-        for (Ingredient i : ingredientList) {
+        for (IngredientRefactor i : ingredientEntries) {
             this.doughWeight += i.getWeight();
         }
     }
 
+    //EFFECTS: calculates the new yield after bakers percentages are updated
     public void updateYield() {
-        this.yield = flourFraction + this.waterFraction + saltFraction + sugarFraction + fatFraction + yeastFraction;
-    }
-
-    //MODIFIES: this
-    //EFFECTS: creates an array list with unset ingredient weights
-    private void blankIngredientsTemplate() {
-        super.ingredientList.addAll(Arrays.asList(
-                new Ingredient("flour", -1),
-                new Ingredient("water", -1),
-                new Ingredient("salt", -1),
-                new Ingredient("fat", -1),
-                new Ingredient("sugar", -1),
-                new Ingredient("yeast", -1)));
+        this.yield = 0;
+        for (IngredientEntry ie : this) {
+            if (ie.getBakerPercentage() != -1) {
+                this.yield += ie.getBakerPercentage();
+            }
+        }
     }
 
     //REQUIRES: doughWeight > 0
@@ -137,9 +71,25 @@ public class BreadRecipe extends Recipe {
                 this.flourFraction, this.waterFraction,
                 this.saltFraction, this.fatFraction,
                 this.sugarFraction, this.yeastFraction));
-        for (int i = 0; i < super.ingredientList.size(); i++) {
-            super.ingredientList.get(i).setWeight((int) (flourWeight * bakersFractions.get(i)));
+        for (int i = 0; i < super.ingredientEntries.size(); i++) {
+            super.ingredientEntries.get(i).setWeight((int) (flourWeight * bakersFractions.get(i)));
         }
+    }
+
+    //MODIFIES:
+    //EFFECTS: calculates the bakers percentages for all the ingredients.
+    public void bakerPercentage() {
+        int flourMass = 0;
+        for (IngredientRefactor i : this) {
+            if (i.getType() == IngredientRefactor.Type.FLOUR) {
+                flourMass += i.getWeight();
+            }
+        }
+
+        for (IngredientRefactor i : this) {
+
+        }
+
     }
 
     //REQUIRES: flourWeight > 0
@@ -150,8 +100,8 @@ public class BreadRecipe extends Recipe {
                 this.flourFraction, this.waterFraction,
                 this.saltFraction, this.fatFraction,
                 this.sugarFraction, this.yeastFraction));
-        for (int i = 0; i < super.ingredientList.size(); i++) {
-            super.ingredientList.get(i).setWeight((int) (flourWeight * bakersFractions.get(i)));
+        for (int i = 0; i < super.ingredientEntries.size(); i++) {
+            super.ingredientEntries.get(i).setWeight((int) (flourWeight * bakersFractions.get(i)));
         }
     }
 
@@ -160,7 +110,7 @@ public class BreadRecipe extends Recipe {
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append("Ingredients: \n");
-        for (Ingredient i : ingredientList) {
+        for (IngredientRefactor i : ingredientEntries) {
             if (i.getWeight() > 0) {
                 String name = i.getName().substring(0, 1).toUpperCase() + i.getName().substring(1).toLowerCase();
                 result.append(String.format("   - %1$s, %2$dg\n", name, i.getWeight()));
@@ -202,7 +152,7 @@ public class BreadRecipe extends Recipe {
     public List<String> splitInstructions() {
         List<String> stringList = new ArrayList<>();
         StringBuilder stringBuilder = new StringBuilder();
-        for (Ingredient i : ingredientList) {
+        for (IngredientRefactor i : ingredientEntries) {
             if (i.getWeight() > 0) {
                 String name = i.getName().substring(0, 1).toUpperCase() + i.getName().substring(1).toLowerCase();
                 stringBuilder.append(String.format("\u2022 %1$s: %2$dg\n", name, i.getWeight()));
@@ -222,29 +172,6 @@ public class BreadRecipe extends Recipe {
     }
 
     // getters
-    public double getFlourFraction() {
-        return flourFraction;
-    }
-
-    public double getWaterFraction() {
-        return waterFraction;
-    }
-
-    public double getSaltFraction() {
-        return saltFraction;
-    }
-
-    public double getSugarFraction() {
-        return sugarFraction;
-    }
-
-    public double getFatFraction() {
-        return fatFraction;
-    }
-
-    public double getYeastFraction() {
-        return yeastFraction;
-    }
 
     public double getYield() {
         return yield;
@@ -259,30 +186,6 @@ public class BreadRecipe extends Recipe {
     }
 
     // setters
-    public void setWaterFraction(double waterFraction) {
-        this.waterFraction = waterFraction;
-        scaleByDoughWeight(this.doughWeight);
-    }
-
-    public void setSaltFraction(double saltFraction) {
-        this.saltFraction = saltFraction;
-        scaleByDoughWeight(this.doughWeight);
-    }
-
-    public void setSugarFraction(double sugarFraction) {
-        this.sugarFraction = sugarFraction;
-        scaleByDoughWeight(this.doughWeight);
-    }
-
-    public void setFatFraction(double fatFraction) {
-        this.fatFraction = fatFraction;
-        scaleByDoughWeight(this.doughWeight);
-    }
-
-    public void setYeastFraction(double yeastFraction) {
-        this.yeastFraction = yeastFraction;
-        scaleByDoughWeight(this.doughWeight);
-    }
 
     public void setDoughWeight(int doughWeight) {
         this.doughWeight = doughWeight;
@@ -291,7 +194,6 @@ public class BreadRecipe extends Recipe {
     public void setCookingVessel(String cookingVessel) {
         this.cookingVessel = cookingVessel;
     }
-
 
 }
 

@@ -63,7 +63,7 @@ public abstract class Recipe {
     //EFFECTS: produce the weight of the selected ingredient in grams
     public int getIngredientWeight(String ingredientName) {
         for (Ingredient i : this.ingredientList) {
-            if (i.getType().equals(ingredientName.toLowerCase())) {
+            if (i.getName().equals(ingredientName.toLowerCase())) {
                 return i.getWeight();
             }
         }

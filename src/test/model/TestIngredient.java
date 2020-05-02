@@ -16,7 +16,7 @@ public class TestIngredient {
     @Test
     void TestSetWeight() {
         assertEquals(100, flour.getWeight());
-        assertEquals("flour", flour.getType());
+        assertEquals("flour", flour.getName());
         flour.setWeight(150);
         flour.setWeight(403);
         assertEquals(403, flour.getWeight());
@@ -24,8 +24,8 @@ public class TestIngredient {
 
     @Test
     void TestSetType() {
-        assertEquals("flour", flour.getType());
-        flour.setType("semolina");
-        assertEquals("semolina", flour.getType());
+        assertEquals("flour", flour.getName());
+        flour.setName("semolina");
+        assertEquals("semolina", flour.getName());
     }
 }
