@@ -11,7 +11,7 @@ a version control system for tracking changes in source code during software dev
 
 GitBread is based on the concept of "Baker's Percentage", which expresses flour as 100% and all 
 other ingredients as some percentage of the flour's weight. This method allows for quick and easy recipe scaling. 
-You can read more about the this idea here: [King Arthur Flour: Bakers Percentage](https://www.kingarthurflour.com/pro/reference/bakers-percentage).
+You can read more about the concept here: [King Arthur Flour: Bakers Percentage](https://www.kingarthurflour.com/pro/reference/bakers-percentage).
 
 GitBread allows for things like:
 - Recording recipes
