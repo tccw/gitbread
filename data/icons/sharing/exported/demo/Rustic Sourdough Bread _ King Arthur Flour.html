@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<!-- saved from url=(0069)https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe -->
+<html lang="en" dir="ltr" prefix="og: https://ogp.me/ns#" class=" js"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="./Rustic Sourdough Bread _ King Arthur Flour_files/main.6558936b.js.download"></script><script type="text/javascript" src="./Rustic Sourdough Bread _ King Arthur Flour_files/vendor.bb28bcc9.js.download"></script><script type="text/javascript" async="" src="./Rustic Sourdough Bread _ King Arthur Flour_files/saved_resource"></script><script src="./Rustic Sourdough Bread _ King Arthur Flour_files/nr-1167.min.js.download"></script><script async="" src="./Rustic Sourdough Bread _ King Arthur Flour_files/search-insights.min.js.download"></script><script type="text/javascript">(window.NREUM||(NREUM={})).loader_config={licenseKey:"6b8b93db2d",applicationID:"401100790"};window.NREUM||(NREUM={}),__nr_require=function(e,n,t){function r(t){if(!n[t]){var i=n[t]={exports:{}};e[t][0].call(i.exports,function(n){var i=e[t][1][n];return r(i||n)},i,i.exports)}return n[t].exports}if("function"==typeof __nr_require)return __nr_require;for(var i=0;i<t.length;i++)r(t[i]);return r}({1:[function(e,n,t){function r(){}function i(e,n,t){return function(){return o(e,[u.now()].concat(f(arguments)),n?null:this,t),n?void 0:this}}var o=e("handle"),a=e(4),f=e(5),c=e("ee").get("tracer"),u=e("loader"),s=NREUM;"undefined"==typeof window.newrelic&&(newrelic=s);var p=["setPageViewName","setCustomAttribute","setErrorHandler","finished","addToTrace","inlineHit","addRelease"],l="api-",d=l+"ixn-";a(p,function(e,n){s[n]=i(l+n,!0,"api")}),s.addPageAction=i(l+"addPageAction",!0),s.setCurrentRouteName=i(l+"routeName",!0),n.exports=newrelic,s.interaction=function(){return(new r).get()};var m=r.prototype={createTracer:function(e,n){var t={},r=this,i="function"==typeof n;return o(d+"tracer",[u.now(),e,t],r),function(){if(c.emit((i?"":"no-")+"fn-start",[u.now(),r,i],t),i)try{return n.apply(this,arguments)}catch(e){throw c.emit("fn-err",[arguments,this,e],t),e}finally{c.emit("fn-end",[u.now()],t)}}}};a("actionText,setName,setAttribute,save,ignore,onEnd,getContext,end,get".split(","),function(e,n){m[n]=i(d+n)}),newrelic.noticeError=function(e,n){"string"==typeof e&&(e=new Error(e)),o("err",[e,u.now(),!1,n])}},{}],2:[function(e,n,t){function r(e,n){var t=e.getEntries();t.forEach(function(e){"first-paint"===e.name?c("timing",["fp",Math.floor(e.startTime)]):"first-contentful-paint"===e.name&&c("timing",["fcp",Math.floor(e.startTime)])})}function i(e,n){var t=e.getEntries();t.length>0&&c("lcp",[t[t.length-1]])}function o(e){if(e instanceof s&&!l){var n,t=Math.round(e.timeStamp);n=t>1e12?Date.now()-t:u.now()-t,l=!0,c("timing",["fi",t,{type:e.type,fid:n}])}}if(!("init"in NREUM&&"page_view_timing"in NREUM.init&&"enabled"in NREUM.init.page_view_timing&&NREUM.init.page_view_timing.enabled===!1)){var a,f,c=e("handle"),u=e("loader"),s=NREUM.o.EV;if("PerformanceObserver"in window&&"function"==typeof window.PerformanceObserver){a=new PerformanceObserver(r),f=new PerformanceObserver(i);try{a.observe({entryTypes:["paint"]}),f.observe({entryTypes:["largest-contentful-paint"]})}catch(p){}}if("addEventListener"in document){var l=!1,d=["click","keydown","mousedown","pointerdown","touchstart"];d.forEach(function(e){document.addEventListener(e,o,!1)})}}},{}],3:[function(e,n,t){function r(e,n){if(!i)return!1;if(e!==i)return!1;if(!n)return!0;if(!o)return!1;for(var t=o.split("."),r=n.split("."),a=0;a<r.length;a++)if(r[a]!==t[a])return!1;return!0}var i=null,o=null,a=/Version\/(\S+)\s+Safari/;if(navigator.userAgent){var f=navigator.userAgent,c=f.match(a);c&&f.indexOf("Chrome")===-1&&f.indexOf("Chromium")===-1&&(i="Safari",o=c[1])}n.exports={agent:i,version:o,match:r}},{}],4:[function(e,n,t){function r(e,n){var t=[],r="",o=0;for(r in e)i.call(e,r)&&(t[o]=n(r,e[r]),o+=1);return t}var i=Object.prototype.hasOwnProperty;n.exports=r},{}],5:[function(e,n,t){function r(e,n,t){n||(n=0),"undefined"==typeof t&&(t=e?e.length:0);for(var r=-1,i=t-n||0,o=Array(i<0?0:i);++r<i;)o[r]=e[n+r];return o}n.exports=r},{}],6:[function(e,n,t){n.exports={exists:"undefined"!=typeof window.performance&&window.performance.timing&&"undefined"!=typeof window.performance.timing.navigationStart}},{}],ee:[function(e,n,t){function r(){}function i(e){function n(e){return e&&e instanceof r?e:e?c(e,f,o):o()}function t(t,r,i,o){if(!l.aborted||o){e&&e(t,r,i);for(var a=n(i),f=v(t),c=f.length,u=0;u<c;u++)f[u].apply(a,r);var p=s[y[t]];return p&&p.push([b,t,r,a]),a}}function d(e,n){h[e]=v(e).concat(n)}function m(e,n){var t=h[e];if(t)for(var r=0;r<t.length;r++)t[r]===n&&t.splice(r,1)}function v(e){return h[e]||[]}function g(e){return p[e]=p[e]||i(t)}function w(e,n){u(e,function(e,t){n=n||"feature",y[t]=n,n in s||(s[n]=[])})}var h={},y={},b={on:d,addEventListener:d,removeEventListener:m,emit:t,get:g,listeners:v,context:n,buffer:w,abort:a,aborted:!1};return b}function o(){return new r}function a(){(s.api||s.feature)&&(l.aborted=!0,s=l.backlog={})}var f="nr@context",c=e("gos"),u=e(4),s={},p={},l=n.exports=i();l.backlog=s},{}],gos:[function(e,n,t){function r(e,n,t){if(i.call(e,n))return e[n];var r=t();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(e,n,{value:r,writable:!0,enumerable:!1}),r}catch(o){}return e[n]=r,r}var i=Object.prototype.hasOwnProperty;n.exports=r},{}],handle:[function(e,n,t){function r(e,n,t,r){i.buffer([e],r),i.emit(e,n,t)}var i=e("ee").get("handle");n.exports=r,r.ee=i},{}],id:[function(e,n,t){function r(e){var n=typeof e;return!e||"object"!==n&&"function"!==n?-1:e===window?0:a(e,o,function(){return i++})}var i=1,o="nr@id",a=e("gos");n.exports=r},{}],loader:[function(e,n,t){function r(){if(!x++){var e=E.info=NREUM.info,n=d.getElementsByTagName("script")[0];if(setTimeout(s.abort,3e4),!(e&&e.licenseKey&&e.applicationID&&n))return s.abort();u(y,function(n,t){e[n]||(e[n]=t)}),c("mark",["onload",a()+E.offset],null,"api");var t=d.createElement("script");t.src="https://"+e.agent,n.parentNode.insertBefore(t,n)}}function i(){"complete"===d.readyState&&o()}function o(){c("mark",["domContent",a()+E.offset],null,"api")}function a(){return O.exists&&performance.now?Math.round(performance.now()):(f=Math.max((new Date).getTime(),f))-E.offset}var f=(new Date).getTime(),c=e("handle"),u=e(4),s=e("ee"),p=e(3),l=window,d=l.document,m="addEventListener",v="attachEvent",g=l.XMLHttpRequest,w=g&&g.prototype;NREUM.o={ST:setTimeout,SI:l.setImmediate,CT:clearTimeout,XHR:g,REQ:l.Request,EV:l.Event,PR:l.Promise,MO:l.MutationObserver};var h=""+location,y={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-1167.min.js"},b=g&&w&&w[m]&&!/CriOS/.test(navigator.userAgent),E=n.exports={offset:f,now:a,origin:h,features:{},xhrWrappable:b,userAgent:p};e(1),e(2),d[m]?(d[m]("DOMContentLoaded",o,!1),l[m]("load",r,!1)):(d[v]("onreadystatechange",i),l[v]("onload",r)),c("mark",["firstbyte",f],null,"api");var x=0,O=e(6)},{}],"wrap-function":[function(e,n,t){function r(e){return!(e&&e instanceof Function&&e.apply&&!e[a])}var i=e("ee"),o=e(5),a="nr@original",f=Object.prototype.hasOwnProperty,c=!1;n.exports=function(e,n){function t(e,n,t,i){function nrWrapper(){var r,a,f,c;try{a=this,r=o(arguments),f="function"==typeof t?t(r,a):t||{}}catch(u){l([u,"",[r,a,i],f])}s(n+"start",[r,a,i],f);try{return c=e.apply(a,r)}catch(p){throw s(n+"err",[r,a,p],f),p}finally{s(n+"end",[r,a,c],f)}}return r(e)?e:(n||(n=""),nrWrapper[a]=e,p(e,nrWrapper),nrWrapper)}function u(e,n,i,o){i||(i="");var a,f,c,u="-"===i.charAt(0);for(c=0;c<n.length;c++)f=n[c],a=e[f],r(a)||(e[f]=t(a,u?f+i:i,o,f))}function s(t,r,i){if(!c||n){var o=c;c=!0;try{e.emit(t,r,i,n)}catch(a){l([a,t,r,i])}c=o}}function p(e,n){if(Object.defineProperty&&Object.keys)try{var t=Object.keys(e);return t.forEach(function(t){Object.defineProperty(n,t,{get:function(){return e[t]},set:function(n){return e[t]=n,n}})}),n}catch(r){l([r])}for(var i in e)f.call(e,i)&&(n[i]=e[i]);return n}function l(n){try{e.emit("internal-error",n)}catch(t){}}return e||(e=i),t.inPlace=u,t.flag=a,t}},{}]},{},["loader"]);</script>
+<link rel="canonical" href="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe">
+<meta property="og:site_name" content="King Arthur Flour">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="description" content="This chewy, rustic sourdough bread loaf, with its deep-brown crust, has rich, deep, flavor, and very mild tang.">
+<meta name="twitter:site" content="@KingArthurFlour">
+<meta property="og:url" content="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe">
+<meta property="og:title" content="Rustic Sourdough Bread">
+<meta name="twitter:creator" content="@KingArthurFlour">
+<link rel="image_src" href="https://www.kingarthurflour.com/sites/default/files/recipe_legacy/91-3-large_0.jpg">
+<meta property="og:description" content="This chewy, rustic sourdough bread loaf, with its deep-brown crust, has rich, deep, flavor, and very mild tang.">
+<meta property="og:image" content="https://www.kingarthurflour.com/sites/default/files/recipe_legacy/91-3-large_0.jpg">
+<meta name="Generator" content="Drupal 8 (https://www.drupal.org)">
+<meta name="MobileOptimized" content="width">
+<meta name="HandheldFriendly" content="true">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script type="application/ld+json">{
+    "@context": "https://schema.org",
+    "@graph": [
+        {
+            "@type": "Recipe",
+            "name": "Rustic Sourdough Bread",
+            "keywords": "Sourdough, Crusty bread, Sourdough, Dairy-free, Vegan",
+            "description": "This chewy loaf has rich, deep, flavor with mild sourdough tang. Since it includes commercial yeast as well as starter, you\u0027re guaranteed a good, strong rise — even if your starter isn\u0027t quite up to snuff.",
+            "recipeYield": "Two 10\u0022 loaves, 32 servings",
+            "prepTime": "PT12M",
+            "datePublished": "December 31, 2009 at 7:00pm",
+            "totalTime": "PT3H7M",
+            "cookTime": "PT30M",
+            "recipeIngredient": [
+                "1 cup (227g) ripe (fed) sourdough starter",
+                "1 1/2 cups (340g) lukewarm water",
+                "1 to 2 teaspoons instant yeast*",
+                "2 1/2 teaspoons salt",
+                "5 cups (602g) King Arthur Unbleached All-Purpose Flour"
+            ],
+            "recipeInstructions": "Combine all of the ingredients, kneading to form a smooth dough., Allow the dough to rise, in a lightly greased, covered bowl, until it\u0027s doubled in size, about 90 minutes., Gently divide the dough in half; it\u0027ll deflate somewhat., Gently shape the dough into two oval loaves; or, for longer loaves, two 10\u0022 to 11\u0022 logs. Place the loaves on a lightly greased or parchment-lined baking sheet. Cover and let rise until very puffy, about 1 hour. Towards the end of the rising time, preheat the oven to 425°F., Spray the loaves with lukewarm water., Make two fairly deep diagonal slashes in each; a serrated bread knife, wielded firmly, works well here., Bake the bread for 25 to 30 minutes, until it\u0027s a very deep golden brown. Remove it from the oven, and cool on a rack.",
+            "author": {
+                "@type": "Organization",
+                "name": "King Arthur Flour",
+                "url": "https://www.kingarthurflour.com/",
+                "logo": {
+                    "@type": "ImageObject",
+                    "url": "https://www.kingarthurflour.com/themes/custom/kaf_nextgenweb/images/logo--full.svg"
+                }
+            },
+            "nutrition": {
+                "@type": "NutritionInformation",
+                "servingSize": "1 slice",
+                "calories": "80",
+                "carbohydrateContent": "17g",
+                "cholesterolContent": "0mg",
+                "fiberContent": "1g",
+                "proteinContent": "3g",
+                "sodiumContent": "180mg",
+                "sugarContent": "1g",
+                "fatContent": "0g",
+                "saturatedFatContent": "0g",
+                "transFatContent": "0g"
+            },
+            "image": {
+                "@type": "ImageObject",
+                "url": "https://www.kingarthurflour.com/sites/default/files/recipe_legacy/91-3-large_0.jpg"
+            },
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.60",
+                "ratingCount": "488"
+            }
+        }
+    ]
+}</script>
+<link rel="shortcut icon" href="https://www.kingarthurflour.com/themes/custom/kaf_nextgenweb/favicon.ico" type="image/vnd.microsoft.icon">
+<link rel="revision" href="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe">
+<script src="./Rustic Sourdough Bread _ King Arthur Flour_files/google_tag.script.js.download" defer=""></script>
+
+    <title>Rustic Sourdough Bread | King Arthur Flour</title>
+    <link rel="stylesheet" media="all" href="./Rustic Sourdough Bread _ King Arthur Flour_files/css_3quRGzrMfmBhgU1DBUq4NTvXYxFV4cVbE5B4G8NB0h0.css">
+<link rel="stylesheet" media="all" href="./Rustic Sourdough Bread _ King Arthur Flour_files/qwi2npt.css">
+<link rel="stylesheet" media="all" href="./Rustic Sourdough Bread _ King Arthur Flour_files/css_Cy2x8ra-B9-lJynT5swX0TestOEqMPtAb6qPPjKpRjI.css">
+
+    
+<!--[if lte IE 8]>
+<script src="/sites/default/files/js/js_VtafjXmRvoUgAzqzYTA3Wrjkx9wcWhjP0G4ZnnqRamA.js"></script>
+<![endif]-->
+
+  <style>
+
+						@font-face {
+
+							font-family: 'Mtga-Extension-Comic-Sans';
+							src: url( 'chrome-extension://iopebbikefjcknnbmdkkcebchlnaioen/fonts/font4.ttf' );
+
+						}
+
+					</style><style data-emotion="fcy"></style><style id="beacon-stylesheet" type="text/css">#beacon-container{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5}#beacon-container,#beacon-container *{-webkit-box-sizing:border-box;box-sizing:border-box}#beacon-container *{-webkit-tap-highlight-color:rgba(0,0,0,0)}#BeaconContainer-root.is-mobile{--BlueConfigGlobalFontSize:14px}@media (min-width:330px){#BeaconContainer-root.is-mobile{--BlueConfigGlobalFontSize:15px}}@media (min-width:410px){#BeaconContainer-root.is-mobile{--BlueConfigGlobalFontSize:16px}}#BeaconContainer-root.is-mobile input,#BeaconContainer-root.is-mobile select,#BeaconContainer-root.is-mobile textarea{font-size:16px!important}#beacon-container a{color:_color(link,base);text-decoration:none}#beacon-container a:hover{color:_color(link,hover)}#beacon-container a.disabled{color:_color(text,muted);cursor:not-allowed}#beacon-container a.disabled:hover{color:_color(text,muted);text-decoration:none}#beacon-container-body{margin:0;overflow:hidden}</style></head>
+  <body class="has-subnav path-node page-node-type-recipe">
+        <a href="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe#main-content" class="visually-hidden focusable skip-link">
+      Skip to main content
+    </a>
+    <noscript aria-hidden="true"><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M867KWL" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+      <div class="dialog-off-canvas-main-canvas" data-off-canvas-main-canvas="">
+    <div class="page">
+
+  <header class="header" role="banner">
+      <div class="region region-promo-bar">
+    <div id="block-kafpromobar" class="block block-kaf-promo-bar block-kaf-promo-bar-block">
+  
+    
+      <div class="kaf-promo-bar js-kaf-promo-bar"></div>
+
+  </div>
+
+  </div>
+
+    <div class="header__wrap">
+        <div class="region region-header">
+    
+<div id="block-kaf-nextgenweb-branding" class="block block-branding">
+            <a href="https://www.kingarthurflour.com/" title="King Arthur Flour" rel="home" class="site-logo">King Arthur Flour</a>
+      </div>
+<div id="block-kafsubmenu" class="block block-kaf-submenu">
+  
+    
+      <ul class="mnav-l1" id="mobile-nav" role="navigation" aria-labelledby="mnav-trigger" tabindex="-1">
+       <li class="mnav-l1--item mnav-item">
+      <a href="https://shop.kingarthurflour.com/shop-home/" class="mobile-subnav-l1">Shop</a>
+
+                  
+    </li>
+       <li class="mnav-l1--item mnav-item">
+      <a href="https://www.kingarthurflour.com/recipes" class="mobile-subnav-l1">Recipes</a>
+
+                    <button class="mnav-more"><span class="visually-hidden">Expand Recipes</span></button>
+
+        <div class="mnav-l2--wrapper mnav-wrapper" aria-hidden="true">
+          <div class="mnav-header">
+            <button class="mnav-back"><span class="visually-hidden">Collapse Recipes</span></button>
+            <h3 class="mnav-l2--title">Recipes</h3>
+          </div>
+          <ul class="mnav-l2">
+                          <li class="mnav-l2--item mnav-item">
+                <span class="mobile-subnav-l2">Categories</span>
+
+                                                  <button class="mnav-more"><span class="visually-hidden">Expand Categories</span></button>
+                  <div class="mnav-l3--wrapper mnav-wrapper" aria-hidden="true">
+                    <div class="mnav-header">
+                      <button class="mnav-back"><span class="visually-hidden">Collapse Categories</span></button>
+                      <h4 class="mnav-l3--title">Categories</h4>
+                    </div>
+                    <ul class="mnav-l3">
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/biscuits-shortcakes" class="mobile-subnav-l3">Biscuits &amp; Shortcakes</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/bread" class="mobile-subnav-l3">Bread</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/buns-rolls" class="mobile-subnav-l3">Buns &amp; Rolls</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/cake" class="mobile-subnav-l3">Cake</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/cookies-bars" class="mobile-subnav-l3">Cookies &amp; Bars</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/muffins-popovers" class="mobile-subnav-l3">Muffins &amp; Popovers</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/pancakes-waffles" class="mobile-subnav-l3">Pancakes &amp; Waffles</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/pastry" class="mobile-subnav-l3">Pastry</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/pie" class="mobile-subnav-l3">Pie</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/scones" class="mobile-subnav-l3">Scones</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <span class="mobile-subnav-l3">—</span>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes#categories" class="mobile-subnav-l3">See All Categories</a>
+                        </li>
+                                          </ul>
+                  </div>
+                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/recipes/collections" class="mobile-subnav-l2">Collections</a>
+
+                                                  <button class="mnav-more"><span class="visually-hidden">Expand Collections</span></button>
+                  <div class="mnav-l3--wrapper mnav-wrapper" aria-hidden="true">
+                    <div class="mnav-header">
+                      <button class="mnav-back"><span class="visually-hidden">Collapse Collections</span></button>
+                      <h4 class="mnav-l3--title">Collections</h4>
+                    </div>
+                    <ul class="mnav-l3">
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/collections/easy-homemade-meals" class="mobile-subnav-l3">Easy Homemade Meals</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/collections/recipes-to-bake-with-kids" class="mobile-subnav-l3">Recipes to Bake With Kids</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/collections/everyday-bread" class="mobile-subnav-l3">Everyday Bread</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/collections/recipes-with-5-ingredients-or-fewer" class="mobile-subnav-l3">5 Ingredients or Fewer</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/collections/sourdough-discard-recipes" class="mobile-subnav-l3">Sourdough Discard Recipes</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <span class="mobile-subnav-l3">—</span>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/collections" class="mobile-subnav-l3">View All Recipe Collections</a>
+                        </li>
+                                          </ul>
+                  </div>
+                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <span class="mobile-subnav-l2">Resources</span>
+
+                                                  <button class="mnav-more"><span class="visually-hidden">Expand Resources</span></button>
+                  <div class="mnav-l3--wrapper mnav-wrapper" aria-hidden="true">
+                    <div class="mnav-header">
+                      <button class="mnav-back"><span class="visually-hidden">Collapse Resources</span></button>
+                      <h4 class="mnav-l3--title">Resources</h4>
+                    </div>
+                    <ul class="mnav-l3">
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipebox" class="mobile-subnav-l3">Recipe Box</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/bakers-hotline" class="mobile-subnav-l3">Bakers Hotline</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/learn/ingredient-weight-chart" class="mobile-subnav-l3">Ingredient Weight Chart</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/videos/baking-skills/how-to-measure-flour" class="mobile-subnav-l3">How to Measure Flour</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/recipes/resources/recipe-success-guide" class="mobile-subnav-l3">Recipe Success Guide</a>
+                        </li>
+                                          </ul>
+                  </div>
+                                
+              </li>
+                      </ul>
+        </div>
+            
+    </li>
+       <li class="mnav-l1--item mnav-item">
+      <a href="https://www.kingarthurflour.com/learn" class="mobile-subnav-l1">Learn</a>
+
+                    <button class="mnav-more"><span class="visually-hidden">Expand Learn</span></button>
+
+        <div class="mnav-l2--wrapper mnav-wrapper" aria-hidden="true">
+          <div class="mnav-header">
+            <button class="mnav-back"><span class="visually-hidden">Collapse Learn</span></button>
+            <h3 class="mnav-l2--title">Learn</h3>
+          </div>
+          <ul class="mnav-l2">
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/learn/guides" class="mobile-subnav-l2">Baking Guides</a>
+
+                                                  <button class="mnav-more"><span class="visually-hidden">Expand Baking Guides</span></button>
+                  <div class="mnav-l3--wrapper mnav-wrapper" aria-hidden="true">
+                    <div class="mnav-header">
+                      <button class="mnav-back"><span class="visually-hidden">Collapse Baking Guides</span></button>
+                      <h4 class="mnav-l3--title">Baking Guides</h4>
+                    </div>
+                    <ul class="mnav-l3">
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/learn/guides/sourdough" class="mobile-subnav-l3">Sourdough Baking</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/learn/guides/homebound-baking" class="mobile-subnav-l3">Homebound Baking</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/guides/pie" class="mobile-subnav-l3">Pie Baking</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/learn/guides/scone-baking" class="mobile-subnav-l3">Scone Baking</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/learn/guides/gluten-free" class="mobile-subnav-l3">Gluten-Free Baking</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <span class="mobile-subnav-l3">—</span>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/learn/guides" class="mobile-subnav-l3">View All Baking Guides</a>
+                        </li>
+                                          </ul>
+                  </div>
+                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/videos" class="mobile-subnav-l2">Videos</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/baking-school" class="mobile-subnav-l2">Baking School</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <span class="mobile-subnav-l2">Resources</span>
+
+                                                  <button class="mnav-more"><span class="visually-hidden">Expand Resources</span></button>
+                  <div class="mnav-l3--wrapper mnav-wrapper" aria-hidden="true">
+                    <div class="mnav-header">
+                      <button class="mnav-back"><span class="visually-hidden">Collapse Resources</span></button>
+                      <h4 class="mnav-l3--title">Resources</h4>
+                    </div>
+                    <ul class="mnav-l3">
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/learn/resources/tools-and-pans" class="mobile-subnav-l3">Tools and Pans</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/learn/resources/baking-tips-techniques" class="mobile-subnav-l3">Baking Tips and Techniques</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/learn/resources/yeast" class="mobile-subnav-l3">All About Yeast</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/learn/resources/high-altitude-baking" class="mobile-subnav-l3">High-Altitude Baking</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/learn/ingredient-weight-chart" class="mobile-subnav-l3">Ingredient Weight Chart</a>
+                        </li>
+                                          </ul>
+                  </div>
+                                
+              </li>
+                      </ul>
+        </div>
+            
+    </li>
+       <li class="mnav-l1--item mnav-item">
+      <a href="https://www.kingarthurflour.com/about" class="mobile-subnav-l1">About</a>
+
+                    <button class="mnav-more"><span class="visually-hidden">Expand About</span></button>
+
+        <div class="mnav-l2--wrapper mnav-wrapper" aria-hidden="true">
+          <div class="mnav-header">
+            <button class="mnav-back"><span class="visually-hidden">Collapse About</span></button>
+            <h3 class="mnav-l2--title">About</h3>
+          </div>
+          <ul class="mnav-l2">
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/about/mission-impact" class="mobile-subnav-l2">Mission &amp; Impact</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/about/our-products" class="mobile-subnav-l2">Our Products</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/visit" class="mobile-subnav-l2">Visit Us</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/about/bake-for-good-kids" class="mobile-subnav-l2">Bake for Good Kids</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/about/history" class="mobile-subnav-l2">Our History</a>
+
+                                                
+              </li>
+                      </ul>
+        </div>
+            
+    </li>
+       <li class="mnav-l1--item mnav-item">
+      <a href="https://www.kingarthurflour.com/blog" class="mobile-subnav-l1">Blog</a>
+
+                    <button class="mnav-more"><span class="visually-hidden">Expand Blog</span></button>
+
+        <div class="mnav-l2--wrapper mnav-wrapper" aria-hidden="true">
+          <div class="mnav-header">
+            <button class="mnav-back"><span class="visually-hidden">Collapse Blog</span></button>
+            <h3 class="mnav-l2--title">Blog</h3>
+          </div>
+          <ul class="mnav-l2">
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/blog-category/tips-techniques" class="mobile-subnav-l2">Tips + Techniques</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/blog-category/recipe" class="mobile-subnav-l2">Recipes</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/blog-category/story" class="mobile-subnav-l2">Stories</a>
+
+                                                
+              </li>
+                      </ul>
+        </div>
+            
+    </li>
+       <li class="mnav-l1--item mnav-item">
+      <a href="https://www.kingarthurflour.com/pro" class="mobile-subnav-l1">Bakery Flour Sales</a>
+
+                    <button class="mnav-more"><span class="visually-hidden">Expand Bakery Flour Sales</span></button>
+
+        <div class="mnav-l2--wrapper mnav-wrapper" aria-hidden="true">
+          <div class="mnav-header">
+            <button class="mnav-back"><span class="visually-hidden">Collapse Bakery Flour Sales</span></button>
+            <h3 class="mnav-l2--title">Bakery Flour Sales</h3>
+          </div>
+          <ul class="mnav-l2">
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/pro/products" class="mobile-subnav-l2">Products</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/pro/team" class="mobile-subnav-l2">Our Team</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/pro/distributor" class="mobile-subnav-l2">Distributors</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/pro/formulas" class="mobile-subnav-l2">Formulas</a>
+
+                                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/pro/reference" class="mobile-subnav-l2">Reference</a>
+
+                                                  <button class="mnav-more"><span class="visually-hidden">Expand Reference</span></button>
+                  <div class="mnav-l3--wrapper mnav-wrapper" aria-hidden="true">
+                    <div class="mnav-header">
+                      <button class="mnav-back"><span class="visually-hidden">Collapse Reference</span></button>
+                      <h4 class="mnav-l3--title">Reference</h4>
+                    </div>
+                    <ul class="mnav-l3">
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/pro/bakers-percentage" class="mobile-subnav-l3">Baker's Percentage</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/pro/batch-costing" class="mobile-subnav-l3">Batch Costing</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/pro/reference/bromate" class="mobile-subnav-l3">Bromate</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/pro/reference/conversion" class="mobile-subnav-l3">Common conversions</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/pro/reference/dough-temperature" class="mobile-subnav-l3">Dough Temperatures</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/pro/reference/preferment" class="mobile-subnav-l3">Preferments</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/pro/reference/salt" class="mobile-subnav-l3">Salt</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/pro/reference/water" class="mobile-subnav-l3">Water</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/pro/reference/yeast" class="mobile-subnav-l3">Yeast</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/pro/reference/videos" class="mobile-subnav-l3">Video Tips for Professionals</a>
+                        </li>
+                                              <li class="mnav-l3--item mnav-item">
+                          <a href="https://www.kingarthurflour.com/baking-school/calendar" class="mobile-subnav-l3">Professional Classes</a>
+                        </li>
+                                          </ul>
+                  </div>
+                                
+              </li>
+                          <li class="mnav-l2--item mnav-item">
+                <a href="https://www.kingarthurflour.com/pro/contact" class="mobile-subnav-l2">Contact</a>
+
+                                                
+              </li>
+                      </ul>
+        </div>
+            
+    </li>
+  </ul>
+
+  </div>
+
+  </div>
+
+        <div class="region region-primary-menu">
+    <div id="block-kafmegamenu" class="block block-">
+  
+    
+      
+<ul class="menu menu-level-0">
+      
+    <li class="menu-item">
+              <a href="https://shop.kingarthurflour.com/shop-home/">Shop</a>
+      
+                    
+
+<div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-0 menu-type-default">
+        
+  </div>
+          </li>
+      
+    <li class="menu-item menu-item--active-trail">
+              <a href="https://www.kingarthurflour.com/recipes" class="is-active" data-drupal-link-system-path="node/116">Recipes</a>
+      
+                    
+
+<div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-0 menu-type-default">
+        
+  </div>
+          </li>
+      
+    <li class="menu-item">
+              <a href="https://www.kingarthurflour.com/learn" data-drupal-link-system-path="node/156">Learn</a>
+      
+                    
+
+<div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-0 menu-type-default">
+        
+  </div>
+          </li>
+      
+    <li class="menu-item">
+              <a href="https://www.kingarthurflour.com/about" data-drupal-link-system-path="node/27601">About</a>
+      
+                    
+
+<div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-0 menu-type-default">
+        
+  </div>
+          </li>
+      
+    <li class="menu-item">
+              <a href="https://www.kingarthurflour.com/blog" data-drupal-link-system-path="node/161">Blog</a>
+      
+                    
+
+<div class="menu_link_content menu-link-contentmain view-mode-default menu-dropdown menu-dropdown-0 menu-type-default">
+        
+  </div>
+          </li>
+  </ul>
+
+  </div>
+
+  </div>
+
+        <div class="menu--utility region region-secondary-menu">
+
+    <div class="search">
+      <i class="search__show"></i>
+      <div class="search__bar"><select id="ais-autocomplete" aria-label="Search" tabindex="-1" class="selectized" style="display: none;"><option value="" selected="selected"></option></select><div class="selectize-control single plugin-search_submit plugin-accessibility"><div class="selectize-input items not-full"><input type="select-one" autocomplete="off" tabindex="" id="ais-autocomplete-selectized" placeholder="Search" role="combobox" aria-expanded="false" haspopup="listbox" aria-owns="v8s5hj0hky" aria-label="Search" style="width: 95.2344px;"></div><div class="selectize-dropdown single plugin-search_submit plugin-accessibility" style="display: none; width: 260px; top: 59px; left: 1130.28px;"><div class="selectize-dropdown-content" role="listbox" id="v8s5hj0hky"></div></div></div></div>
+      <button class="search__hide"><span class="visually-hidden">Hide Search</span></button>
+      <div class="autocomplete"></div>
+    </div>
+
+    <nav class="user-nav">
+     <nav role="navigation" aria-labelledby="block-kaf-nextgenweb-secondarynavigation-menu" id="block-kaf-nextgenweb-secondarynavigation">
+            
+  <h2 class="visually-hidden" id="block-kaf-nextgenweb-secondarynavigation-menu">Secondary navigation</h2>
+  
+
+        
+<ul class="menu menu-level-0">
+  
+  <li class="user__item user__item-account menu-item menu-item--expanded">
+    <a href="https://shop.kingarthurflour.com/signin">Sign in</a>
+
+              
+
+<div class="menu_link_content menu-link-contentsecondary view-mode-default menu-dropdown menu-dropdown-0 menu-type-default">
+        
+<ul class="menu menu-level-1">
+  
+  <li class="user__item menu-item">
+    <a href="https://shop.kingarthurflour.com/AcctDashboard">Dashboard</a>
+
+              
+
+<div class="menu_link_content menu-link-contentsecondary view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+        
+  </div>
+      </li>
+  
+  <li class="user__item menu-item">
+    <a href="https://shop.kingarthurflour.com/OrderHistory">Orders</a>
+
+              
+
+<div class="menu_link_content menu-link-contentsecondary view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+        
+  </div>
+      </li>
+  
+  <li class="user__item menu-item">
+    <a href="https://shop.kingarthurflour.com/WishListDisplay">Wish List</a>
+
+              
+
+<div class="menu_link_content menu-link-contentsecondary view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+        
+  </div>
+      </li>
+  
+  <li class="user__item menu-item">
+    <a href="https://www.kingarthurflour.com/recipebox" data-drupal-link-system-path="recipebox">Recipe Box</a>
+
+              
+
+<div class="menu_link_content menu-link-contentsecondary view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+        
+  </div>
+      </li>
+  
+  <li class="user__item menu-item">
+    <a href="https://shop.kingarthurflour.com/email/preferences.html">Email preferences</a>
+
+              
+
+<div class="menu_link_content menu-link-contentsecondary view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+        
+  </div>
+      </li>
+  
+  <li class="user__item user__item-separator user__item-chevron menu-item">
+    <a href="https://classes.kingarthurflour.com/Login.aspx">Baking School login</a>
+
+              
+
+<div class="menu_link_content menu-link-contentsecondary view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+        
+  </div>
+      </li>
+  
+  <li class="user__item user__item-signout menu-item">
+    <a href="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe">Sign out</a>
+
+              
+
+<div class="menu_link_content menu-link-contentsecondary view-mode-default menu-dropdown menu-dropdown-1 menu-type-default">
+        
+  </div>
+      </li>
+</ul>
+
+  </div>
+      </li>
+  
+  <li class="user__item user__item-cart menu-item">
+    <a href="https://shop.kingarthurflour.com/shop/CartDisplay">View your cart</a>
+
+              
+
+<div class="menu_link_content menu-link-contentsecondary view-mode-default menu-dropdown menu-dropdown-0 menu-type-default">
+        
+  </div>
+      </li>
+</ul>
+
+  </nav>
+
+    </nav>
+  </div>
+
+      <button class="menu__trigger" aria-haspopup="true" aria-controls="mobile-nav" id="mnav-trigger"><span class="visually-hidden">Menu</span></button>
+    </div>
+
+          <nav class="header-subnav">
+          <div class="region region-subnav-menu">
+    <nav role="navigation" aria-labelledby="block-subnavrecipes-menu" id="block-subnavrecipes">
+            
+  <h2 class="visually-hidden" id="block-subnavrecipes-menu">Subnav: Recipes</h2>
+  
+
+        
+
+                <ul data-region="subnav_menu" class="menu-subnav-recipes menu-level-0">
+                        <li>
+            <span>Categories</span>
+                          
+                  <ul>
+                          <li>
+            <a href="https://www.kingarthurflour.com/recipes/biscuits-shortcakes" data-drupal-link-system-path="taxonomy/term/8406">Biscuits &amp; Shortcakes</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/bread" title="Bread Recipes" data-drupal-link-system-path="taxonomy/term/361">Bread</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/buns-rolls" title="Recipes for Buns &amp; Rolls" data-drupal-link-system-path="taxonomy/term/8411">Buns &amp; Rolls</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/cake" title="Cake Recipes" data-drupal-link-system-path="taxonomy/term/446">Cake</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/cookies-bars" data-drupal-link-system-path="taxonomy/term/8356">Cookies &amp; Bars</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/muffins-popovers" title="Muffin and Popover Recipes" data-drupal-link-system-path="taxonomy/term/8671">Muffins &amp; Popovers</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/pancakes-waffles" title="Pancake &amp; Waffle Recipes" data-drupal-link-system-path="taxonomy/term/8631">Pancakes &amp; Waffles</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/pastry" title="Pastry Recipes" data-drupal-link-system-path="taxonomy/term/8781">Pastry</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/pie" title="Pie Recipes" data-drupal-link-system-path="taxonomy/term/8561">Pie</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/scones" title="Scone Reciepes" data-drupal-link-system-path="taxonomy/term/461">Scones</a>
+                      </li>
+                  <li>
+            <span>—</span>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes#categories">See All Categories</a>
+                      </li>
+              </ul>
+      
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/collections" data-drupal-link-system-path="node/126">Collections</a>
+                          
+                  <ul>
+                          <li>
+            <a href="https://www.kingarthurflour.com/recipes/collections/easy-homemade-meals" title="Our Collection of 12 Easy Homemade Meals" data-drupal-link-system-path="node/41201">Easy Homemade Meals</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/collections/recipes-to-bake-with-kids" title="Our Collection of 12 Recipes to Bake With Kids" data-drupal-link-system-path="node/28356">Recipes to Bake With Kids</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/collections/everyday-bread" title="Our Collection of 12 Everyday Bread Recipes" data-drupal-link-system-path="node/39446">Everyday Bread</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/collections/recipes-with-5-ingredients-or-fewer" title="Our Collection of Recipes with Few Ingredients" data-drupal-link-system-path="node/28361">5 Ingredients or Fewer</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/collections/sourdough-discard-recipes" data-drupal-link-system-path="node/28376">Sourdough Discard Recipes</a>
+                      </li>
+                  <li>
+            <span>—</span>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/collections" title="View All Recipe Collections" data-drupal-link-system-path="node/126">View All Recipe Collections</a>
+                      </li>
+              </ul>
+      
+                      </li>
+                  <li>
+            <span>Resources</span>
+                          
+                  <ul>
+                          <li>
+            <a href="https://www.kingarthurflour.com/recipebox" title="Recipe Box" data-drupal-link-system-path="recipebox">Recipe Box</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/bakers-hotline" data-drupal-link-system-path="node/46">Bakers Hotline</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/learn/ingredient-weight-chart" data-drupal-link-system-path="node/27676">Ingredient Weight Chart</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/videos/baking-skills/how-to-measure-flour" data-drupal-link-system-path="node/28056">How to Measure Flour</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/recipes/resources/recipe-success-guide" data-drupal-link-system-path="node/28256">Recipe Success Guide</a>
+                      </li>
+              </ul>
+      
+                      </li>
+              </ul>
+      
+
+
+
+  </nav>
+
+  </div>
+
+      </nav>
+      </header>
+
+    <div class="region region-highlighted">
+    <div data-drupal-messages-fallback="" class="hidden"></div>
+
+  </div>
+
+
+  <main class="main" role="main">
+    <a id="main-content" tabindex="-1"></a>
+    
+          <section class="page-content-header">
+          <div class="region region-content-header">
+    <div id="block-nodequickview" class="block block-ctools block-entity-viewnode">
+  
+    
+      
+<article role="article" class="node node--type-recipe quickview quickview--recipe" data-detected_0="1">
+  <div class="quickview__content">
+          
+<nav class="breadcrumb" role="navigation" aria-labelledby="system-breadcrumb">
+  <ol class="breadcrumb__wrap">
+      <li class="breadcrumb__item">
+              <a href="https://www.kingarthurflour.com/recipes">Recipes</a>
+          </li>
+      <li class="breadcrumb__item">
+              <a href="https://www.kingarthurflour.com/recipes/bread">Bread</a>
+          </li>
+      <li class="breadcrumb__item">
+              <a href="https://www.kingarthurflour.com/recipes/sourdough">Sourdough</a>
+          </li>
+    </ol>
+</nav>
+
+    
+    <h1><span>Rustic Sourdough Bread</span>
+</h1>
+
+    <div class="quickview__meta">
+      <div class="quickview__reviews reviews">
+                  <a class="reviews__jumplink" href="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe#review-section">
+                              <span class="reviews__label">488 Reviews</span>
+                                <span class="rating rating-is-50">4.6 out of 5 stars</span>
+                            </a>
+              </div>
+
+              <div class="share js-kaf-share-widget">
+  <div class="share__label">Shares</div>
+  <div class="share__count js-kaf-share-count">15.7k</div>
+
+  <ul class="share__btn-group" role="region" aria-label="Social share">
+    <li><a class="share__btn share__btn--facebook js-kaf-share-button-facebook" href="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe#">Share on Facebook</a></li>
+    <li><a class="share__btn share__btn--email js-kaf-share-button-email" href="mailto:?subject=Rustic%20Sourdough%20Bread%20%7C%20King%20Arthur%20Flour&amp;body=Rustic%20Sourdough%20Bread%20%7C%20King%20Arthur%20Flour%0Ahttps%3A%2F%2Fwww.kingarthurflour.com%2Frecipes%2Frustic-sourdough-bread-recipe">Share by Email</a></li>
+    <li><a class="share__btn share__btn--pinterest js-kaf-share-button-pinterest" href="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe#">Share on Pinterest</a></li>
+    <li><a class="share__btn share__btn--twitter js-kaf-share-button-twitter" href="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe#">Share on Twitter</a></li>
+  </ul>
+</div>
+
+          </div>
+
+    <div class="quickview__description">
+        <p>This chewy loaf has rich, deep, flavor with mild sourdough tang. Since it includes commercial yeast as well as starter, you're guaranteed a good, strong rise — even if your starter isn't quite up to snuff.</p>
+
+    </div>
+
+    <div class="stats stats--recipe with-rule">
+              <div class="stat__item stat__item--prep">
+          <div class="label">Prep</div>
+          <span>12 mins</span>
+        </div>
+      
+              <div class="stat__item stat__item--bake">
+          <div class="label">Bake</div>
+          <span>25 to 30 mins</span>
+        </div>
+      
+              <div class="stat__item stat__item--total">
+          <div class="label">Total</div>
+          <span>3 hrs 7 mins</span>
+        </div>
+          </div>
+
+    <div class="stats stats--recipe">
+              <div class="stat__item stat__item--yield">
+          <div class="label">Yield</div>
+          <span>Two 10" loaves, 32 servings</span>
+        </div>
+      
+              <div class="stat__item stat__item--recipe-box">
+          <a href="https://www.kingarthurflour.com/recipebox" class="btn btn--save js-kaf-recipe-box-add" data-recipe-id="16326" data-recipe-uuid="d82e7457-a770-4030-a8c3-2aa90612ce9b">Save Recipe</a>
+        </div>
+      
+      <div class="stat__item stat__item--print">
+        <a href="javascript:window.print()" class="btn btn--print">Print</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="quickview__media">
+    <div class="quickview__media-main">
+                      <div id="mainImage-0">
+                <picture>
+                <!--[if IE 9]><video style="display: none;"><![endif]-->
+              <source srcset="./Rustic Sourdough Bread _ King Arthur Flour_files/testCollectionJackson.png" media="(min-width: 480px)" type="image/png">
+              <source srcset="./Rustic Sourdough Bread _ King Arthur Flour_files/testCollectionJackson.png" type="image/png">
+            <!--[if IE 9]></video><![endif]-->
+            <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/testCollectionJackson.png" alt="Rustic Sourdough Bread">
+
+  </picture>
+
+
+
+
+        </div>
+          </div>
+      </div>
+</article>
+
+  </div>
+
+  </div>
+
+      </section>
+    
+
+    <section class="page-content">
+        <div class="region region-content">
+    <div role="article" class="node node--type-recipe node--promoted node--view-mode-full">
+  
+  
+  
+
+  <div class="node__content">
+    <section class="recipe recipe--detail">
+      <aside class="recipe__ingredients">
+        <h4>Ingredients</h4>
+          <div class="ingredient-section">
+  
+  <ul class="list--bullets">
+      <li>1 cup (227g) ripe (fed) sourdough starter</li>
+      <li>1 1/2 cups (340g) lukewarm water</li>
+      <li>1 to 2 teaspoons instant yeast*</li>
+      <li>2 1/2 teaspoons salt</li>
+      <li>5 cups (602g) King Arthur Unbleached All-Purpose Flour</li>
+  </ul>
+
+
+      <div class="ingredient-section__footnote">
+        <p>*See "tips," below.</p>
+
+    </div>
+  </div>
+
+
+
+                  <a href="https://www.kingarthurflour.com/nutritional-info/16326" class="btn btn--secondary use-ajax" data-dialog-type="modal" data-dialog-options="{&quot;width&quot;:&quot;90%&quot;, &quot;dialogClass&quot;:&quot;kaf-modal&quot;}">Nutrition Information</a>
+              </aside>
+
+      <article class="recipe__instructions">
+                <h4>Instructions</h4>
+        <div class="field field--recipe-steps">
+  <ol class="list--numbers">
+          <li class="field__item">
+
+        <p>Combine all of the ingredients, kneading to form a smooth dough.</p>
+
+        
+      </li>
+          <li class="field__item">
+
+        <p>Allow the dough to rise, in a lightly greased, covered bowl, until it's doubled in size, about 90 minutes.</p>
+
+        
+      </li>
+          <li class="field__item">
+
+        <p>Gently divide the dough in half; it'll deflate somewhat.</p>
+
+        
+      </li>
+          <li class="field__item">
+
+        <p>Gently shape the dough into two oval loaves; or, for longer loaves, two 10" to 11" logs. Place the loaves on a lightly greased or parchment-lined baking sheet. Cover and let rise until very puffy, about 1 hour. Towards the end of the rising time, preheat the oven to 425°F.</p>
+
+                  <aside>
+            <h4>Perfect your technique</h4>
+            
+
+
+<div role="article" class="article article--embed">
+  
+  
+
+      <a href="https://www.kingarthurflour.com/blog/2019/10/14/rustic-sourdough-bread" rel="bookmark">
+            <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/Rustic Sourdough Bread-1.jpg" width="1200" height="800" alt="Loaves of sourdough bread on a cutting board, one loaf sliced.">
+
+
+
+
+
+    </a>
+
+    <div class="article__content">
+
+      
+        <span class="eyebrow">Blog</span>
+        <h5><a href="https://www.kingarthurflour.com/blog/2019/10/14/rustic-sourdough-bread" rel="bookmark"><span>Rustic Sourdough Bread</span>
+</a></h5>
+        <p class="article__author">By PJ Hamel</p>
+
+      
+    </div>
+  </div>
+
+          </aside>
+        
+      </li>
+          <li class="field__item">
+
+        <p>Spray the loaves with lukewarm water.</p>
+
+        
+      </li>
+          <li class="field__item">
+
+        <p>Make two fairly deep diagonal slashes in each; a serrated bread knife, wielded firmly, works well here.</p>
+
+        
+      </li>
+          <li class="field__item">
+
+        <p>Bake the bread for 25 to 30 minutes, until it's a very deep golden brown. Remove it from the oven, and cool on a rack.</p>
+
+        
+      </li>
+      </ol>
+</div>
+
+
+                  <div class="recipe__tips">
+            <h4>Tips from our Bakers</h4>
+            <ul class="list--star">
+      <li><div class="eck-entity">
+      Why the range in yeast amount? If you're sure your starter is healthy and vigorous, and you don't mind potentially extending somewhat the rise times listed above, use 1 teaspoon yeast. If your starter seems a bit lethargic (or you want to keep your rise times on the shorter side), go with 2 teaspoons.
+
+</div>
+</li>
+      <li><div class="eck-entity">
+      For an assertively sour loaf, read our recipe for <a href="https://www.kingarthurflour.com/recipes/extra-tangy-sourdough-bread-recipe">Extra-Tangy Sourdough Bread.</a>
+
+</div>
+</li>
+      <li><div class="eck-entity">
+      <p>Want to make a loaf with an even chewier, crustier crust? See our blog post, <a href="https://www.kingarthurflour.com/blog/2017/02/21/bread-baking-dutch-oven">Baking bread in a Dutch oven</a>.</p>
+
+</div>
+</li>
+      <li><div class="eck-entity">
+      <p>Don’t have any starter? Here’s a recipe for <a href="https://www.kingarthurflour.com/recipes/sourdough-starter-recipe">homemade sourdough starter</a>. If you're making it from scratch, you'll need to feed it for 5 to 7 days before it’s ready for baking. Want a head start? Purchase our <a href="https://shop.kingarthurflour.com/items/classic-fresh-sourdough-starter-1-oz">classic fresh sourdough starter</a>&nbsp;– it’ll be ready for baking soon&nbsp;after it arrives at your door. Looking for tips, techniques, and all kinds of great information about sourdough baking? Find what you need in our <a href="https://www.kingarthurflour.com/guides/sourdough/">sourdough baking guide</a>.</p>
+
+
+</div>
+</li>
+  </ul>
+
+          </div>
+        
+                  <div class="share js-kaf-share-widget">
+  <div class="share__label">Shares</div>
+  <div class="share__count js-kaf-share-count">15.7k</div>
+
+  <ul class="share__btn-group" role="region" aria-label="Social share">
+    <li><a class="share__btn share__btn--facebook js-kaf-share-button-facebook" href="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe#">Share on Facebook</a></li>
+    <li><a class="share__btn share__btn--email js-kaf-share-button-email" href="mailto:?subject=Rustic%20Sourdough%20Bread%20%7C%20King%20Arthur%20Flour&amp;body=Rustic%20Sourdough%20Bread%20%7C%20King%20Arthur%20Flour%0Ahttps%3A%2F%2Fwww.kingarthurflour.com%2Frecipes%2Frustic-sourdough-bread-recipe">Share by Email</a></li>
+    <li><a class="share__btn share__btn--pinterest js-kaf-share-button-pinterest" href="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe#">Share on Pinterest</a></li>
+    <li><a class="share__btn share__btn--twitter js-kaf-share-button-twitter" href="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe#">Share on Twitter</a></li>
+  </ul>
+</div>
+
+              </article>
+
+      <div class="recipe-bakers-hotline">
+  <div class="recipe-bakers-hotline__content">
+    <h4>Baker’s Resources</h4>
+    <ul class="list--links">
+      <li><a href="https://www.kingarthurflour.com/guides/recipe-success-guide">Recipe success guide</a></li>
+      <li><a href="https://www.kingarthurflour.com/learn/resources/baking-tips-techniques">Tips &amp; techniques</a></li>
+      <li><a href="https://www.kingarthurflour.com/learn/resources/high-altitude-baking">High-altitude baking</a></li>
+      <li><a href="https://www.kingarthurflour.com/learn/resources/yeast">Baker’s yeast</a></li>
+      <li><a href="https://www.kingarthurflour.com/learn/ingredient-weight-chart">Ingredient weight chart</a></li>
+      <li><a href="https://www.kingarthurflour.com/learn/resources/tools-and-pans">Tools &amp; pans</a></li>
+      <li><a href="https://www.kingarthurflour.com/videos/baking-skills/how-to-measure-flour">How to measure flour</a></li>
+      <li><a href="https://www.kingarthurflour.com/about/products/docs/flour-safety">Safe handling instructions</a></li>
+    </ul>
+  </div>
+
+  <aside class="recipe-bakers-hotline__aside">
+    <div class="cta cta--card-small">
+      <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/bakers-hotline.png" alt="Baker’s Hotline">
+      <div class="cta__content">
+        <a class="btn btn--secondary" href="https://www.kingarthurflour.com/launchchat">Chat with a baker</a>
+      </div>
+    </div>
+  </aside>
+</div>
+    </section>
+
+  </div>
+</div>
+
+  </div>
+
+    </section>
+
+    
+    
+            <div class="region region-content-footer">
+    <div id="block-kafrecipereviews" class="block block-kaf-recipe block-kaf-recipe-reviews">
+  
+    
+      <div class="yotpo yotpo-main-widget" id="review-section" data-product-id="91" data-name="Rustic Sourdough Bread" data-url="https://www.kingarthurflour.com/recipes/rustic-sourdough-bread-recipe" data-description="This chewy loaf has rich, deep, flavor with mild sourdough tang. Since it includes commercial yeast as well as starter, you&#39;re guaranteed a good, strong rise — even if your starter isn&#39;t quite up to snuff.
+"></div>
+  </div>
+
+<div id="block-recipe-newsletter-signup" class="block block-webform block-webform-block">
+  <div class="newsletter-wrapper">
+    
+    
+
+          <picture>
+                <!--[if IE 9]><video style="display: none;"><![endif]-->
+              <source srcset="/sites/default/files/styles/featured_image/public/recipe_legacy/9918-3-large.jpg?itok=5fDrM_t- 1x, /sites/default/files/styles/featured_image_2x/public/recipe_legacy/9918-3-large.jpg?itok=1ayRlRgR 2x" media="(min-width: 480px)" type="image/jpeg">
+              <source srcset="/sites/default/files/styles/featured_image_sm/public/recipe_legacy/9918-3-large.jpg?itok=ro7BJkuw 1x, /sites/default/files/styles/featured_image_sm_2x/public/recipe_legacy/9918-3-large.jpg?itok=FRYrB2xs 2x" type="image/jpeg">
+            <!--[if IE 9]></video><![endif]-->
+            <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/9918-3-large.jpg" alt="Classic Birthday Cake">
+
+  </picture>
+
+
+
+
+
+    <div class="newsletter-form-area">
+      <h3 class="heading">For more recipes like this subscribe to our newsletter</h3>
+
+      <form class="recipe-newsletter-signup" id="recipe-newsletter-form">
+        <div class="form-item-email">
+          <input aria-label="Email address" class="custom-form-field form-email" id="footer-email-input" placeholder="Email address" type="email" value="">
+        </div>
+        <div class="form-actions webform-actions js-form-wrapper form-wrapper">
+          <input class="webform-button--submit button" id="recipe-email-submit" type="submit" value="submit">
+        </div>
+      </form>
+      <small style="display:block; margin-top: 5px;">View our <a href="https://www.kingarthurflour.com/policies/privacy-policy" title="Privacy Policy">privacy policy</a></small></div>
+    </div>
+  </div>
+</div>
+<div id="block-kafrecommendedrecipes" class="block block-kaf-recipe block-kaf-recommended-recipes">
+  
+    
+      <div class="related related--recipes">
+  <div class="eyebrow">Recipes</div>
+  <h3>Recommended Recipes</h3>
+  <div class="related__nodes">
+    
+<div role="article" class="recipe recipe--card">
+  
+  
+
+  <a href="https://www.kingarthurflour.com/recipes/hazelnut-golden-raisin-baguettes-recipe">
+        <picture>
+                <!--[if IE 9]><video style="display: none;"><![endif]-->
+              <source srcset="/sites/default/files/styles/kaf_thumbnail_large/public/recipe_legacy/7341-3-large.jpg?itok=kDZou8RJ 1x, /sites/default/files/styles/kaf_thumbnail_large_2x_880x596_/public/recipe_legacy/7341-3-large.jpg?itok=3mC03BP3 2x" media="(min-width: 768px)" type="image/jpeg">
+              <source srcset="/sites/default/files/styles/kaf_thumbnail/public/recipe_legacy/7341-3-large.jpg?itok=hwkFZL3u 1x, /sites/default/files/styles/kaf_thumbnail_2x/public/recipe_legacy/7341-3-large.jpg?itok=SXo88zsy 2x" media="(min-width: 480px)" type="image/jpeg">
+              <source srcset="/sites/default/files/styles/kaf_thumbnail_small_200x135_/public/recipe_legacy/7341-3-large.jpg?itok=NrMPkUqs 1x, /sites/default/files/styles/kaf_thumbnail_small_2x_400x271_/public/recipe_legacy/7341-3-large.jpg?itok=y00k4GFG 2x" type="image/jpeg">
+            <!--[if IE 9]></video><![endif]-->
+            <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/7341-3-large.jpg" alt="Hazelnut Golden Raisin Baguettes">
+
+  </picture>
+
+
+
+
+  </a>
+
+  <div class="recipe__content">
+          <span class="eyebrow">Crusty bread</span>
+    
+          <h5>
+        <a href="https://www.kingarthurflour.com/recipes/hazelnut-golden-raisin-baguettes-recipe">Hazelnut Golden Raisin Baguettes</a>
+      </h5>
+      </div>
+</div>
+
+
+<div role="article" class="recipe recipe--card">
+  
+  
+
+  <a href="https://www.kingarthurflour.com/recipes/basic-sourdough-bread-recipe">
+        <picture>
+                <!--[if IE 9]><video style="display: none;"><![endif]-->
+              <source srcset="/sites/default/files/styles/kaf_thumbnail_large/public/recipe_legacy/5841-3-large.jpg?itok=ON10_LSt 1x, /sites/default/files/styles/kaf_thumbnail_large_2x_880x596_/public/recipe_legacy/5841-3-large.jpg?itok=ZWcJG-f- 2x" media="(min-width: 768px)" type="image/jpeg">
+              <source srcset="/sites/default/files/styles/kaf_thumbnail/public/recipe_legacy/5841-3-large.jpg?itok=EFYFcTgU 1x, /sites/default/files/styles/kaf_thumbnail_2x/public/recipe_legacy/5841-3-large.jpg?itok=vMKgvZ8I 2x" media="(min-width: 480px)" type="image/jpeg">
+              <source srcset="/sites/default/files/styles/kaf_thumbnail_small_200x135_/public/recipe_legacy/5841-3-large.jpg?itok=mkTGiYXB 1x, /sites/default/files/styles/kaf_thumbnail_small_2x_400x271_/public/recipe_legacy/5841-3-large.jpg?itok=W-QKS2im 2x" type="image/jpeg">
+            <!--[if IE 9]></video><![endif]-->
+            <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/5841-3-large.jpg" alt="Basic Sourdough Bread">
+
+  </picture>
+
+
+
+
+  </a>
+
+  <div class="recipe__content">
+          <span class="eyebrow">Sandwich bread</span>
+    
+          <h5>
+        <a href="https://www.kingarthurflour.com/recipes/basic-sourdough-bread-recipe">Basic Sourdough Bread</a>
+      </h5>
+      </div>
+</div>
+
+
+<div role="article" class="recipe recipe--card">
+  
+  
+
+  <a href="https://www.kingarthurflour.com/recipes/the-almost-no-knead-baguette-recipe">
+        <picture>
+                <!--[if IE 9]><video style="display: none;"><![endif]-->
+              <source srcset="/sites/default/files/styles/kaf_thumbnail_large/public/recipe_legacy/1156-3-large.jpg?itok=VYJaHPUq 1x, /sites/default/files/styles/kaf_thumbnail_large_2x_880x596_/public/recipe_legacy/1156-3-large.jpg?itok=ek007LTm 2x" media="(min-width: 768px)" type="image/jpeg">
+              <source srcset="/sites/default/files/styles/kaf_thumbnail/public/recipe_legacy/1156-3-large.jpg?itok=CKcsj-rb 1x, /sites/default/files/styles/kaf_thumbnail_2x/public/recipe_legacy/1156-3-large.jpg?itok=3o5GoYPW 2x" media="(min-width: 480px)" type="image/jpeg">
+              <source srcset="/sites/default/files/styles/kaf_thumbnail_small_200x135_/public/recipe_legacy/1156-3-large.jpg?itok=qTfP4DsB 1x, /sites/default/files/styles/kaf_thumbnail_small_2x_400x271_/public/recipe_legacy/1156-3-large.jpg?itok=WXNSxTWg 2x" type="image/jpeg">
+            <!--[if IE 9]></video><![endif]-->
+            <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/1156-3-large.jpg" alt="The Almost-No-Knead Baguette ">
+
+  </picture>
+
+
+
+
+  </a>
+
+  <div class="recipe__content">
+          <span class="eyebrow">Crusty bread</span>
+    
+          <h5>
+        <a href="https://www.kingarthurflour.com/recipes/the-almost-no-knead-baguette-recipe">The Almost-No-Knead Baguette </a>
+      </h5>
+      </div>
+</div>
+
+
+<div role="article" class="recipe recipe--card">
+  
+  
+
+  <a href="https://www.kingarthurflour.com/recipes/cinnamon-raisin-sourdough-bread-recipe">
+        <picture>
+                <!--[if IE 9]><video style="display: none;"><![endif]-->
+              <source srcset="/sites/default/files/styles/kaf_thumbnail_large/public/recipe_legacy/5005-3-large.jpg?itok=tELnpD1s 1x, /sites/default/files/styles/kaf_thumbnail_large_2x_880x596_/public/recipe_legacy/5005-3-large.jpg?itok=X9VYygmR 2x" media="(min-width: 768px)" type="image/jpeg">
+              <source srcset="/sites/default/files/styles/kaf_thumbnail/public/recipe_legacy/5005-3-large.jpg?itok=_Le6v3zv 1x, /sites/default/files/styles/kaf_thumbnail_2x/public/recipe_legacy/5005-3-large.jpg?itok=NWMKKnrN 2x" media="(min-width: 480px)" type="image/jpeg">
+              <source srcset="/sites/default/files/styles/kaf_thumbnail_small_200x135_/public/recipe_legacy/5005-3-large.jpg?itok=qCct850p 1x, /sites/default/files/styles/kaf_thumbnail_small_2x_400x271_/public/recipe_legacy/5005-3-large.jpg?itok=nsYVJIsI 2x" type="image/jpeg">
+            <!--[if IE 9]></video><![endif]-->
+            <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/5005-3-large.jpg" alt="Cinnamon Raisin Sourdough Bread">
+
+  </picture>
+
+
+
+
+  </a>
+
+  <div class="recipe__content">
+          <span class="eyebrow">Sandwich bread</span>
+    
+          <h5>
+        <a href="https://www.kingarthurflour.com/recipes/cinnamon-raisin-sourdough-bread-recipe">Cinnamon Raisin Sourdough Bread</a>
+      </h5>
+      </div>
+</div>
+
+
+  </div>
+</div>
+
+  </div>
+<div id="block-kafreciperelatedproducts" class="block block-kaf-recipe block-kaf-related-products">
+  
+    
+      <div class="related related--products">
+  <div class="eyebrow">Shop</div>
+  <h3>Related Products</h3>
+  <div class="related__nodes">
+    
+<div role="article" class="product product--card">
+  
+  
+
+            <a href="https://shop.kingarthurflour.com/items/classic-king-arthur-sourdough-crock">
+          <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/7699_11_30_2017__11_58_40_700.jpg" alt="" width="700" height="700">
+          </a>
+      
+  <div class="product__content">
+    <h5 data-sku="201571" data-price="$26.95">
+              <a href="https://shop.kingarthurflour.com/items/classic-king-arthur-sourdough-crock">
+              <span>Classic King Arthur Sourdough Crock</span>
+
+              </a>
+          </h5>
+
+    <div class="product__reviews">
+              <span class="rating rating-is-45">4.1 out of 5 stars</span>
+                    <span class="reviews__label">366 Reviews</span>
+          </div>
+  </div>
+</div>
+
+<div role="article" class="product product--card">
+  
+  
+
+            <a href="https://shop.kingarthurflour.com/items/baking-parchment-paper-set-of-100-half-sheets">
+          <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/5854_10_23_2018__15_26_30_700.jpg" alt="" width="700" height="700">
+          </a>
+      
+  <div class="product__content">
+    <h5 data-sku="100656" data-price="$22.95">
+              <a href="https://shop.kingarthurflour.com/items/baking-parchment-paper-set-of-100-half-sheets">
+              <span>Baking Parchment Paper - Set of 100 Half-Sheets</span>
+
+              </a>
+          </h5>
+
+    <div class="product__reviews">
+              <span class="rating rating-is-50">5 out of 5 stars</span>
+                    <span class="reviews__label">2047 Reviews</span>
+          </div>
+  </div>
+</div>
+
+<div role="article" class="product product--card">
+  
+  
+
+            <a href="https://shop.kingarthurflour.com/items/king-arthur-unbleached-all-purpose-flour-5-lb">
+          <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/3005_10_15_2018__08_44_43_700.jpg" alt="" width="700" height="700">
+          </a>
+      
+  <div class="product__content">
+    <h5 data-sku="01050" data-price="$4.95">
+              <a href="https://shop.kingarthurflour.com/items/king-arthur-unbleached-all-purpose-flour-5-lb">
+              <span>King Arthur Unbleached All-Purpose Flour 5 lb.</span>
+
+              </a>
+          </h5>
+
+    <div class="product__reviews">
+              <span class="rating rating-is-50">5 out of 5 stars</span>
+                    <span class="reviews__label">499 Reviews</span>
+          </div>
+  </div>
+</div>
+
+<div role="article" class="product product--card">
+  
+  
+
+            <a href="https://shop.kingarthurflour.com/items/king-arthur-flour-bench-knife">
+          <img src="./Rustic Sourdough Bread _ King Arthur Flour_files/208071_08_07_2018__12_50_20_700.jpg" alt="" width="700" height="700">
+          </a>
+      
+  <div class="product__content">
+    <h5 data-sku="208071" data-price="$19.95">
+              <a href="https://shop.kingarthurflour.com/items/king-arthur-flour-bench-knife">
+              <span>King Arthur Flour Bench Knife</span>
+
+              </a>
+          </h5>
+
+    <div class="product__reviews">
+              <span class="rating rating-is-45">4.5 out of 5 stars</span>
+                    <span class="reviews__label">34 Reviews</span>
+          </div>
+  </div>
+</div>
+
+  </div>
+</div>
+
+  </div>
+
+  </main></div>
+
+      
+
+      <div class="page-below-connect">
+        <div class="region region-below-connect">
+    <div id="block-connectwithus" class="block block-block-content block-block-content1b703610-b351-4568-bcc6-a91a133f7a95">
+  
+    
+        <h2>Connect with us</h2>
+
+  </div>
+<div id="block-receiverecipesspecialoffers" class="block block-block-content block-block-contentc53da24a-b22e-4ce3-acdd-9e13a0c06f0e">
+  
+      <h3>Receive Recipes &amp; Special Offers</h3>
+    
+        <form id="footer-newsletter-form">
+<div class="form-item-email"><input aria-label="Email address" class="custom-form-field form-email" id="footer-newsletter-input" placeholder="Email address" type="email" value=""></div>
+
+<div class="form-actions webform-actions js-form-wrapper form-wrapper"><input class="webform-button--submit button" id="footer-email-submit" type="submit" value="submit"></div>
+</form>
+
+<p><small style="display:block;">View our <a href="https://kingarthurflour.com/policies/privacy-policy" style="text-decoration:underline;" title="Privacy Policy">privacy policy</a></small></p>
+
+
+  </div>
+<div id="block-oursocialcommunities" class="block block-block-content block-block-content411ae0cb-f0be-450c-b0b1-d6a9848d6093">
+  
+      <h3>Our Social Communities</h3>
+    
+        <p><a class="icon-facebook" href="https://www.facebook.com/kingarthurflour/"><span class="visually-hidden">Facebook</span></a> <a class="icon-instagram" href="https://www.instagram.com/kingarthurflour/"><span class="visually-hidden">Instagram</span></a> <a class="icon-pinterest" href="https://www.pinterest.com/kingarthurflour/"><span class="visually-hidden">Pinterest</span></a> <a class="icon-twitter" href="https://twitter.com/kingarthurflour/"><span class="visually-hidden">Twitter</span></a> <a class="icon-youtube" href="https://www.youtube.com/user/KingArthurFlour"><span class="visually-hidden">YouTube</span></a></p>
+
+
+  </div>
+<div id="block-getintouch" class="block block-block-content block-block-contentf5d7c1ec-3561-40ba-b96c-6457ceecb13f">
+  
+      <h3>Get in Touch</h3>
+    
+        <p><a class="button contact-button" href="https://www.kingarthurflour.com/launchchat">Chat | Email</a></p>
+
+
+  </div>
+
+  </div>
+
+    </div>
+  
+      <div class="page-below-values">
+        <div class="region region-below-values">
+    <div id="block-certifiedbcorporation" class="block block-block-content block-block-content900f3cf8-936b-4320-a12a-9f0aa9325299">
+  
+  
+                <img width="" height="" src="./Rustic Sourdough Bread _ King Arthur Flour_files/b-corp_6.svg" alt="Certified B Corporation Logo">
+
+
+
+      </div>
+<div id="block-100employeeowned" class="block block-block-content block-block-content0b74f5eb-9c02-4f1a-af3c-f3fbe64c2200">
+  
+  
+                <img width="" height="" src="./Rustic Sourdough Bread _ King Arthur Flour_files/employee-owned_6.svg" alt="100% Employee-owned logo">
+
+
+
+      </div>
+<div id="block-1fortheplanet" class="block block-block-content block-block-content8a5711d0-5544-4e42-bcdb-c59131dfa9d7">
+  
+  
+                <img width="" height="" src="./Rustic Sourdough Bread _ King Arthur Flour_files/for-the-planet_6.svg" alt="1% For The Planet Logo">
+
+
+
+      </div>
+<div id="block-100committedtoquality" class="block block-block-content block-block-content08516c39-cfe6-4e33-b48e-379b68c53063">
+  
+  
+                <img width="" height="" src="./Rustic Sourdough Bread _ King Arthur Flour_files/quality_6.svg" alt="100% Committed to Quality Logo">
+
+
+
+      </div>
+
+  </div>
+
+    </div>
+  
+  <footer class="footer" role="contentinfo">
+  <div class="footer-grid">
+          <div class="footer__first footer-menu">
+          <div class="region region-footer-first">
+    <nav role="navigation" aria-labelledby="block-kaf-nextgenweb-footerthebakerscatalogue-menu" id="block-kaf-nextgenweb-footerthebakerscatalogue">
+      
+  <h2 id="block-kaf-nextgenweb-footerthebakerscatalogue-menu">The Bakers Catalogue</h2>
+  
+
+        
+
+                <ul data-region="footer_first" class="menu-footer-bakers-catalog menu-level-0">
+                        <li>
+            <a href="https://shop.kingarthurflour.com/" title="Shop our full catalogue of products">Shop Online</a>
+                      </li>
+                  <li>
+            <a href="https://shop.kingarthurflour.com/quickshop">Quick Shop</a>
+                      </li>
+                  <li>
+            <a href="https://shop.kingarthurflour.com/OrderTracking" title="Track the shipping status of your order">Order Tracking</a>
+                      </li>
+                  <li>
+            <a href="https://shop.kingarthurflour.com/rewards/" title="Learn about our loyalty programs">Baker's Rewards Plus</a>
+                      </li>
+                  <li>
+            <a href="https://shop.kingarthurflour.com/customerservice/promotions.html">Current Promotions</a>
+                      </li>
+                  <li>
+            <a href="https://shop.kingarthurflour.com/landing.jsp?go=DefaultCatSignup&amp;ref=pub1" title="Add your name to our mailing list">Request a Catalogue</a>
+                      </li>
+                  <li>
+            <a href="https://shop.kingarthurflour.com/customerservice/returns.html" title="Information about Returns &amp; Refunds">Returns &amp; Refunds</a>
+                      </li>
+              </ul>
+      
+
+
+
+  </nav>
+
+  </div>
+
+      </div>
+    
+          <div class="footer__second footer-menu">
+          <div class="region region-footer-second">
+    <nav role="navigation" aria-labelledby="block-kaf-nextgenweb-footerforhomebakers-menu" id="block-kaf-nextgenweb-footerforhomebakers">
+      
+  <h2 id="block-kaf-nextgenweb-footerforhomebakers-menu">For Home Bakers</h2>
+  
+
+        
+
+                <ul data-region="footer_second" class="menu-footer-home-bakers menu-level-0">
+                        <li>
+            <a href="https://www.kingarthurflour.com/recipes" data-drupal-link-system-path="node/116">Recipes</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/learn/guides" data-drupal-link-system-path="node/151">Baking Guides</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/bakers-hotline" data-drupal-link-system-path="node/46">Baker's Hotline</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/baking-school/calendar?cat=3" data-drupal-link-query="{&quot;cat&quot;:&quot;3&quot;}" data-drupal-link-system-path="node/28251">Classes for Home Bakers </a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/view-all-events" data-drupal-link-system-path="node/181">Baking Contests</a>
+                      </li>
+                  <li>
+            <a href="https://shop.kingarthurflour.com/publications/sift-magazine">Sift Magazine</a>
+                      </li>
+                  <li>
+            <a href="https://shop.kingarthurflour.com/publications/cookbooks">Our Cookbooks</a>
+                      </li>
+              </ul>
+      
+
+
+
+  </nav>
+
+  </div>
+
+      </div>
+    
+          <div class="footer__third footer-menu">
+          <div class="region region-footer-third">
+    <nav role="navigation" aria-labelledby="block-kaf-nextgenweb-footerforprofessionalbakers-menu" id="block-kaf-nextgenweb-footerforprofessionalbakers">
+      
+  <h2 id="block-kaf-nextgenweb-footerforprofessionalbakers-menu">For Professional Bakers</h2>
+  
+
+        
+
+                <ul data-region="footer_third" class="menu-footer-professional-bakers menu-level-0">
+                        <li>
+            <a href="https://www.kingarthurflour.com/pro" data-drupal-link-system-path="node/27741">Bakery &amp; Food Service Sales</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/pro/products" data-drupal-link-system-path="node/28691">Commercial Product Lines</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/pro/distributor" data-drupal-link-system-path="node/41">Wholesale Distributors</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/baking-school/calendar?cat=8" data-drupal-link-query="{&quot;cat&quot;:&quot;8&quot;}" data-drupal-link-system-path="node/28251">Classes &amp; Training</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/pro/formulas" data-drupal-link-system-path="node/27691">Bakery Formulas</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/pro/reference" data-drupal-link-system-path="node/28646">Resources &amp; Reference </a>
+                      </li>
+              </ul>
+      
+
+
+
+  </nav>
+
+  </div>
+
+      </div>
+    
+          <div class="footer__fourth footer-menu">
+          <div class="region region-footer-fourth">
+    <nav role="navigation" aria-labelledby="block-kaf-nextgenweb-footerkingarthurflour-menu" id="block-kaf-nextgenweb-footerkingarthurflour">
+      
+  <h2 id="block-kaf-nextgenweb-footerkingarthurflour-menu">King Arthur Flour</h2>
+  
+
+        
+
+                <ul data-region="footer_fourth" class="menu-footer-king-arthur-flour menu-level-0">
+                        <li>
+            <a href="https://www.kingarthurflour.com/about/our-products" data-drupal-link-system-path="node/27611">Our Product Lines</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/wheretobuy" title="Find our Products at a store near you" data-drupal-link-system-path="wheretobuy">Find Products Near You</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/about/products/docs/flour-safety" data-drupal-link-system-path="node/29381">Say No to Raw Dough</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/visit" data-drupal-link-system-path="node/166">Visit Us</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/jobs" data-drupal-link-system-path="node/28606">Jobs &amp; Careers</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/press-media">News and Press</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/contact-us">Contact Us</a>
+                      </li>
+              </ul>
+      
+
+
+
+  </nav>
+
+  </div>
+
+      </div>
+      </div>
+      <div class="footer__legal">
+      
+<div class="region region-footer">
+  <p class="copyright">Copyright ©
+    2020
+    King Arthur Flour Company, Inc. All rights reserved.  </p>
+
+      <nav role="navigation" aria-labelledby="block-footerlegal-menu" id="block-footerlegal">
+            
+  <h2 class="visually-hidden" id="block-footerlegal-menu">Footer - Legal</h2>
+  
+
+        
+
+                <ul data-region="footer" class="menu-footer-legal menu-level-0">
+                        <li>
+            <a href="https://www.kingarthurflour.com/about/products/docs/supply-chain-disclosure" data-drupal-link-system-path="node/29386">Supply Chain Disclosure</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/policies/accessibility" title="Accessibility information" data-drupal-link-system-path="node/27771">Accessibility</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/policies/privacy-policy" data-drupal-link-system-path="node/27761">Privacy Policy</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/policies/terms-of-use" data-drupal-link-system-path="node/27766">Terms of Use</a>
+                      </li>
+                  <li>
+            <a href="https://www.kingarthurflour.com/policies/privacy/california#do-not-sell" data-drupal-link-system-path="node/39046">Do Not Sell My Information</a>
+                      </li>
+              </ul>
+      
+
+
+
+  </nav>
+
+  </div>
+
+    </div>
+  </footer>
+
+</div>
+
+  
+
+    
+    <script type="application/json" data-drupal-selector="drupal-settings-json">{"path":{"baseUrl":"\/","scriptPath":null,"pathPrefix":"","currentPath":"node\/16326","currentPathIsAdmin":false,"isFront":false,"currentLanguage":"en"},"pluralDelimiter":"\u0003","suppressDeprecationErrors":true,"ajaxPageState":{"libraries":"ckeditor_accordion\/accordion_style,core\/html5shiv,core\/picturefill,eu_cookie_compliance\/eu_cookie_compliance_bare,kaf_ga_tracking\/kaf_ga_tracking,kaf_helpscout\/helpscout,kaf_nextgenweb\/global-scripts,kaf_nextgenweb\/global-styling,kaf_nextgenweb\/status-message-ui,kaf_promo_bar\/kaf_promo_bar,kaf_recipe_box\/recipebox,kaf_share\/kaf_share,kaf_shopinfo\/shopinfo,system\/base","theme":"kaf_nextgenweb","theme_token":null},"ajaxTrustedUrl":[],"kaf_helpscout":{"beacon_id":"fd820c57-521c-4c0a-9eff-0ba927533437"},"kafShopinfo":{"apiBaseUrl":"https:\/\/shop.kingarthurflour.com\/api\/userinfo","loginUrl":"https:\/\/shop.kingarthurflour.com\/AcceptLogin"},"eu_cookie_compliance":{"popup_enabled":true,"popup_agreed_enabled":false,"popup_hide_agreed":false,"popup_clicking_confirmation":true,"popup_scrolling_confirmation":false,"popup_html_info":"\u003Cdiv class =\u0022alert alert--cookie sticky\u0022\u003E\n  \u003Cspan\u003E\n    \u003Cp\u003EThis site uses cookies to provide you with the best experience possible.\u003C\/p\u003E\n\n  \u003C\/span\u003E\n      \u003Ca class=\u0022find-more-button alert__learnmore\u0022\u003ELearn More\u003C\/a\u003E\n    \u003Ca class=\u0022agree-button alert__close\u0022\u003E\u003Ci\u003EClose\u003C\/i\u003E\u003C\/a\u003E\n\u003C\/div\u003E","use_mobile_message":false,"mobile_popup_html_info":"\u003Cdiv class =\u0022alert alert--cookie sticky\u0022\u003E\n  \u003Cspan\u003E\n    \n  \u003C\/span\u003E\n      \u003Ca class=\u0022find-more-button alert__learnmore\u0022\u003ELearn More\u003C\/a\u003E\n    \u003Ca class=\u0022agree-button alert__close\u0022\u003E\u003Ci\u003EClose\u003C\/i\u003E\u003C\/a\u003E\n\u003C\/div\u003E","mobile_breakpoint":768,"popup_html_agreed":false,"popup_use_bare_css":true,"popup_height":"auto","popup_width":"100%","popup_delay":1000,"popup_link":"\/policies\/privacy.html","popup_link_new_window":true,"popup_position":false,"fixed_top_position":true,"popup_language":"en","store_consent":false,"better_support_for_screen_readers":false,"cookie_name":"","reload_page":false,"domain":"","domain_all_sites":null,"popup_eu_only_js":false,"cookie_lifetime":100,"cookie_session":0,"disagree_do_not_show_popup":false,"method":"default","whitelisted_cookies":"","withdraw_markup":"\u003Cbutton type=\u0022button\u0022 class=\u0022eu-cookie-withdraw-tab\u0022\u003EPrivacy settings\u003C\/button\u003E\n\u003Cdiv class=\u0022eu-cookie-withdraw-banner\u0022\u003E\n  \u003Cdiv class=\u0022popup-content info eu-cookie-compliance-content\u0022\u003E\n    \u003Cdiv id=\u0022popup-text\u0022 class=\u0022eu-cookie-compliance-message\u0022\u003E\n      \u003Ch2\u003EWe use cookies on this site to enhance your user experience\u003C\/h2\u003E\n\u003Cp\u003EYou have given your consent for us to set cookies.\u003C\/p\u003E\n\n    \u003C\/div\u003E\n    \u003Cdiv id=\u0022popup-buttons\u0022 class=\u0022eu-cookie-compliance-buttons\u0022\u003E\n      \u003Cbutton type=\u0022button\u0022 class=\u0022eu-cookie-withdraw-button\u0022\u003EWithdraw consent\u003C\/button\u003E\n    \u003C\/div\u003E\n  \u003C\/div\u003E\n\u003C\/div\u003E","withdraw_enabled":false,"withdraw_button_on_info_popup":null,"cookie_categories":[],"enable_save_preferences_button":null,"fix_first_cookie_category":null,"select_all_categories_by_default":null},"ckeditorAccordion":{"accordionStyle":{"collapseAll":1}},"kaf_recipe_box":{"api_base_url":"https:\/\/shop.kingarthurflour.com\/api\/recipebox","shop_signin_url":"https:\/\/shop.kingarthurflour.com\/signin"},"kaf_promo_bar":{"api_base_url":"https:\/\/shop.kingarthurflour.com\/CurrentPromo"},"kaf_search":{"algolia_app_id":"HWPWEWOTF5","algolia_api_key":"f76e4ac912eee478c11cad084afe4ecb"},"user":{"uid":0,"permissionsHash":"c50293c644408a7d52ffd7353eafe0b32da2035809d230aaf4ae7d894d3a6a42"}}</script>
+<script src="./Rustic Sourdough Bread _ King Arthur Flour_files/js_vJQookdUgp2dnOjfvDyOwXh7nwyjynuBemnK94kQ7ok.js.download"></script>
+<script src="./Rustic Sourdough Bread _ King Arthur Flour_files/polyfill.min.js.download"></script>
+<script src="./Rustic Sourdough Bread _ King Arthur Flour_files/js_nCry2HZ3oiAeW2wOLU4z7fesIlgM2R4W4Jdnn5CnAO0.js.download"></script>
+
+  <script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","licenseKey":"6b8b93db2d","applicationID":"401100790","transactionName":"YABQZUUAChBXU0xYDVlKZ0NeTg0NUlVAHxJfFQ==","queueTime":0,"applicationTime":137,"atts":"TEdTEw0aGR4=","errorBeacon":"bam.nr-data.net","agent":""}</script>
+
+<div id="drupal-modal" class="ui-front" style="display: none;"></div><span style="position: absolute; top: -99999px; left: -99999px; width: auto; padding: 0px; white-space: pre; letter-spacing: 2px; font-size: 14px; font-family: brandon-grotesque; font-weight: 400; text-transform: uppercase;">Search</span><div aria-live="assertive" role="log" aria-relevant="additions" aria-atomic="true" style="position: absolute; width: 1px; height: 1px; margin-top: -1px; clip: rect(1px, 1px, 1px, 1px); overflow: hidden;"></div><div id="beacon-container"><div data-reactroot="" class="Beacon"><div class="fcy-k7cd9d e1i7t89x0"></div><div class="BeaconContainer is-configDisplayRight fcy-lquhul e1swzdlb0" data-css-with-delay="false"></div><div class="BeaconFabButtonFrame fcy-dwliyr e1b5xbr10" style="border-radius: 60px; height: 60px; position: fixed; transform: scale(1); width: 60px; z-index: 1049;"><iframe id="" title="Help Scout Beacon" src="./Rustic Sourdough Bread _ King Arthur Flour_files/saved_resource.html"></iframe></div><span></span><!-- react-empty: 7 --><span></span></div></div></body></html>

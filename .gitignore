@@ -4,3 +4,4 @@ workspace.xml
 /data/icons/sharing/editing/
 /data/icons/sharing/tmp/
 /out/
+/res/value/api_keys.txt
