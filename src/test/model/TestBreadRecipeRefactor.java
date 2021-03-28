@@ -1,7 +1,13 @@
 package model;
 
+import exceptions.NoSuchIngredientException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestBreadRecipeRefactor {
     private BreadRecipeRefactor enriched;
@@ -12,10 +18,10 @@ public class TestBreadRecipeRefactor {
     @BeforeEach
     public void setUp() {
         // initialize the recipes
-        enriched = new BreadRecipeRefactor();
-        regular = new BreadRecipeRefactor();
-        savory = new BreadRecipeRefactor();
-        starter = new BreadRecipeRefactor();
+        enriched = new BreadRecipeRefactor("Light Rye Loaf", BreadRecipeRefactor.Type.MAIN);
+        regular = new BreadRecipeRefactor("French Loaf", BreadRecipeRefactor.Type.MAIN);
+        savory = new BreadRecipeRefactor("Rye Sandwich Bread", BreadRecipeRefactor.Type.MAIN);
+        starter = new BreadRecipeRefactor("Levain", BreadRecipeRefactor.Type.PREFERMENT);
         // add all the ingredients
         enrichedHelper();
         regularHelper();
@@ -27,6 +33,62 @@ public class TestBreadRecipeRefactor {
     public void TestBakersPercentage() {
         enriched.bakerPercentage(); // this is a good candidate for the observer pattern. Recalc whenever ingredients change
         regular.bakerPercentage();
+        savory.bakerPercentage();
+
+        assertEquals((double) 397 / (482 + 213), enriched.getHydration());
+        assertEquals(1.0, enriched.getIngredientEntries().get(0).getBakerPercentage()
+                              + enriched.getIngredientEntries().get(1).getBakerPercentage());
+        assertEquals(1.0 , regular.getIngredientEntries().get(3).getBakerPercentage()
+                + starter.getIngredientEntries().get(2).getBakerPercentage()
+                + starter.getIngredientEntries().get(3).getBakerPercentage());
+        try {
+            assertEquals(454, regular.getIngredientWeight("Lukewarm Water"));
+        } catch (NoSuchIngredientException e) {
+            fail();
+        }
+
+    }
+
+    @Test
+    public void TestGetIngredientWeightFail() {
+        try {
+            starter.getIngredientWeight("Not an ingredient");
+            fail();
+        } catch (NoSuchIngredientException e) {
+            // expected
+        }
+    }
+
+    @Test public void TestScaleByFlourWeight() {
+        enriched.bakerPercentage();
+        enriched.scaleByFlourWeight(350);
+
+        int[] expected = new int[]{242, 107, 4, 14, 7, 21, 42, 14, 1, 199};
+        for (int i = 0; i < expected.length; i++) {
+            assertEquals(expected[i], enriched.getIngredientEntries().get(i).getIngredient().getWeight());
+        }
+    }
+
+    @Test
+    public void TestScaleByDoughWeight() {
+        enriched.bakerPercentage();
+        enriched.scaleByDoughWeight(2500);
+
+        int[] expected = new int[]{};
+    }
+
+    @Test
+    public void TestToString() {
+        regular.bakerPercentage();
+        regular.setInstructions(new String("1. Something 2. Something else 3. Another thing"));
+        regular.setCookingVessel("Baking Pan");
+        regular.setCookTemp(400);
+        regular.setPrepTime(210);
+        System.out.println(regular.toString());
+        List<String> output = regular.splitInstructions();
+        for (String s : output) {
+            System.out.println(s);
+        }
     }
 
     //HELPERS

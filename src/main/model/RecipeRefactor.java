@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import exceptions.NoSuchIngredientException;
 
 import java.time.Clock;
 import java.util.*;
@@ -17,6 +18,7 @@ This is the abstract representation of a Recipe with common fields and methods.
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public abstract class RecipeRefactor implements Iterable<IngredientEntry> {
 
+    protected String name;
     protected List<IngredientEntry> ingredientEntries;
     protected String instructions;
     @JsonSerialize
@@ -44,6 +46,17 @@ public abstract class RecipeRefactor implements Iterable<IngredientEntry> {
         this.subRecipes = new ArrayList<>();
     }
 
+    //EFFECTS: Constructs a recipe with a name.
+    //         In practice this name should be the same as the key in the RecipeDevCollection.
+    public RecipeRefactor(String name) {
+        this.id = UUID.randomUUID();
+        this.instructions = "";
+        this.ingredientEntries = new ArrayList<>();
+        this.attemptHistory = new ArrayList<>();
+        this.subRecipes = new ArrayList<>();
+        this.name = name;
+    }
+
     //EFFECTS: Counts the number of elements in attemptHistory
     protected int countAttempts() {
         return this.attemptHistory.size();
@@ -67,14 +80,19 @@ public abstract class RecipeRefactor implements Iterable<IngredientEntry> {
     }
 
     //EFFECTS: produce the weight of the selected ingredient in grams
-    public int getIngredientWeight(String ingredientName) {
-        for (IngredientEntry i : this.ingredientEntries) {
-            if (i.getIngredient().getName().equals(ingredientName.toLowerCase())) {
-                return i.getIngredient().getWeight();
+    public int getIngredientWeight(String ingredientName) throws NoSuchIngredientException {
+        int result = 0;
+        for (IngredientEntry ie : this) {
+            if (ie.getIngredient().getName().toLowerCase().equals(ingredientName.toLowerCase())) {
+                result += ie.getIngredient().getWeight();
             }
         }
-        return -1; //System.out.printf("The ingredient \"%s\" could not be found", ingredientName);
+        if (result == 0) {
+            throw new NoSuchIngredientException();
+        }
+        return result;
     }
+
 
     //MODIFIES: this
     //EFFECTS: adds an ingredient to the list of ingredients
@@ -172,17 +190,25 @@ public abstract class RecipeRefactor implements Iterable<IngredientEntry> {
     }
 
     public class IngredientsIterator implements Iterator<IngredientEntry> {
-        private Iterator<IngredientEntry> ingredientsEntryIterator = ingredientEntries.iterator();
-        private List<Iterator<IngredientEntry>> subRecipesIterators = new ArrayList<>();
+        private Iterator<RecipeRefactor> subRecipesIterator = subRecipes.iterator();
+        private List<Iterator<IngredientEntry>> recipesIterators = new ArrayList<>();
         private IngredientEntry cursor;
+        boolean first = true;
 
-        for (RecipeRefactor r : subRecipes) { //not sure why this doesn't see subRecipes field from above
-           subRecipesIterators.add(r.getIngredientEntries().iterator());
+        public void iteratorList() {
+            recipesIterators.add(ingredientEntries.iterator());
+            while (subRecipesIterator.hasNext()) {
+                recipesIterators.add(subRecipesIterator.next().iterator());
+            }
         }
 
         @Override
         public boolean hasNext() {
-            for (Iterator<IngredientEntry> it : subRecipesIterators) {
+            if (first) {
+                iteratorList();
+                first = false;
+            }
+            for (Iterator<IngredientEntry> it : recipesIterators) {
                 if (it.hasNext()) {
                     cursor = it.next();
                     return true;
@@ -194,6 +220,11 @@ public abstract class RecipeRefactor implements Iterable<IngredientEntry> {
         @Override
         public IngredientEntry next() {
             return cursor;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException(); // per Oracle standard behavior for unsupported remove() method
         }
     }
 

@@ -11,15 +11,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Objects;
 
 public class IngredientRefactor {
-    Type type;
-    String name;
-    int weight; // in grams
+    // https://www.bbga.org/files/2009FormulaFormattingSINGLES.pdf
+    public enum Type { FLOUR, WATER, SALT, YEAST, MILK, SUGAR, FAT, EGG, MIX_IN, SPICE }
 
-    public enum Type {
-        FLOUR, WATER, MILK, EGG, YEAST, SUGAR, SALT, FAT, SPICE, MIX_IN // ex. pickle brine (general liquid OR just water?)
-    }
+    private Type type;
+    private String name;
+    private int weight; // in grams
 
-    //REQUIRES: Ingredient must be from a known list (flour, water, salt, sugar, eggs, yeast, preferment) and weight
+    //REQUIRES: Ingredient must be from a known list and weight
     //          in grams must be positive.
     //EFFECTS: constructs an ingredient with a description and weight (in grams)
     @JsonCreator // needed because there is no parameterless constructor. For deserializing ingredients with Jackson.

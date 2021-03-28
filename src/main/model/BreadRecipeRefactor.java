@@ -1,8 +1,5 @@
 package model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,13 +10,29 @@ Bread recipe is a subclass of Recipe and represents recipes recipes made of prim
 main constructor will back-calculate all the necessary ingredient weights.
  */
 public class BreadRecipeRefactor extends RecipeRefactor {
+    // if a user wants Pate fermentee/Biga/Poolish, etc. they can name them. PREFERMENT type keeps the system simple.
+    public enum Type {MAIN, PREFERMENT, SOAKER}
+
+    private static final double MILK_WATER_FRACTION = 0.88;
+
+    private Type type;
     private double yield;
     private int doughWeight;
+    private double hydration;
     private String cookingVessel;
 
     //EFFECTS: construct an empty recipe with an ID and flourFraction, but all other fields to be set later.
     public BreadRecipeRefactor() {
         super();
+        this.hydration = 0;
+        // leave all others undefined for now
+    }
+
+    //EFFECTS: construct an empty recipe with an ID and flourFraction, but all other fields to be set later.
+    public BreadRecipeRefactor(String name, Type type) {
+        super(name);
+        this.hydration = 0;
+        this.type = type;
         // leave all others undefined for now
     }
 
@@ -40,69 +53,59 @@ public class BreadRecipeRefactor extends RecipeRefactor {
     //EFFECTS:
     public void scaleByDoughWeight(int doughWeight) {
         this.setDoughWeight(doughWeight);
-        calcIngredientsFromDoughWeight(doughWeight);
+        int flourWeight = (int) (doughWeight / this.getYield());
+        scaleByFlourWeight(flourWeight);
     }
 
     public void scaleByFlourWeight(int flourWeight) {
-        calcIngredientsFromFlourWeight(flourWeight);
-        this.doughWeight = 0;
-        for (IngredientRefactor i : ingredientEntries) {
-            this.doughWeight += i.getWeight();
+        this.setDoughWeight(0);
+        int doughResult = 0;
+        for (IngredientEntry ie : this) {
+            IngredientRefactor i = ie.getIngredient();
+            i.setWeight((int) (ie.getBakerPercentage() * flourWeight)); // consider changing all
+            doughResult += i.getWeight();
         }
+        this.setDoughWeight(doughResult);
     }
 
     //EFFECTS: calculates the new yield after bakers percentages are updated
     public void updateYield() {
-        this.yield = 0;
+        this.setYield(0);
+        double yieldResult = 0.;
         for (IngredientEntry ie : this) {
             if (ie.getBakerPercentage() != -1) {
-                this.yield += ie.getBakerPercentage();
+                yieldResult += ie.getBakerPercentage();
             }
         }
-    }
-
-    //REQUIRES: doughWeight > 0
-    //MODIFIES: this
-    //EFFECTS: calculate the ingredients list from the desired final wet dough weight
-    private void calcIngredientsFromDoughWeight(int doughWeight) {
-        updateYield();
-        int flourWeight = (int) (doughWeight / this.yield);
-        ArrayList<Double> bakersFractions = new ArrayList<>(Arrays.asList(
-                this.flourFraction, this.waterFraction,
-                this.saltFraction, this.fatFraction,
-                this.sugarFraction, this.yeastFraction));
-        for (int i = 0; i < super.ingredientEntries.size(); i++) {
-            super.ingredientEntries.get(i).setWeight((int) (flourWeight * bakersFractions.get(i)));
-        }
+        this.setYield(yieldResult);
     }
 
     //MODIFIES:
     //EFFECTS: calculates the bakers percentages for all the ingredients.
     public void bakerPercentage() {
         int flourMass = 0;
-        for (IngredientRefactor i : this) {
-            if (i.getType() == IngredientRefactor.Type.FLOUR) {
-                flourMass += i.getWeight();
+        int waterMass = 0;
+        for (IngredientEntry ie : this) {
+            if (ie.getIngredient().getType() == IngredientRefactor.Type.FLOUR) {
+                flourMass += ie.getIngredient().getWeight();
+            } else if (ie.getIngredient().getType() == IngredientRefactor.Type.WATER) {
+                waterMass += ie.getIngredient().getWeight();
+            } else if (ie.getIngredient().getType() == IngredientRefactor.Type.MILK) {
+                waterMass += ie.getIngredient().getWeight() * MILK_WATER_FRACTION;
             }
         }
 
-        for (IngredientRefactor i : this) {
-
+        this.setHydration((double) waterMass / flourMass);
+        this.setDoughWeight(0);
+        int doughResult = 0;
+        for (IngredientEntry ie : this) {
+            int weight = ie.getIngredient().getWeight();
+            ie.setBakerPercentage((double) weight / flourMass);
+            doughResult += weight;
         }
+        this.setDoughWeight(doughResult);
 
-    }
-
-    //REQUIRES: flourWeight > 0
-    //MODIFIES: this
-    //EFFECTS: calculate the ingredients list from given flour weight
-    private void calcIngredientsFromFlourWeight(int flourWeight) {
-        ArrayList<Double> bakersFractions = new ArrayList<>(Arrays.asList(
-                this.flourFraction, this.waterFraction,
-                this.saltFraction, this.fatFraction,
-                this.sugarFraction, this.yeastFraction));
-        for (int i = 0; i < super.ingredientEntries.size(); i++) {
-            super.ingredientEntries.get(i).setWeight((int) (flourWeight * bakersFractions.get(i)));
-        }
+        updateYield();
     }
 
     //EFFECTS: builds a string representation of the recipe information
@@ -110,11 +113,9 @@ public class BreadRecipeRefactor extends RecipeRefactor {
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append("Ingredients: \n");
-        for (IngredientRefactor i : ingredientEntries) {
-            if (i.getWeight() > 0) {
-                String name = i.getName().substring(0, 1).toUpperCase() + i.getName().substring(1).toLowerCase();
-                result.append(String.format("   - %1$s, %2$dg\n", name, i.getWeight()));
-            }
+        for (IngredientEntry ie : super.getIngredientEntries()) {
+            String name = ie.getIngredient().getName();
+            result.append(String.format("   - %1$s, %2$dg\n", name, ie.getIngredient().getWeight()));
         }
         result.append("\n");
         result.append(toStringHelperBakeNotes());
@@ -132,7 +133,7 @@ public class BreadRecipeRefactor extends RecipeRefactor {
                         + "Bake temp: %8$d F\n"
                         + "Baking vessel: %9$s\n"
                         + "Yield: %10$d g\n",
-                (int) (this.waterFraction * 100), this.prepTime / 60, this.prepTime % 60,
+                (int) (this.hydration * 100), this.prepTime / 60, this.prepTime % 60,
                 this.cookTime / 60, this.cookTime % 60, (this.prepTime + this.cookTime) / 60,
                 (this.prepTime + this.cookTime) % 60, this.cookTemp, this.cookingVessel, this.doughWeight);
     }
@@ -140,7 +141,7 @@ public class BreadRecipeRefactor extends RecipeRefactor {
     //EFFECTS: format the instructions for toString
     private String toStringHelperInstructions() {
         StringBuilder result = new StringBuilder();
-        String[] splitList = this.instructions.split("\\d\\d?\\.");
+        String[] splitList = this.getInstructions().split("\\d\\d?\\.");
         result.append("\nInstructions:\n");
         for (int i = 1; i < splitList.length; i++) {
             result.append(String.format("    %d." + splitList[i] + "\n", i));
@@ -152,17 +153,16 @@ public class BreadRecipeRefactor extends RecipeRefactor {
     public List<String> splitInstructions() {
         List<String> stringList = new ArrayList<>();
         StringBuilder stringBuilder = new StringBuilder();
-        for (IngredientRefactor i : ingredientEntries) {
-            if (i.getWeight() > 0) {
-                String name = i.getName().substring(0, 1).toUpperCase() + i.getName().substring(1).toLowerCase();
-                stringBuilder.append(String.format("\u2022 %1$s: %2$dg\n", name, i.getWeight()));
-            }
+        for (IngredientEntry ie : super.getIngredientEntries()) {
+            IngredientRefactor i = ie.getIngredient();
+            String name = i.getName().substring(0, 1).toUpperCase() + i.getName().substring(1).toLowerCase();
+            stringBuilder.append(String.format("\u2022 %1$s: %2$dg\n", name, i.getWeight()));
         }
         stringList.add(stringBuilder.toString());
         String notes = this.toStringHelperBakeNotes();//.split("\\n");
         // problem here is that String.split() splits around the RegEx match so the first element is an empty string
         // because the string starts with a RegEx match (i.e. "1.")
-        String temp = this.instructions.substring(2).trim(); // drop the "1." at the beginning of the instructions
+        String temp = this.getInstructions().substring(2).trim(); // drop the "1." at the beginning of the instructions
         String[] instructions = temp.split("\\d\\d?\\.");
         stringList.add(notes);
         stringList.add("INSTRUCTIONS_SEPARATOR");
@@ -185,9 +185,17 @@ public class BreadRecipeRefactor extends RecipeRefactor {
         return cookingVessel;
     }
 
-    // setters
+    public double getHydration() {
+        return hydration;
+    }
 
-    public void setDoughWeight(int doughWeight) {
+    public Type getType() {
+        return type;
+    }
+
+
+    // setters
+    private void setDoughWeight(int doughWeight) {
         this.doughWeight = doughWeight;
     }
 
@@ -195,5 +203,16 @@ public class BreadRecipeRefactor extends RecipeRefactor {
         this.cookingVessel = cookingVessel;
     }
 
+    public void setType(Type type) {
+        this.type = type;
+    }
+
+    private void setHydration(double hydration) {
+        this.hydration = hydration;
+    }
+
+    private void setYield(double yield) {
+        this.yield = yield;
+    }
 }
 
